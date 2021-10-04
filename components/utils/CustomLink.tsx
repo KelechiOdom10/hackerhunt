@@ -6,8 +6,7 @@ import { ReactChild, ReactNode } from "react";
 type Props = {
   href: string;
   children: ReactChild | ReactNode;
-  // All other props
-  [x: string]: any;
+  [x: string]: unknown;
 };
 
 export default function CustomLink({ href, children, ...props }: Props) {
