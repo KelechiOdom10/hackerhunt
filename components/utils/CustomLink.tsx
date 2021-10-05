@@ -6,16 +6,29 @@ import { ReactChild, ReactNode } from "react";
 type Props = {
   href: string;
   children: ReactChild | ReactNode;
+  underline?: boolean;
   [x: string]: unknown;
 };
 
-export default function CustomLink({ href, children, ...props }: Props) {
+export default function CustomLink({
+  href,
+  children,
+  underline,
+  ...props
+}: Props) {
   // const router = useRouter();
   // const isActive = router.pathname === "/";
 
   return (
     <NextLink href={href} passHref>
-      <Link {...props}>{children}</Link>
+      <Link
+        {...props}
+        _hover={{
+          textDecor: `${underline ? "underline" : "none"}`,
+        }}
+      >
+        {children}
+      </Link>
     </NextLink>
   );
 }
