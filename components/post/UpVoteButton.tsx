@@ -28,7 +28,7 @@ export default function UpVoteButton({
         fontSize={{ base: isFavorited ? "xl" : "lg", md: isFavorited && "2xl" }}
         color="inherit"
         as={isFavorited ? BsFillCaretUpFill : BiUpArrow}
-        aria-label="Toggle Like"
+        aria-label="Toggle Upvote"
       />
       <span>{count}</span>
     </VStack>
