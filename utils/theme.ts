@@ -73,6 +73,9 @@ const theme = extendTheme({
       }),
     },
     Button: {
+      baseStyle: {
+        fontWeight: "bold",
+      },
       variants: {
         primary: props => ({
           color: mode("white", "brand.900")(props),
@@ -81,7 +84,7 @@ const theme = extendTheme({
         secondary: props => ({
           color: mode("brand.900", "white")(props),
           bg: "transparent",
-          borderWidth: 2,
+          borderWidth: 3,
           borderColor: mode("brand.900", "white")(props),
         }),
       },
