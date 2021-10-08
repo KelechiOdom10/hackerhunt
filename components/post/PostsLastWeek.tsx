@@ -37,7 +37,6 @@ const LastWeekPost = ({ link }: Props) => {
         <VStack align="flex-start" spacing={0}>
           <CustomLink
             variant="primary"
-            wordBreak="break"
             isExternal
             fontSize={{ base: "xs", md: "sm" }}
             fontWeight="bold"

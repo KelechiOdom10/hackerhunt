@@ -27,7 +27,7 @@ export default function PostPreview({ link }: Props) {
     <Flex align="center" justify="space-between" py={1} rounded="md" w="full">
       <HStack spacing={4}>
         <Image
-          src={link.image ?? "/assets/fallback.jpeg"}
+          src={link.image}
           onError={addDefaultSrc}
           alt={link.title}
           width={{ base: "60px", md: "75px" }}
@@ -38,7 +38,6 @@ export default function PostPreview({ link }: Props) {
         <VStack align="flex-start" spacing={1}>
           <CustomLink
             variant="primary"
-            wordBreak="break"
             isExternal
             fontSize={{ base: "xs", md: "sm", lg: "md" }}
             fontWeight="bold"
@@ -58,26 +57,26 @@ export default function PostPreview({ link }: Props) {
             by {link.user.name.toLowerCase()} (3 hours ago)
           </CustomLink>
           <HStack spacing={4} align="center">
-            <HStack
-              as={CustomLink}
-              fontSize={{ base: "xs", md: "sm" }}
-              underline
-              spacing={1}
-              href="#"
-              color={useColorModeValue("brand.500", "whiteAlpha.800")}
-              mb={-2}
-            >
-              <Icon
-                w={4}
-                h={4}
-                mr={0.8}
-                as={IoMdChatboxes}
-                aria-label="Toggle Like"
-              />
-              <Text fontSize={{ base: "0.7rem", md: "xs" }}>
-                {link.comments_count}
-              </Text>
-            </HStack>
+            <CustomLink href="#" underline>
+              <HStack
+                fontSize={{ base: "xs", md: "sm" }}
+                spacing={1}
+                color={useColorModeValue("brand.500", "whiteAlpha.800")}
+                mb={-2}
+              >
+                <Icon
+                  w={4}
+                  h={4}
+                  mr={0.8}
+                  as={IoMdChatboxes}
+                  aria-label="Toggle Like"
+                />
+                <Text fontSize={{ base: "0.7rem", md: "xs" }}>
+                  {link.comments_count}
+                </Text>
+              </HStack>
+            </CustomLink>
+
             <HStack
               spacing={2}
               align="center"
