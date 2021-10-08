@@ -35,14 +35,10 @@ export type Link = {
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   image?: Maybe<Scalars['String']>;
+  tags: Array<Maybe<Scalars['String']>>;
   title: Scalars['String'];
   url: Scalars['String'];
   user?: Maybe<User>;
-};
-
-export type LinkInput = {
-  title: Scalars['String'];
-  url: Scalars['String'];
 };
 
 export type Mutation = {
@@ -62,6 +58,7 @@ export type MutationCreateCommentArgs = {
 
 
 export type MutationCreateLinkArgs = {
+  tags: Array<Scalars['String']>;
   title: Scalars['String'];
   url: Scalars['String'];
 };
@@ -117,6 +114,7 @@ export type SignUpInput = {
 export type User = {
   __typename?: 'User';
   comments: Array<Comment>;
+  createdAt: Scalars['DateTime'];
   email: Scalars['String'];
   id: Scalars['ID'];
   links: Array<Link>;
@@ -129,6 +127,7 @@ export type CreateCommentInput = {
 };
 
 export type CreateLinkInput = {
+  tags: Array<Scalars['String']>;
   title: Scalars['String'];
   url: Scalars['String'];
 };
