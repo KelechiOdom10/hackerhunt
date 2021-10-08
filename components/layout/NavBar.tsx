@@ -7,7 +7,6 @@ import {
   Stack,
   Collapse,
   Icon,
-  Link,
   VStack,
   useColorModeValue,
   useDisclosure,
@@ -41,23 +40,22 @@ export default function NavBar() {
         justify="space-between"
         align="center"
       >
-        <Flex ml={{ base: -2 }} display={{ base: "flex", md: "none" }}>
+        <Flex ml={{ base: -2 }} mr={1} display={{ base: "flex", md: "none" }}>
           <IconButton
             onClick={onToggle}
             icon={isOpen ? <HiX /> : <HiMenuAlt2 />}
             variant="ghost"
-            size="md"
+            size="sm"
             fontSize="2xl"
             aria-label="Toggle Navigation"
           />
         </Flex>
+        <Logo />
         <Flex
           flex={{ base: 1 }}
           justify={{ base: "center", md: "start" }}
           align="center"
         >
-          <Logo />
-
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <DesktopNav />
           </Flex>
@@ -70,18 +68,20 @@ export default function NavBar() {
           spacing={{ base: 4, md: 6 }}
         >
           <ColorModeSwitcher mr={-2} />
-          <Button as={CustomLink} fontSize="sm" variant="secondary" href="#">
-            Sign In
-          </Button>
-          <Button
-            as={CustomLink}
+          <CustomLink href="/signin">
+            <Button fontSize="sm" variant="secondary">
+              Sign In
+            </Button>
+          </CustomLink>
+
+          <CustomLink
             display={{ base: "none", md: "inline-flex" }}
-            fontSize="sm"
-            variant="primary"
-            href="#"
+            href="/signin"
           >
-            Sign Up
-          </Button>
+            <Button fontSize="sm" variant="primary">
+              Sign Up
+            </Button>
+          </CustomLink>
         </Stack>
       </Flex>
 
@@ -100,9 +100,9 @@ const DesktopNav = () => {
           <CustomLink
             underline
             p={2}
-            href={navItem.href ?? "#"}
+            href={navItem.href}
             fontSize="sm"
-            fontWeight={500}
+            fontWeight={600}
           >
             {navItem.label}
           </CustomLink>
@@ -130,18 +130,17 @@ const MobileNav = () => {
       {navItems.map(navItem => (
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
-      <Button
-        as={CustomLink}
-        fontSize="sm"
-        variant="secondary"
-        href="#"
-        w="full"
-      >
-        Sign In
-      </Button>
-      <Button as={CustomLink} fontSize="sm" variant="primary" w="full" href="#">
-        Sign Up
-      </Button>
+      <CustomLink href="/signin">
+        <Button w="full" fontSize="sm" variant="secondary">
+          Sign In
+        </Button>
+      </CustomLink>
+
+      <CustomLink href="/signin" display="block">
+        <Button w="full" fontSize="sm" variant="primary">
+          Sign Up
+        </Button>
+      </CustomLink>
     </VStack>
   );
 };
@@ -149,9 +148,15 @@ const MobileNav = () => {
 const MobileNavItem = ({ label, href }: NavItem) => {
   return (
     <Stack spacing={4}>
-      <Link py={2} href={href} align="center" fontSize="sm">
+      <CustomLink
+        py={2}
+        href={href}
+        underline
+        fontSize="sm"
+        fontWeight="semibold"
+      >
         {label}
-      </Link>
+      </CustomLink>
     </Stack>
   );
 };
