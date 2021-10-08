@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { SyntheticEvent, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
+import CustomLink from "../utils/CustomLink";
 
 type Props = {
   job: Job;
@@ -41,7 +42,6 @@ const JobPost = ({ job }: Props) => {
           <Icon
             display={isShown ? "inline-block" : "none"}
             w={4}
-            h={4}
             mt={-1}
             ml={1}
             as={FiArrowRight}
@@ -77,7 +77,7 @@ export default function HiringNow() {
   const bgColor = useColorModeValue("white", "gray.800");
 
   return (
-    <Box mb={12}>
+    <Box mb={8}>
       <Text
         fontFamily="heading"
         fontSize={{ base: "md", md: "lg" }}
@@ -97,9 +97,11 @@ export default function HiringNow() {
         {jobs.map(job => (
           <JobPost key={job.id} job={job} />
         ))}
-        <Button variant="primary" w="full">
-          View all jobs
-        </Button>
+        <CustomLink href="/jobs" w="full">
+          <Button variant="primary" w="full">
+            View all jobs
+          </Button>
+        </CustomLink>
       </VStack>
     </Box>
   );
