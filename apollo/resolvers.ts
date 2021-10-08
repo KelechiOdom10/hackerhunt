@@ -131,7 +131,7 @@ export const resolvers = {
       const userId = getUserId(ctx);
       if (!userId) throw new AuthenticationError("Not Authenticated");
 
-      if (!args.title || !args.url)
+      if (!args.title || !args.url || !args.tags)
         throw new UserInputError("Both fields are required");
 
       const urlData = (await getLinkPreview(args.url)) as HTMLResponse;
@@ -140,6 +140,7 @@ export const resolvers = {
         data: {
           title: args.title,
           description: urlData?.description,
+          tags: args.tags,
           image: urlData?.images ? urlData?.images[0] : "",
           url: args.url,
           user: { connect: { id: userId } },
