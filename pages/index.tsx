@@ -4,6 +4,7 @@ import Layout from "../components/layout/Layout";
 import PostList from "../components/post/PostList";
 import PostsLastWeek from "../components/post/PostsLastWeek";
 import HiringNow from "../components/sidebar/HiringNow";
+import Tags from "../components/sidebar/Tags";
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
           </GridItem>
           <GridItem colSpan={2} display={{ base: "none", md: "block" }}>
             <HiringNow />
+            <Tags />
           </GridItem>
         </Grid>
       </Layout>
