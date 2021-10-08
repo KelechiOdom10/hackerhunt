@@ -29,6 +29,7 @@ model Link {
   title       String
   description String?
   image       String?
+  tags        String[]
   url         String
   user        User      @relation(fields: [userId], references: [id])
   userId      String
