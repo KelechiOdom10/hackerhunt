@@ -1,5 +1,5 @@
 import NextLink from "next/link";
-import { Link } from "@chakra-ui/react";
+import { Link, LinkProps } from "@chakra-ui/react";
 import { ReactChild, ReactNode } from "react";
 // import { useRouter } from "next/router";
 
@@ -7,7 +7,6 @@ type Props = {
   href: string;
   children: ReactChild | ReactNode;
   underline?: boolean;
-  [x: string]: unknown;
 };
 
 export default function CustomLink({
@@ -15,7 +14,7 @@ export default function CustomLink({
   children,
   underline,
   ...props
-}: Props) {
+}: Props & LinkProps) {
   // const router = useRouter();
   // const isActive = router.pathname === "/";
 
