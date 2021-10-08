@@ -1,6 +1,8 @@
 import { gql } from "apollo-server-micro";
 
 export const typeDefs = gql`
+  scalar DateTime
+
   type AuthPayload {
     token: String!
     user: User!
@@ -12,6 +14,7 @@ export const typeDefs = gql`
     email: String!
     links: [Link!]!
     comments: [Comment!]!
+    createdAt: DateTime!
   }
 
   type Link {
@@ -20,8 +23,10 @@ export const typeDefs = gql`
     image: String
     description: String
     url: String!
+    tags: [String]!
     user: User
     comments: [Comment]
+    createdAt: DateTime!
   }
 
   type Comment {
@@ -29,6 +34,7 @@ export const typeDefs = gql`
     text: String!
     link: Link!
     user: User!
+    createdAt: DateTime!
   }
 
   type Query {
@@ -37,11 +43,6 @@ export const typeDefs = gql`
     link(id: ID!): Link!
     me: User!
     user(id: ID!): User!
-  }
-
-  input LinkInput {
-    title: String!
-    url: String!
   }
 
   input SignUpInput {
@@ -58,6 +59,7 @@ export const typeDefs = gql`
   input createLinkInput {
     title: String!
     url: String!
+    tags: [String!]!
   }
 
   input createCommentInput {
@@ -72,7 +74,7 @@ export const typeDefs = gql`
   type Mutation {
     signUp(username: String!, email: String!, password: String!): AuthPayload!
     signIn(email: String!, password: String!): AuthPayload!
-    createLink(title: String!, url: String!): Link!
+    createLink(title: String!, url: String!, tags: [String!]!): Link!
     toggleVote(id: ID!): Boolean!
     createComment(id: ID!, text: String!): Comment!
   }
