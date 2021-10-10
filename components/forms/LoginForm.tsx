@@ -10,6 +10,8 @@ import {
   InputRightElement,
   Button,
   Text,
+  FormHelperText,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
@@ -73,13 +75,21 @@ export default function LoginForm() {
               />
             </InputRightElement>
           </InputGroup>
+          <FormHelperText textAlign="right">
+            <CustomLink underline href="/forgotpassword">
+              Forgot password?
+            </CustomLink>
+          </FormHelperText>
         </FormControl>
         <Button variant="primary" type="submit" w="full">
           Sign In
         </Button>{" "}
       </VStack>
       <Box my={2}>
-        <Text fontSize={{ base: "sm", md: "md" }}>
+        <Text
+          fontSize={{ base: "sm", md: "md" }}
+          color={useColorModeValue("brand.500", "brand.200")}
+        >
           Don't have an account?{" "}
           <CustomLink underline fontWeight="bold" href="/signup">
             Sign Up
