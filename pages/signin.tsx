@@ -1,4 +1,4 @@
-import { Flex, Box, useColorModeValue } from "@chakra-ui/react";
+import { Flex, Box, useColorModeValue, Image } from "@chakra-ui/react";
 import Head from "next/head";
 import LoginForm from "../components/forms/LoginForm";
 import Logo from "../components/Logo";
@@ -19,13 +19,21 @@ export default function SignIn() {
         bg={useColorModeValue("white", "brand.800")}
       >
         <Flex
-          align="center"
-          justify="center"
+          direction="column"
+          px={4}
+          align={{ base: "center", md: "start" }}
           w={{ base: "100%", md: "50vw" }}
           bg={useColorModeValue("brand.800", "white")}
           py={4}
         >
           <Logo color={textColor} />
+          <Image
+            src="https://www.pinclipart.com/picdir/big/420-4206452_think-tech-illustration-clipart.png"
+            alignSelf="center"
+            justifySelf="center"
+            mt="25vh"
+            display={{ base: "none", md: "block" }}
+          />
         </Flex>
         <Flex
           w={{ base: "100%", md: "50vw" }}
