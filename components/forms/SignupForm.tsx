@@ -10,6 +10,7 @@ import {
   InputRightElement,
   Button,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
@@ -88,11 +89,14 @@ export default function SignupForm() {
           </InputGroup>
         </FormControl>
         <Button variant="primary" type="submit" w="full">
-          Sign In
+          Sign Up
         </Button>{" "}
       </VStack>
       <Box my={2}>
-        <Text fontSize={{ base: "sm", md: "md" }}>
+        <Text
+          fontSize={{ base: "sm", md: "md" }}
+          color={useColorModeValue("brand.400", "brand.200")}
+        >
           Already have an account?{" "}
           <CustomLink underline fontWeight="bold" href="/signin">
             Sign In
