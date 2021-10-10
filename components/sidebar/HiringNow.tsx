@@ -1,6 +1,5 @@
 import {
   Heading,
-  Button,
   VStack,
   Image,
   useColorModeValue,
@@ -12,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { SyntheticEvent, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
+import CustomButton from "../utils/CustomButton";
 import CustomLink from "../utils/CustomLink";
 
 type Props = {
@@ -98,9 +98,9 @@ export default function HiringNow() {
           <JobPost key={job.id} job={job} />
         ))}
         <CustomLink href="/jobs" w="full">
-          <Button variant="primary" w="full">
+          <CustomButton variant="primary" w="full">
             View all jobs
-          </Button>
+          </CustomButton>
         </CustomLink>
       </VStack>
     </Box>

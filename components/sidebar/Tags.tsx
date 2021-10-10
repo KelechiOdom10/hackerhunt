@@ -1,5 +1,4 @@
 import {
-  Button,
   VStack,
   useColorModeValue,
   Text,
@@ -9,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { FiArrowRight } from "react-icons/fi";
 import { links } from "../post/PostList";
+import CustomButton from "../utils/CustomButton";
 import CustomLink from "../utils/CustomLink";
 
 export const TagLink = ({ tag }: { tag: string }) => {
@@ -60,13 +60,13 @@ export default function Tags() {
         ))}
         <Divider />
         <CustomLink href="/tags" w="full" px={3}>
-          <Button
+          <CustomButton
             variant="secondary"
             w="full"
             rightIcon={<Icon as={FiArrowRight} mt={1} />}
           >
             View all tags
-          </Button>
+          </CustomButton>
         </CustomLink>
       </VStack>
     </Box>
