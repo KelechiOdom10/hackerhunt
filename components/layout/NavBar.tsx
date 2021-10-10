@@ -3,7 +3,6 @@ import {
   Flex,
   IconButton,
   Input,
-  Button,
   Stack,
   Collapse,
   Icon,
@@ -17,6 +16,7 @@ import { HiMenuAlt2, HiX, HiSearch } from "react-icons/hi";
 import { ColorModeSwitcher } from "../utils/ColorModeSwitcher";
 import Logo from "../Logo";
 import CustomLink from "../utils/CustomLink";
+import CustomButton from "../utils/CustomButton";
 
 export default function NavBar() {
   const { isOpen, onToggle } = useDisclosure();
@@ -68,19 +68,15 @@ export default function NavBar() {
           spacing={{ base: 4, md: 6 }}
         >
           <ColorModeSwitcher mr={-2} />
-          <CustomLink href="/signin">
-            <Button fontSize="sm" variant="secondary">
-              Sign In
-            </Button>
+          <CustomLink
+            href="/signin"
+            display={{ base: "none", md: "inline-flex" }}
+          >
+            <CustomButton variant="secondary">Sign In</CustomButton>
           </CustomLink>
 
-          <CustomLink
-            display={{ base: "none", md: "inline-flex" }}
-            href="/signin"
-          >
-            <Button fontSize="sm" variant="primary">
-              Sign Up
-            </Button>
+          <CustomLink href="/signup">
+            <CustomButton variant="primary">Sign Up</CustomButton>
           </CustomLink>
         </Stack>
       </Flex>
@@ -131,15 +127,15 @@ const MobileNav = () => {
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
       <CustomLink href="/signin">
-        <Button w="full" fontSize="sm" variant="secondary">
+        <CustomButton w="full" variant="secondary">
           Sign In
-        </Button>
+        </CustomButton>
       </CustomLink>
 
       <CustomLink href="/signin" display="block">
-        <Button w="full" fontSize="sm" variant="primary">
+        <CustomButton w="full" variant="primary">
           Sign Up
-        </Button>
+        </CustomButton>
       </CustomLink>
     </VStack>
   );
