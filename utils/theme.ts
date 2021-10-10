@@ -80,9 +80,11 @@ const theme = extendTheme({
         primary: props => ({
           color: mode("white", "brand.900")(props),
           bg: mode("brand.900", "white")(props),
+          fontSize: ["xs", "sm", "md", "md"],
         }),
         secondary: props => ({
           color: mode("brand.900", "white")(props),
+          fontSize: ["xs", "sm", "md", "md"],
           bg: "transparent",
           borderWidth: 3,
           borderColor: mode("brand.900", "white")(props),
