@@ -11,46 +11,82 @@ import {
   Button,
   Text,
   useColorModeValue,
+  FormErrorMessage,
+  useToast,
 } from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import { useRouter } from "next/router";
 import CustomLink from "../utils/CustomLink";
+import { SignUpInput, useSignUpMutation } from "../../apollo/generated/graphql";
 
 export default function SignupForm() {
-  const [values, setValues] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-  const { username, email, password } = values;
-  const [show, setShow] = useState(false);
+  const [signUp] = useSignUpMutation();
+  const router = useRouter();
+  const toast = useToast();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignUpInput>();
+  const onSubmit = async (values: SignUpInput) => {
+    try {
+      const { data } = await signUp({ variables: values });
+      if (data?.signUp.token) {
+        toast({
+          status: "success",
+          description: "Successfully signed up!",
+          position: "top-right",
+          isClosable: true,
+          duration: 4000,
+        });
+        router.replace("/signin");
+      }
+    } catch (error) {
+      toast({
+        description: error.message,
+        status: "error",
+        position: "top-right",
+        isClosable: true,
+        duration: 4000,
+      });
+    }
+  };
+
+  const [show, setShow] = useState(false);
   const toggle = e => {
     e.preventDefault();
     setShow(!show);
   };
 
-  const handleChange = e => {
-    setValues({ ...values, [e.target.name]: e.target.value });
-  };
-
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <VStack spacing={6}>
         <Text>Sign up to Hacker Hunt!</Text>
-        <FormControl id="username" isRequired>
+        <FormControl
+          id="username"
+          isInvalid={!!errors?.username?.message}
+          isRequired
+        >
           <FormLabel fontSize={{ base: "sm", md: "md" }}>Username</FormLabel>
           <Input
             variant="primary"
             type="text"
             name="username"
-            value={username}
-            onChange={handleChange}
             placeholder="Enter your username"
             fontSize={{ base: "sm", md: "md" }}
+            {...register("username", {
+              required: "Username is required",
+              minLength: { value: 4, message: "Minimum length should be 4" },
+            })}
           />
+          <FormErrorMessage fontSize={{ base: "sm", md: "sm", lg: "md" }}>
+            {errors?.username && errors?.username?.message}
+          </FormErrorMessage>
         </FormControl>
-        <FormControl id="email" isRequired>
+        <FormControl id="email" isInvalid={!!errors?.email?.message} isRequired>
           <FormLabel fontSize={{ base: "sm", md: "md" }}>
             Email address
           </FormLabel>
@@ -59,12 +95,24 @@ export default function SignupForm() {
             type="email"
             name="email"
             placeholder="Enter your email address"
-            value={email}
-            onChange={handleChange}
             fontSize={{ base: "sm", md: "md" }}
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+                message: "Invalid email address",
+              },
+            })}
           />
+          <FormErrorMessage fontSize={{ base: "sm", md: "sm", lg: "md" }}>
+            {errors?.email && errors?.email?.message}
+          </FormErrorMessage>
         </FormControl>
-        <FormControl id="password" isRequired>
+        <FormControl
+          id="password"
+          isInvalid={!!errors?.password?.message}
+          isRequired
+        >
           <FormLabel>Password</FormLabel>
           <InputGroup size="md">
             <Input
@@ -73,9 +121,20 @@ export default function SignupForm() {
               type={show ? "text" : "password"}
               name="password"
               placeholder="Enter password"
-              value={password}
-              onChange={handleChange}
               fontSize={{ base: "sm", md: "md" }}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+                validate: value => {
+                  return (
+                    [/[A-Z]/, /[0-9]/].every(pattern => pattern.test(value)) ||
+                    "Must include uppercase letters and numbers"
+                  );
+                },
+              })}
             />
             <InputRightElement width="3rem" mr={1}>
               <IconButton
@@ -87,8 +146,17 @@ export default function SignupForm() {
               />
             </InputRightElement>
           </InputGroup>
+          <FormErrorMessage fontSize={{ base: "sm", md: "sm", lg: "md" }}>
+            {errors?.password && errors.password.message}
+          </FormErrorMessage>
         </FormControl>
-        <Button variant="primary" type="submit" w="full">
+        <Button
+          variant="primary"
+          type="submit"
+          w="full"
+          isLoading={isSubmitting}
+          loadingText="Submitting"
+        >
           Sign Up
         </Button>{" "}
       </VStack>
