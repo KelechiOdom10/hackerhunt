@@ -5,6 +5,7 @@ import {
 } from "apollo-server-micro";
 import * as bcrypt from "bcryptjs";
 import { getLinkPreview } from "link-preview-js";
+import { DateTimeResolver } from "graphql-scalars";
 import { GraphQLContext } from "../pages/api/graphql";
 import { jwtGenerator } from "../utils/jwtGenerator";
 import { getUserId } from "../utils/auth";
@@ -16,6 +17,8 @@ import {
   SignUpInput,
 } from "./generated/graphql";
 import { HTMLResponse } from "../components/post/PostPreview";
+import { Comment, Link, User, Vote } from ".prisma/client";
+import { isValidUrl } from "../utils/isValidUrl";
 
 export const resolvers = {
   Query: {
@@ -24,33 +27,29 @@ export const resolvers = {
     },
 
     feed: async (_parent, _args, ctx: GraphQLContext) => {
-      const links = await ctx.prisma.link.findMany({
-        include: {
-          _count: true,
-          user: true,
-        },
-      });
+      const links = await ctx.prisma.link.findMany({});
       return links;
     },
 
     me: async (_parent, _args, ctx: GraphQLContext) => {
-      const userId = getUserId(ctx);
-      if (!userId)
-        throw new AuthenticationError("You need to be authenticated");
+      try {
+        const userId = getUserId(ctx);
+        if (!userId)
+          throw new AuthenticationError("You need to be authenticated");
 
-      const user = await ctx.prisma.user.findFirst({ where: { id: userId } });
-      return user;
+        const user = await ctx.prisma.user.findUnique({
+          where: { id: userId },
+        });
+        return user;
+      } catch (error) {
+        return null;
+      }
     },
 
     user: async (_parent, args: IdInput, ctx: GraphQLContext) => {
       const user = await ctx.prisma.user.findFirst({
         where: { id: args.id },
-        include: {
-          links: true,
-          comments: true,
-        },
       });
-
       if (!user) throw new Error("User not found");
 
       return user;
@@ -59,10 +58,6 @@ export const resolvers = {
     link: async (_parent, args: IdInput, ctx: GraphQLContext) => {
       const link = await ctx.prisma.link.findFirst({
         where: { id: args.id },
-        include: {
-          user: true,
-          comments: true,
-        },
       });
 
       if (!link) {
@@ -108,7 +103,7 @@ export const resolvers = {
       if (!args.email || !args.password)
         throw new UserInputError("Both fields are required");
 
-      const user = await ctx.prisma.user.findFirst({
+      const user = await ctx.prisma.user.findUnique({
         where: {
           email: args.email,
         },
@@ -132,7 +127,9 @@ export const resolvers = {
       if (!userId) throw new AuthenticationError("Not Authenticated");
 
       if (!args.title || !args.url || !args.tags)
-        throw new UserInputError("Both fields are required");
+        throw new UserInputError("All fields are required");
+
+      if (!isValidUrl(args.url)) throw new UserInputError("URL is invalid");
 
       const urlData = (await getLinkPreview(args.url)) as HTMLResponse;
 
@@ -145,22 +142,16 @@ export const resolvers = {
           url: args.url,
           user: { connect: { id: userId } },
         },
-        include: {
-          user: true,
-        },
       });
 
       return link;
     },
 
     toggleVote: async (_parent, args: IdInput, ctx: GraphQLContext) => {
+      if (!args.id) throw new UserInputError("Link id is required");
+
       const userId = getUserId(ctx);
-      const user = await ctx.prisma.user.findFirst({
-        where: {
-          id: userId,
-        },
-      });
-      if (!user) throw new AuthenticationError("Not Authenticated");
+      if (!userId) throw new AuthenticationError("Not Authenticated");
 
       // check if the like already exists, if exists remove it
       const vote = await ctx.prisma.vote.findFirst({
@@ -192,24 +183,88 @@ export const resolvers = {
       args: CreateCommentInput,
       ctx: GraphQLContext
     ) => {
+      try {
+        const userId = getUserId(ctx);
+        if (!userId) throw new AuthenticationError("Not Authenticated");
+
+        const comment = await ctx.prisma.comment.create({
+          data: {
+            user: { connect: { id: userId } },
+            link: { connect: { id: args.id } },
+            text: args.text,
+          },
+        });
+
+        return comment;
+      } catch (error) {
+        throw new Error(error.message || "Internal Server Error");
+      }
+    },
+  },
+  DateTime: DateTimeResolver,
+  User: {
+    links: async (parent: User, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.user.findFirst({ where: { id: parent?.id } }).links();
+    },
+    comments: async (parent: User, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.user
+        .findFirst({ where: { id: parent?.id } })
+        .comments();
+    },
+    votes: async (parent: User, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.user.findFirst({ where: { id: parent?.id } }).votes();
+    },
+  },
+  Link: {
+    user: async (parent: Link, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.link.findFirst({ where: { id: parent?.id } }).user();
+    },
+    comments: async (parent: Link, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.link
+        .findFirst({ where: { id: parent?.id } })
+        .comments();
+    },
+    commentCount: async (parent: Link, _args, ctx: GraphQLContext) => {
+      return (
+        await ctx.prisma.link
+          .findFirst({ where: { id: parent?.id } })
+          .comments()
+      ).length;
+    },
+    votes: async (parent: Link, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.link.findFirst({ where: { id: parent?.id } }).votes();
+    },
+    voteCount: async (parent: Link, _args, ctx: GraphQLContext) => {
+      return (
+        await ctx.prisma.link.findFirst({ where: { id: parent?.id } }).votes()
+      ).length;
+    },
+    upVoted: async (parent: Link, _args, ctx: GraphQLContext) => {
+      const votes = await ctx.prisma.link
+        .findFirst({ where: { id: parent?.id } })
+        .votes();
+
       const userId = getUserId(ctx);
-      const user = await ctx.prisma.user.findFirst({
-        where: {
-          id: userId,
-        },
-      });
-      if (!user) throw new AuthenticationError("Not Authenticated");
+      if (!userId) return false;
 
-      const comment = await ctx.prisma.comment.create({
-        data: {
-          user: { connect: { id: userId } },
-          link: { connect: { id: args.id } },
-          text: args.text,
-        },
-        include: { link: true, user: true },
-      });
-
-      return comment;
+      const user = await ctx.prisma.user.findUnique({ where: { id: userId } });
+      return votes.some(vote => vote.userId === user.id);
+    },
+  },
+  Vote: {
+    link: async (parent: Vote, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.vote.findFirst({ where: { id: parent?.id } }).link();
+    },
+    user: async (parent: Vote, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.vote.findFirst({ where: { id: parent?.id } }).user();
+    },
+  },
+  Comment: {
+    link: async (parent: Comment, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.vote.findFirst({ where: { id: parent?.id } }).link();
+    },
+    user: async (parent: Comment, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.vote.findFirst({ where: { id: parent?.id } }).user();
     },
   },
 };

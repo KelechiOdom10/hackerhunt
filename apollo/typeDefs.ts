@@ -14,6 +14,7 @@ export const typeDefs = gql`
     email: String!
     links: [Link!]!
     comments: [Comment!]!
+    votes: [Vote!]!
     createdAt: DateTime!
   }
 
@@ -25,8 +26,18 @@ export const typeDefs = gql`
     url: String!
     tags: [String]!
     user: User
-    comments: [Comment]
+    comments: [Comment!]!
+    commentCount: Int!
+    votes: [Vote!]!
+    voteCount: Int!
+    upVoted: Boolean!
     createdAt: DateTime!
+  }
+
+  type Vote {
+    id: ID!
+    link: Link!
+    user: User!
   }
 
   type Comment {
@@ -41,7 +52,7 @@ export const typeDefs = gql`
     sayHello: String
     feed: [Link!]!
     link(id: ID!): Link!
-    me: User!
+    me: User
     user(id: ID!): User!
   }
 
