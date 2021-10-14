@@ -1,4 +1,3 @@
-import { AuthenticationError } from "apollo-server-micro";
 import { GraphQLContext } from "../pages/api/graphql";
 import { verifyToken } from "./jwtGenerator";
 
@@ -7,14 +6,13 @@ export interface Decoded {
   exp: number;
 }
 
-export const getUserId = (ctx: GraphQLContext) => {
-  const authHeader = ctx.req.headers.authorization || "";
-  const token = authHeader.replace("Bearer ", "");
-
-  if (!token) {
-    throw new AuthenticationError("No token found");
+export const getUserId = (ctx: GraphQLContext): string | null => {
+  try {
+    const authHeader = ctx.req.headers.authorization;
+    const token = authHeader.replace("Bearer ", "");
+    const { id } = verifyToken(token) as Decoded;
+    return id;
+  } catch (error) {
+    return null;
   }
-
-  const { id } = verifyToken(token) as Decoded;
-  return id;
 };
