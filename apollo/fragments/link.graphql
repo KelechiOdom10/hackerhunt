@@ -1,0 +1,11 @@
+fragment LinkDetails on Link {
+  id
+  title
+  image
+  url
+  tags
+  commentCount
+  voteCount
+  upVoted
+  createdAt
+}
