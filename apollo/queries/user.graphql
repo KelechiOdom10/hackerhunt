@@ -1,0 +1,23 @@
+query User($userId: ID!) {
+  user(id: $userId) {
+    ...RegularUser
+    links {
+      ...LinkDetails
+    }
+    votes {
+      link {
+        ...LinkDetails
+        user {
+          ...RegularUser
+        }
+      }
+    }
+    comments {
+      id
+      text
+      link {
+        id
+      }
+    }
+  }
+}
