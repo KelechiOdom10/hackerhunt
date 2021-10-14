@@ -11,15 +11,28 @@ import {
   useDisclosure,
   InputGroup,
   InputLeftElement,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  HStack,
+  MenuGroup,
+  MenuDivider,
 } from "@chakra-ui/react";
 import { HiMenuAlt2, HiX, HiSearch } from "react-icons/hi";
 import { ColorModeSwitcher } from "../utils/ColorModeSwitcher";
 import Logo from "../Logo";
 import CustomLink from "../utils/CustomLink";
 import CustomButton from "../utils/CustomButton";
+import { useMe } from "../../hooks/useMe";
+import { useLogout } from "../../hooks/useLogout";
+import { RegularUserFragment } from "../../apollo/generated/graphql";
+import CustomAvatar from "../utils/CustomAvatar";
 
 export default function NavBar() {
   const { isOpen, onToggle } = useDisclosure();
+  const { me, loading } = useMe();
+  const logout = useLogout();
 
   return (
     <Box
@@ -61,28 +74,69 @@ export default function NavBar() {
           </Flex>
         </Flex>
 
-        <Stack
-          justify="space-around"
-          align="center"
-          direction="row"
-          spacing={{ base: 4, md: 6 }}
-        >
-          <ColorModeSwitcher mr={-2} />
-          <CustomLink
-            href="/signin"
-            display={{ base: "none", md: "inline-flex" }}
+        {loading ? null : (
+          <Stack
+            justify="space-around"
+            align="center"
+            direction="row"
+            spacing={{ base: 4, md: 6 }}
           >
-            <CustomButton variant="secondary">Sign In</CustomButton>
-          </CustomLink>
+            <ColorModeSwitcher mr={-2} />
+            {me ? (
+              <>
+                <CustomLink href="new-link">
+                  <CustomButton variant="primary">Add New Story</CustomButton>
+                </CustomLink>
+                <Menu>
+                  <CustomAvatar as={MenuButton} name={me?.username} />
+                  <MenuList>
+                    <MenuGroup title="Profile">
+                      <MenuItem fontSize={{ base: "sm", md: "md" }}>
+                        <CustomLink
+                          as={HStack}
+                          href="/profile"
+                          alignItems="center"
+                        >
+                          <CustomAvatar name={me?.username} />{" "}
+                          <Box as="span">My Account</Box>
+                        </CustomLink>
+                      </MenuItem>
+                    </MenuGroup>
+                    <MenuDivider />
+                    <MenuGroup title="Help">
+                      <MenuItem fontSize={{ base: "sm", md: "md" }}>
+                        <CustomLink href="/about">About</CustomLink>
+                      </MenuItem>
+                      <MenuItem
+                        fontSize={{ base: "sm", md: "md" }}
+                        onClick={() => logout()}
+                      >
+                        Logout
+                      </MenuItem>
+                    </MenuGroup>
+                  </MenuList>
+                </Menu>
+              </>
+            ) : (
+              <>
+                <CustomLink
+                  href="/signin"
+                  display={{ base: "none", md: "inline-flex" }}
+                >
+                  <CustomButton variant="secondary">Sign In</CustomButton>
+                </CustomLink>
 
-          <CustomLink href="/signup">
-            <CustomButton variant="primary">Sign Up</CustomButton>
-          </CustomLink>
-        </Stack>
+                <CustomLink href="/signup">
+                  <CustomButton variant="primary">Sign Up</CustomButton>
+                </CustomLink>
+              </>
+            )}
+          </Stack>
+        )}
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav />
+        <MobileNav logout={logout} me={me} />
       </Collapse>
     </Box>
   );
@@ -109,7 +163,12 @@ const DesktopNav = () => {
   );
 };
 
-const MobileNav = () => {
+type Props = {
+  me: RegularUserFragment;
+  logout: () => Promise<void>;
+};
+
+const MobileNav = ({ me, logout }: Props) => {
   return (
     <VStack
       bg={useColorModeValue("white", "gray.800")}
@@ -126,17 +185,25 @@ const MobileNav = () => {
       {navItems.map(navItem => (
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
-      <CustomLink href="/signin">
-        <CustomButton w="full" variant="secondary">
-          Sign In
+      {me ? (
+        <CustomButton w="full" variant="primary" onClick={logout}>
+          Logout
         </CustomButton>
-      </CustomLink>
+      ) : (
+        <>
+          <CustomLink href="/signin">
+            <CustomButton w="full" variant="secondary">
+              Sign In
+            </CustomButton>
+          </CustomLink>
 
-      <CustomLink href="/signin" display="block">
-        <CustomButton w="full" variant="primary">
-          Sign Up
-        </CustomButton>
-      </CustomLink>
+          <CustomLink href="/signin" display="block">
+            <CustomButton w="full" variant="primary">
+              Sign Up
+            </CustomButton>
+          </CustomLink>
+        </>
+      )}
     </VStack>
   );
 };
