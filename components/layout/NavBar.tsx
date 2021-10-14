@@ -84,36 +84,39 @@ export default function NavBar() {
             <ColorModeSwitcher mr={-2} />
             {me ? (
               <>
-                <CustomLink href="new-link">
+                <CustomLink href="/new">
                   <CustomButton variant="primary">Add New Story</CustomButton>
                 </CustomLink>
                 <Menu>
                   <CustomAvatar as={MenuButton} name={me?.username} />
                   <MenuList>
                     <MenuGroup title="Profile">
-                      <MenuItem fontSize={{ base: "sm", md: "md" }}>
-                        <CustomLink
+                      <CustomLink href="/profile">
+                        <MenuItem
                           as={HStack}
-                          href="/profile"
-                          alignItems="center"
+                          fontSize={{ base: "sm", md: "md" }}
                         >
                           <CustomAvatar name={me?.username} />{" "}
-                          <Box as="span">My Account</Box>
-                        </CustomLink>
-                      </MenuItem>
+                          <span>My Account</span>
+                        </MenuItem>
+                      </CustomLink>
                     </MenuGroup>
                     <MenuDivider />
                     <MenuGroup title="Help">
                       <MenuItem fontSize={{ base: "sm", md: "md" }}>
+                        <CustomLink href="/new">Create Story</CustomLink>
+                      </MenuItem>
+                      <MenuItem fontSize={{ base: "sm", md: "md" }}>
                         <CustomLink href="/about">About</CustomLink>
                       </MenuItem>
-                      <MenuItem
-                        fontSize={{ base: "sm", md: "md" }}
-                        onClick={() => logout()}
-                      >
-                        Logout
-                      </MenuItem>
                     </MenuGroup>
+                    <MenuDivider />
+                    <MenuItem
+                      fontSize={{ base: "sm", md: "md" }}
+                      onClick={() => logout()}
+                    >
+                      Logout
+                    </MenuItem>
                   </MenuList>
                 </Menu>
               </>
