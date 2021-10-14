@@ -94,7 +94,7 @@ export default function PostPreview({ link }: Props) {
                     p={1}
                     textTransform="lowercase"
                   >
-                    {`${tag}`}
+                    {`#${tag}`}
                   </Badge>
                 </CustomLink>
               ))}
