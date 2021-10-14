@@ -1,6 +1,6 @@
 overwrite: true
 schema: "http://localhost:3000/api/graphql"
-# documents: 'graphql/**/*.graphql' # parse graphql operations in matching files
+documents: "apollo/**/*.graphql" # parse graphql operations in matching files
 generates:
   ./apollo/generated/graphql.tsx: # location for generated types, hooks and components
     plugins:
@@ -8,9 +8,9 @@ generates:
       - "typescript-operations"
       # - "typescript-resolvers"
       - "typescript-react-apollo"
-    # config:
-    #   withComponent: false
-    #   withHOC: false
-    #   withMutationFn: false
-    #   withRefetchFn: false
-    #   withHooks: true
+    config:
+      withComponent: false
+      withHOC: false
+      withMutationFn: false
+      withRefetchFn: false
+      withHooks: true
