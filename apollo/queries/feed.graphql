@@ -1,0 +1,8 @@
+query Feed {
+  feed {
+    ...LinkDetails
+    user {
+      ...RegularUser
+    }
+  }
+}
