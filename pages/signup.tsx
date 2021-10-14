@@ -2,8 +2,9 @@ import { Flex, Box, useColorModeValue, Image } from "@chakra-ui/react";
 import Head from "next/head";
 import SignupForm from "../components/forms/SignupForm";
 import Logo from "../components/Logo";
+import withoutAuth from "../hoc/withNoAuth";
 
-export default function SignUp() {
+export default withoutAuth(function SignUp() {
   const textColor = useColorModeValue("white", "brand.800");
 
   return (
@@ -52,4 +53,4 @@ export default function SignUp() {
       </Flex>
     </div>
   );
-}
+});
