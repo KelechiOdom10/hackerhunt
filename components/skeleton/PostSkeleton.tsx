@@ -1,11 +1,4 @@
-/* eslint-disable camelcase */
-import {
-  HStack,
-  VStack,
-  Skeleton,
-  //   useColorModeValue,
-  Flex,
-} from "@chakra-ui/react";
+import { HStack, VStack, Skeleton, Flex } from "@chakra-ui/react";
 
 export default function PostSkeleton() {
   return (
