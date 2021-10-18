@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { SyntheticEvent } from "react";
 import { IoMdChatboxes } from "react-icons/io";
+import { Link } from "../../apollo/generated/graphql";
 import CustomLink from "../utils/CustomLink";
 import UpVoteButton from "./UpVoteButton";
 
@@ -54,7 +55,7 @@ export default function PostPreview({ link }: Props) {
             href="/"
             color={useColorModeValue("brand.400", "whiteAlpha.700")}
           >
-            by {link.user.name.toLowerCase()} (3 hours ago)
+            by {link.user.username.toLowerCase()} (3 hours ago)
           </CustomLink>
           <HStack spacing={4} align="center">
             <CustomLink href="#" underline>
@@ -72,7 +73,7 @@ export default function PostPreview({ link }: Props) {
                   aria-label="Toggle Like"
                 />
                 <Text fontSize={{ base: "0.7rem", md: "xs" }}>
-                  {link.comments_count}
+                  {link.commentCount}
                 </Text>
               </HStack>
             </CustomLink>
@@ -102,7 +103,7 @@ export default function PostPreview({ link }: Props) {
           </HStack>
         </VStack>
       </HStack>
-      <UpVoteButton count={link.likes_count} isFavorited={link.isFavorited} />
+      <UpVoteButton count={link.voteCount} isFavorited={link.upVoted} />
     </Flex>
   );
 }
@@ -124,17 +125,17 @@ export interface HTMLResponse extends BaseType {
   contentType: `text/html${string}`;
 }
 
-export interface Link {
-  id: string;
-  url: string;
-  image: string;
-  title: string;
-  description: string;
-  user: {
-    name: string;
-  };
-  comments_count: number;
-  likes_count: number;
-  isFavorited: boolean;
-  tags: string[];
-}
+// export interface Link {
+//   id: string;
+//   url: string;
+//   image: string;
+//   title: string;
+//   description: string;
+//   user: {
+//     name: string;
+//   };
+//   comments_count: number;
+//   likes_count: number;
+//   isFavorited: boolean;
+//   tags: string[];
+// }

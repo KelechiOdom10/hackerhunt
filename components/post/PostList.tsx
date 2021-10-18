@@ -7,6 +7,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import React from "react";
+import { Link, useFeedQuery } from "../../apollo/generated/graphql";
+import PostSkeleton from "../skeleton/PostSkeleton";
 import PostPreview from "./PostPreview";
 
 export const links = [
@@ -78,6 +80,8 @@ export const links = [
 ];
 
 export default function PostList() {
+  const { data, loading } = useFeedQuery();
+
   const bgColor = useColorModeValue("white", "gray.800");
   return (
     <VStack spacing={4} align="start" w="full" mb={8}>
@@ -122,9 +126,11 @@ export default function PostList() {
         divider={<StackDivider />}
         borderWidth={useColorModeValue(1, 0)}
       >
-        {links.map(link => (
-          <PostPreview link={link} key={link.id} />
-        ))}
+        {loading && [...Array(5).keys()].map(key => <PostSkeleton key={key} />)}
+        {data &&
+          data.feed.map((link: Link) => (
+            <PostPreview link={link} key={link.id} />
+          ))}
       </VStack>
     </VStack>
   );
