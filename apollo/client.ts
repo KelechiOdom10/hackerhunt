@@ -34,29 +34,35 @@ function createIsomorphLink() {
 
 function createApolloClient(
   initialState: null | Record<string, any>,
-  options: Options
+  options?: Options
 ) {
-  const { getToken } = options;
-  const authLink = setContext((_, { headers }) => {
-    const token = getToken();
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : "",
-      },
-    };
-  });
+  let authLink;
+
+  if (options) {
+    const { getToken } = options;
+    authLink = setContext((_, { headers }) => {
+      const token = getToken();
+      return {
+        headers: {
+          ...headers,
+          authorization: token ? `Bearer ${token}` : "",
+        },
+      };
+    });
+  }
 
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: authLink.concat(createIsomorphLink()),
+    link: options
+      ? authLink.concat(createIsomorphLink())
+      : createIsomorphLink(),
     cache: new InMemoryCache().restore(initialState || {}),
   });
 }
 
 export function initializeApollo(
   initialState: null | Record<string, any> = null,
-  options: Options
+  options?: Options
 ) {
   const _apolloClient =
     apolloClient ?? createApolloClient(initialState, options);

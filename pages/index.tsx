@@ -1,5 +1,8 @@
 import { Grid, GridItem } from "@chakra-ui/react";
+import { GetStaticProps } from "next";
 import Head from "next/head";
+import { initializeApollo } from "../apollo/client";
+import { FeedDocument } from "../apollo/generated/graphql";
 import Layout from "../components/layout/Layout";
 import PostList from "../components/post/PostList";
 import PostsLastWeek from "../components/post/PostsLastWeek";
@@ -29,3 +32,17 @@ export default function Home() {
     </div>
   );
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  const client = await initializeApollo();
+
+  client.query({
+    query: FeedDocument,
+  });
+
+  return {
+    props: {
+      initialApolloState: client.cache.extract(),
+    },
+  };
+};
