@@ -1,17 +1,18 @@
 import { ApolloServer } from "apollo-server-micro";
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler, NextApiResponse } from "next";
 import cors from "micro-cors";
+import { MicroRequest } from "apollo-server-micro/dist/types";
 import { PrismaClient } from ".prisma/client";
 import { schema } from "../../apollo/schema";
 import { prisma } from "../../lib/db";
 
 export interface GraphQLContext {
   prisma: PrismaClient;
-  req: NextApiRequest;
+  req: MicroRequest;
   res: NextApiResponse;
 }
 
-export function createContext(req: NextApiRequest) {
+export function createContext(req: MicroRequest) {
   return {
     ...req,
     prisma,
@@ -31,7 +32,6 @@ let apolloServerHandler: NextApiHandler;
 async function getApolloServerHandler() {
   if (!apolloServerHandler) {
     await apolloServer.start();
-
     apolloServerHandler = apolloServer.createHandler({
       path: "/api/graphql",
     });
