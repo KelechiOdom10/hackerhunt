@@ -34,15 +34,16 @@ export default function Home() {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const client = await initializeApollo();
+  const client = await initializeApollo({});
 
-  client.query({
+  await client.query({
     query: FeedDocument,
   });
 
   return {
+    revalidate: 60 * 60,
     props: {
-      initialApolloState: client.cache.extract(),
+      initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
     },
   };
 };
