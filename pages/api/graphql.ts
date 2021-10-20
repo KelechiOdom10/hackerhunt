@@ -1,55 +1,50 @@
 import { ApolloServer } from "apollo-server-micro";
-import { NextApiHandler, NextApiResponse } from "next";
-import cors from "micro-cors";
-import { MicroRequest } from "apollo-server-micro/dist/types";
-import { PrismaClient } from ".prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
+import Cors from "micro-cors";
 import { schema } from "../../apollo/schema";
-import { prisma } from "../../lib/db";
 
 export interface GraphQLContext {
-  prisma: PrismaClient;
-  req: MicroRequest;
+  req: NextApiRequest;
   res: NextApiResponse;
 }
 
-export function createContext(req: MicroRequest) {
+export function createContext(req: NextApiRequest, res: NextApiResponse) {
   return {
     ...req,
-    prisma,
+    res,
   };
 }
 
 export const config = {
   api: {
     bodyParser: false,
+    externalResolver: true,
   },
 };
 
 const apolloServer = new ApolloServer({ schema, context: createContext });
 
-let apolloServerHandler: NextApiHandler;
+const startServer = apolloServer.start();
 
-async function getApolloServerHandler() {
-  if (!apolloServerHandler) {
-    await apolloServer.start();
-    apolloServerHandler = apolloServer.createHandler({
-      path: "/api/graphql",
-    });
-  }
+const cors = Cors({
+  allowMethods: ["POST", "OPTIONS"],
+  allowHeaders: [
+    "Access-Control-Allow-Origin",
+    "Origin, X-Requested-With, Content-Type, Accept",
+    "X-HTTP-Method-Override, Authorization",
+  ],
+});
 
-  return apolloServerHandler;
-}
-
-const handler: NextApiHandler = async (req, res) => {
-  // eslint-disable-next-line no-shadow
-  const apolloServerHandler = await getApolloServerHandler();
-
+const handler = cors(async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "OPTIONS") {
-    res.end();
-    return;
+    return res.status(200).send("ok");
   }
 
-  return apolloServerHandler(req, res);
-};
+  await startServer;
 
-export default cors()(handler);
+  await apolloServer.createHandler({
+    path: "/api/graphql",
+  })(req, res);
+});
+
+export default handler;
