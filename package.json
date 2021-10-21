@@ -19,6 +19,7 @@
     "@types/react": "^17.0.24",
     "apollo-server-micro": "^3.3.0",
     "bcryptjs": "^2.4.3",
+    "chakra-ui-autocomplete": "^1.4.5",
     "cookie": "^0.4.1",
     "framer-motion": "^4.1.17",
     "graphql": "^15.6.0",
