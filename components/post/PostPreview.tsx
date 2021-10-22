@@ -53,7 +53,7 @@ export default function PostPreview({ link }: Props) {
             isTruncated
             fontWeight={500}
             href="/"
-            color={useColorModeValue("brand.400", "whiteAlpha.700")}
+            color={useColorModeValue("gray.600", "whiteAlpha.700")}
           >
             by {link.user.username.toLowerCase()} (3 hours ago)
           </CustomLink>
@@ -62,7 +62,7 @@ export default function PostPreview({ link }: Props) {
               <HStack
                 fontSize={{ base: "xs", md: "sm" }}
                 spacing={1}
-                color={useColorModeValue("brand.500", "whiteAlpha.800")}
+                color={useColorModeValue("gray.500", "whiteAlpha.800")}
                 mb={-2}
               >
                 <Icon

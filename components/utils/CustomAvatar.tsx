@@ -14,8 +14,8 @@ export default function CustomAvatar({
     <Avatar
       src={src}
       name={name}
-      bg={useColorModeValue("brand.900", "white")}
-      color={useColorModeValue("white", "brand.900")}
+      bg={useColorModeValue("gray.900", "white")}
+      color={useColorModeValue("white", "gray.900")}
       fontWeight="extrabold"
       size="sm"
       cursor="pointer"

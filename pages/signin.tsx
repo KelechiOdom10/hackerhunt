@@ -17,14 +17,14 @@ export default withoutAuth(function SignIn() {
       <Flex
         h="100vh"
         direction={{ base: "column", md: "row" }}
-        bg={useColorModeValue("white", "brand.800")}
+        bg={useColorModeValue("white", "gray.900")}
       >
         <Flex
           direction="column"
           px={4}
           align={{ base: "center", md: "start" }}
           w={{ base: "100%", md: "50vw" }}
-          bg={useColorModeValue("brand.800", "white")}
+          bg={useColorModeValue("gray.900", "white")}
           py={4}
         >
           <Logo color={textColor} />

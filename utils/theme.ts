@@ -3,7 +3,7 @@ import {
   ThemeConfig,
   theme as chakraTheme,
 } from "@chakra-ui/react";
-import { lighten, mode } from "@chakra-ui/theme-tools";
+import { darken, mode } from "@chakra-ui/theme-tools";
 
 const config: ThemeConfig = {
   initialColorMode: "light",
@@ -33,8 +33,8 @@ const theme = extendTheme({
   styles: {
     global: props => ({
       body: {
-        color: mode("brand.800", "white")(props),
-        bg: mode("brand.50", "brand.900")(props),
+        color: mode("gray.800", "white")(props),
+        bg: mode("brand.50", "gray.900")(props),
         fontSize: "1em",
 
         ".deleted": {
@@ -57,7 +57,7 @@ const theme = extendTheme({
   components: {
     Link: {
       baseStyle: props => ({
-        color: mode("brand.800", "white")(props),
+        color: mode("gray.800", "white")(props),
       }),
       variants: {
         primary: {
@@ -69,7 +69,7 @@ const theme = extendTheme({
     },
     Text: {
       baseStyle: props => ({
-        color: mode("brand.900", "white")(props),
+        color: mode("gray.900", "white")(props),
       }),
     },
     Button: {
@@ -78,44 +78,53 @@ const theme = extendTheme({
       },
       variants: {
         primary: props => ({
-          color: mode("white", "brand.900")(props),
-          bg: mode("brand.900", "white")(props),
+          color: mode("white", "gray.800")(props),
+          bg: mode("gray.900", "white")(props),
           fontSize: ["xs", "sm", "md", "md"],
+          _disabled: {
+            color: mode("white", "brand.900")(props),
+            bg: mode("gray.700", "blackalpha.300")(props),
+          },
+          _hover: {
+            _disabled: {
+              color: mode("white", "brand.900")(props),
+              bg: mode("gray.700", "blackalpha.300")(props),
+            },
+          },
         }),
         secondary: props => ({
-          color: mode("brand.900", "white")(props),
+          color: mode("gray.800", "white")(props),
           fontSize: ["xs", "sm", "md", "md"],
           bg: "transparent",
           borderWidth: 3,
-          borderColor: mode("brand.900", "white")(props),
+          borderColor: mode("gray.900", "white")(props),
         }),
       },
     },
     Icon: {
       baseStyle: props => ({
-        color: mode("brand.900", "white")(props),
+        color: mode("gray.900", "white")(props),
       }),
     },
     Input: {
       variants: {
         primary: props => ({
           field: {
-            borderWidth: 2,
             fontWeight: "bold",
-            borderColor: mode("brand.900", "white")(props),
             color: mode("gray.900", "gray.50")(props),
-            bg: mode(lighten("brand.50", 10), "brand.900")(props),
+            bg: mode(darken("brand.50", 4), "gray.700")(props),
             _placeholder: {
-              color: mode("gray.500", "gray.300")(props),
+              color: mode("gray.500", "gray.400")(props),
               fontSize: "0.8rem",
+              fontWeight: "normal",
             },
             _focus: {
-              boxShadow: `0px 0px 0px 0.7px ${
+              boxShadow: `0px 0px 1px 1px ${
                 props.colorMode === "dark" ? "#fff" : "#0a0a0a"
               }`,
             },
             _hover: {
-              borderColor: mode("brand.900", "white")(props),
+              borderColor: mode("gray.900", "white")(props),
             },
             _invalid: {
               borderColor: `#FF0000`,

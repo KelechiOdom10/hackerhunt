@@ -25,7 +25,7 @@ export interface Item {
 export default function CreatePostForm() {
   const [pickerItems, setPickerItems] = React.useState(tags);
   const [selectedItems, setSelectedItems] = React.useState<Item[]>([]);
-  const selectedItemsFlat = selectedItems.map(item => item.label);
+  const selectedItemsFlat = selectedItems.map(item => item.label.toLowerCase());
   const {
     register,
     handleSubmit,
@@ -34,12 +34,6 @@ export default function CreatePostForm() {
   const onSubmit = data => {
     console.log(data);
   };
-
-  function isTagsEmpty() {
-    if (selectedItemsFlat.length <= 0) {
-      return "Please select at least 1 tag";
-    }
-  }
 
   const handleCreateItem = (item: Item) => {
     setPickerItems(curr => [...curr, item]);
@@ -50,6 +44,7 @@ export default function CreatePostForm() {
     if (items) {
       setSelectedItems(items);
     }
+    if (selectedItems.length > 0) errors.tags = null;
   };
 
   return (
@@ -121,14 +116,13 @@ export default function CreatePostForm() {
                 </>
               )}
               inputStyleProps={{
-                mt: -4,
+                mt: selectedItemsFlat.length <= 0 ? -4 : 0,
               }}
               labelStyleProps={{
                 fontSize: { base: "sm", md: "md" },
               }}
               listStyleProps={{
-                bg: useColorModeValue("white", "brand.900"),
-                // transition: `all 6s ease-in-out`,
+                bg: useColorModeValue("white", "gray.900"),
                 color: useColorModeValue("gray.900", "gray.50"),
               }}
               listItemStyleProps={{
@@ -149,7 +143,10 @@ export default function CreatePostForm() {
               // @ts-ignore
               refs={{
                 ...register("tags", {
-                  required: isTagsEmpty(),
+                  required: {
+                    value: selectedItems.length <= 0,
+                    message: "Please select or create at least 1 tag",
+                  },
                   value: selectedItemsFlat,
                 }),
               }}
@@ -158,10 +155,10 @@ export default function CreatePostForm() {
               mt={-4}
               fontSize={{ base: "sm", md: "sm", lg: "md" }}
             >
-              {
+              {selectedItemsFlat.length <= 0 &&
+                errors?.tags &&
                 // @ts-ignore
-                errors?.tags && errors.tags?.message
-              }
+                errors.tags?.message}
             </FormErrorMessage>
           </FormControl>
           <Button
@@ -169,6 +166,8 @@ export default function CreatePostForm() {
             type="submit"
             w="full"
             isLoading={isSubmitting}
+            loadingText="Creating"
+            isDisabled={!!errors.tags || !!errors.title || !!errors.url}
           >
             Create story
           </Button>

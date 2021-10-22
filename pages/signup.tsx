@@ -17,14 +17,14 @@ export default withoutAuth(function SignUp() {
       <Flex
         h="100vh"
         direction={{ base: "column", md: "row" }}
-        bg={useColorModeValue("white", "brand.800")}
+        bg={useColorModeValue("white", "gray.900")}
       >
         <Flex
           direction="column"
           px={4}
           align={{ base: "center", md: "start" }}
           w={{ base: "100%", md: "50vw" }}
-          bg={useColorModeValue("brand.800", "white")}
+          bg={useColorModeValue("gray.900", "white")}
           py={4}
         >
           <Logo color={textColor} />
@@ -40,7 +40,7 @@ export default withoutAuth(function SignUp() {
           w={{ base: "100%", md: "50vw" }}
           align={{ base: "start", md: "center" }}
           justify="center"
-          bg={useColorModeValue("white", "brand.800")}
+          bg={useColorModeValue("white", "gray.900")}
         >
           <Box
             w={{ base: "80%", md: "70%" }}

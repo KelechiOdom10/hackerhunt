@@ -48,7 +48,7 @@ const LastWeekPost = ({ link }: Props) => {
             w="90%"
             noOfLines={2}
             fontSize={{ base: "xs", md: "xs" }}
-            color={useColorModeValue("brand.500", "whiteAlpha.800")}
+            color={useColorModeValue("gray.600", "whiteAlpha.800")}
           >
             {link.description}
           </Text>

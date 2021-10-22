@@ -103,12 +103,16 @@ export default function NavBar() {
                     </MenuGroup>
                     <MenuDivider />
                     <MenuGroup title="Help">
-                      <MenuItem fontSize={{ base: "sm", md: "md" }}>
-                        <CustomLink href="/new">Create Story</CustomLink>
-                      </MenuItem>
-                      <MenuItem fontSize={{ base: "sm", md: "md" }}>
-                        <CustomLink href="/about">About</CustomLink>
-                      </MenuItem>
+                      <CustomLink href="/new">
+                        <MenuItem fontSize={{ base: "sm", md: "md" }}>
+                          Create Story
+                        </MenuItem>
+                      </CustomLink>
+                      <CustomLink href="/about">
+                        <MenuItem fontSize={{ base: "sm", md: "md" }}>
+                          About
+                        </MenuItem>
+                      </CustomLink>
                     </MenuGroup>
                     <MenuDivider />
                     <MenuItem

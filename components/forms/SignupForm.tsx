@@ -156,6 +156,7 @@ export default function SignupForm() {
           w="full"
           isLoading={isSubmitting}
           loadingText="Submitting"
+          isDisabled={!!errors.email || !!errors.password || !!errors.username}
         >
           Sign Up
         </Button>{" "}
