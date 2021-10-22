@@ -99,10 +99,10 @@ export default function PostList() {
         >
           <Button
             variant="link"
-            color={useColorModeValue("brand.900", "white")}
+            color={useColorModeValue("gray.900", "white")}
             _hover={{ textDecor: "none" }}
             fontSize={{ base: "xs", md: "sm" }}
-            fontWeight="bold"
+            fontWeight="extrabold"
           >
             Popular
           </Button>

@@ -12,7 +12,7 @@ type ColorModeSwitcherProps = Omit<IconButtonProps, "aria-label">;
 export const ColorModeSwitcher = (props: ColorModeSwitcherProps) => {
   const { toggleColorMode } = useColorMode();
   const text = useColorModeValue("dark", "light");
-  const color = useColorModeValue("brand.900", "white");
+  const color = useColorModeValue("gray.900", "white");
   const SwitchIcon = useColorModeValue(FaMoon, HiSun);
 
   return (

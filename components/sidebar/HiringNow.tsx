@@ -49,13 +49,13 @@ const JobPost = ({ job }: Props) => {
         </Heading>
         <Text
           fontSize={{ base: "xs", md: "sm" }}
-          color={useColorModeValue("brand.500", "whiteAlpha.800")}
+          color={useColorModeValue("gray.600", "whiteAlpha.800")}
         >
           {job.role}
         </Text>
         <Text
           fontSize={{ base: "xs", md: "sm" }}
-          color={useColorModeValue("brand.500", "whiteAlpha.800")}
+          color={useColorModeValue("gray.600", "whiteAlpha.800")}
         >
           {job.location}
         </Text>

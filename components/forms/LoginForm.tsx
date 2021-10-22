@@ -147,7 +147,7 @@ export default function LoginForm() {
           type="submit"
           w="full"
           isLoading={isSubmitting}
-          loadingText="Submitting"
+          isDisabled={!!errors.email || !!errors.password}
         >
           Sign In
         </Button>{" "}
@@ -155,7 +155,7 @@ export default function LoginForm() {
       <Box my={2}>
         <Text
           fontSize={{ base: "sm", md: "md" }}
-          color={useColorModeValue("brand.500", "brand.200")}
+          color={useColorModeValue("gray.600", "gray.400")}
         >
           Don't have an account?{" "}
           <CustomLink underline fontWeight="bold" href="/signup">

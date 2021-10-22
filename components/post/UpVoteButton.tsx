@@ -21,7 +21,7 @@ export default function UpVoteButton({
         md: isFavorited ? "md" : "sm",
       }}
       fontWeight={isFavorited && "extrabold"}
-      color={useColorModeValue("brand.900", "white")}
+      color={useColorModeValue("gray.900", "white")}
       {...props}
     >
       <Icon
