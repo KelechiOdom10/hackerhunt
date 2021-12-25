@@ -30,7 +30,6 @@ export const typeDefs = gql`
     commentCount: Int!
     votes: [Vote!]!
     voteCount: Int!
-    upVoted: Boolean!
     createdAt: DateTime!
   }
 
@@ -86,7 +85,7 @@ export const typeDefs = gql`
     signUp(username: String!, email: String!, password: String!): AuthPayload!
     signIn(email: String!, password: String!): AuthPayload!
     createLink(title: String!, url: String!, tags: [String!]!): Link!
-    toggleVote(id: ID!): Boolean!
+    toggleVote(id: ID!): Link!
     createComment(id: ID!, text: String!): Comment!
   }
 `;

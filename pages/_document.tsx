@@ -6,11 +6,26 @@ import NextDocument, {
   NextScript,
   DocumentContext,
 } from "next/document";
+import createEmotionServer from "@emotion/server/create-instance";
 import theme from "../utils/theme";
+import emotionCache from "../lib/emotion-cache";
 
+const { extractCritical } = createEmotionServer(emotionCache);
 export default class Document extends NextDocument {
-  static getInitialProps(ctx: DocumentContext) {
-    return NextDocument.getInitialProps(ctx);
+  static async getInitialProps(ctx: DocumentContext) {
+    const initialProps = await NextDocument.getInitialProps(ctx);
+    const styles = extractCritical(initialProps.html);
+    return {
+      ...initialProps,
+      styles: [
+        initialProps.styles,
+        <style
+          key="emotion-css"
+          dangerouslySetInnerHTML={{ __html: styles.css }}
+          data-emotion-css={styles.ids.join(" ")}
+        />,
+      ],
+    };
   }
 
   render() {

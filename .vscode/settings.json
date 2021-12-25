@@ -8,6 +8,5 @@
   },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
-  },
-  "python.pythonPath": "/usr/bin/python3"
+  }
 }

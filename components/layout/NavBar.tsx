@@ -28,6 +28,7 @@ import { useMe } from "../../hooks/useMe";
 import { useLogout } from "../../hooks/useLogout";
 import { RegularUserFragment } from "../../apollo/generated/graphql";
 import CustomAvatar from "../utils/CustomAvatar";
+import NavSkeleton from "../skeletons/NavSkeleton";
 
 export default function NavBar() {
   const { isOpen, onToggle } = useDisclosure();
@@ -73,73 +74,76 @@ export default function NavBar() {
             <DesktopNav />
           </Flex>
         </Flex>
+        <Stack
+          justify="space-around"
+          align="center"
+          direction="row"
+          spacing={{ base: 4, md: 6 }}
+        >
+          <ColorModeSwitcher mr={-2} />
+          {loading ? (
+            <NavSkeleton />
+          ) : (
+            <>
+              {me ? (
+                <>
+                  <CustomLink href="/new">
+                    <CustomButton variant="primary">Add New Story</CustomButton>
+                  </CustomLink>
+                  <Menu>
+                    <CustomAvatar as={MenuButton} name={me?.username} />
+                    <MenuList>
+                      <MenuGroup title="Profile">
+                        <CustomLink href="/profile">
+                          <MenuItem
+                            as={HStack}
+                            fontSize={{ base: "sm", md: "md" }}
+                          >
+                            <CustomAvatar name={me?.username} />{" "}
+                            <span>My Account</span>
+                          </MenuItem>
+                        </CustomLink>
+                      </MenuGroup>
+                      <MenuDivider />
+                      <MenuGroup title="Help">
+                        <CustomLink href="/new">
+                          <MenuItem fontSize={{ base: "sm", md: "md" }}>
+                            Create Story
+                          </MenuItem>
+                        </CustomLink>
+                        <CustomLink href="/about">
+                          <MenuItem fontSize={{ base: "sm", md: "md" }}>
+                            About
+                          </MenuItem>
+                        </CustomLink>
+                      </MenuGroup>
+                      <MenuDivider />
+                      <MenuItem
+                        fontSize={{ base: "sm", md: "md" }}
+                        onClick={() => logout()}
+                      >
+                        Logout
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
+                </>
+              ) : (
+                <>
+                  <CustomLink
+                    href="/signin"
+                    display={{ base: "none", md: "inline-flex" }}
+                  >
+                    <CustomButton variant="secondary">Sign In</CustomButton>
+                  </CustomLink>
 
-        {loading ? null : (
-          <Stack
-            justify="space-around"
-            align="center"
-            direction="row"
-            spacing={{ base: 4, md: 6 }}
-          >
-            <ColorModeSwitcher mr={-2} />
-            {me ? (
-              <>
-                <CustomLink href="/new">
-                  <CustomButton variant="primary">Add New Story</CustomButton>
-                </CustomLink>
-                <Menu>
-                  <CustomAvatar as={MenuButton} name={me?.username} />
-                  <MenuList>
-                    <MenuGroup title="Profile">
-                      <CustomLink href="/profile">
-                        <MenuItem
-                          as={HStack}
-                          fontSize={{ base: "sm", md: "md" }}
-                        >
-                          <CustomAvatar name={me?.username} />{" "}
-                          <span>My Account</span>
-                        </MenuItem>
-                      </CustomLink>
-                    </MenuGroup>
-                    <MenuDivider />
-                    <MenuGroup title="Help">
-                      <CustomLink href="/new">
-                        <MenuItem fontSize={{ base: "sm", md: "md" }}>
-                          Create Story
-                        </MenuItem>
-                      </CustomLink>
-                      <CustomLink href="/about">
-                        <MenuItem fontSize={{ base: "sm", md: "md" }}>
-                          About
-                        </MenuItem>
-                      </CustomLink>
-                    </MenuGroup>
-                    <MenuDivider />
-                    <MenuItem
-                      fontSize={{ base: "sm", md: "md" }}
-                      onClick={() => logout()}
-                    >
-                      Logout
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              </>
-            ) : (
-              <>
-                <CustomLink
-                  href="/signin"
-                  display={{ base: "none", md: "inline-flex" }}
-                >
-                  <CustomButton variant="secondary">Sign In</CustomButton>
-                </CustomLink>
-
-                <CustomLink href="/signup">
-                  <CustomButton variant="primary">Sign Up</CustomButton>
-                </CustomLink>
-              </>
-            )}
-          </Stack>
-        )}
+                  <CustomLink href="/signup">
+                    <CustomButton variant="primary">Sign Up</CustomButton>
+                  </CustomLink>
+                </>
+              )}
+            </>
+          )}
+        </Stack>
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>

@@ -112,10 +112,10 @@ const theme = extendTheme({
           field: {
             fontWeight: "bold",
             color: mode("gray.900", "gray.50")(props),
-            bg: mode(darken("brand.50", 4), "gray.700")(props),
+            bg: mode(darken("brand.50", 4), darken("gray.700", 4))(props),
             _placeholder: {
               color: mode("gray.500", "gray.400")(props),
-              fontSize: "0.8rem",
+              fontSize: "0.9rem",
               fontWeight: "normal",
             },
             _focus: {
@@ -130,6 +130,32 @@ const theme = extendTheme({
               borderColor: `#FF0000`,
               boxShadow: "none",
             },
+          },
+        }),
+      },
+    },
+    Textarea: {
+      variants: {
+        primary: props => ({
+          fontWeight: "bold",
+          color: mode("gray.900", "gray.50")(props),
+          bg: mode(darken("brand.50", 4), darken("gray.700", 10))(props),
+          _placeholder: {
+            color: mode("gray.500", "gray.400")(props),
+            fontSize: "0.9rem",
+            fontWeight: "normal",
+          },
+          _focus: {
+            boxShadow: `0px 0px 1px 1px ${
+              props.colorMode === "dark" ? "#fff" : "#0a0a0a"
+            }`,
+          },
+          _hover: {
+            borderColor: mode("gray.900", "white")(props),
+          },
+          _invalid: {
+            borderColor: `#FF0000`,
+            boxShadow: "none",
           },
         }),
       },

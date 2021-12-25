@@ -9,12 +9,13 @@ import {
   useColorModeValue,
   Text,
   FormErrorMessage,
-  //   useToast,
+  useToast,
 } from "@chakra-ui/react";
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { MutationCreateLinkArgs } from "../../apollo/generated/graphql";
+import { useCreateLink } from "../../hooks/useCreateLink";
 import { tags } from "../../lib/selectOptions";
 
 export interface Item {
@@ -23,6 +24,7 @@ export interface Item {
 }
 
 export default function CreatePostForm() {
+  const toast = useToast();
   const [pickerItems, setPickerItems] = React.useState(tags);
   const [selectedItems, setSelectedItems] = React.useState<Item[]>([]);
   const selectedItemsFlat = selectedItems.map(item => item.label.toLowerCase());
@@ -31,8 +33,21 @@ export default function CreatePostForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<MutationCreateLinkArgs>();
-  const onSubmit = data => {
-    console.log(data);
+
+  const createLink = useCreateLink();
+
+  const onSubmit = async (data: MutationCreateLinkArgs) => {
+    try {
+      await createLink({ variables: data });
+    } catch (error) {
+      toast({
+        description: error.message,
+        status: "error",
+        position: "top-right",
+        isClosable: true,
+        duration: 4000,
+      });
+    }
   };
 
   const handleCreateItem = (item: Item) => {

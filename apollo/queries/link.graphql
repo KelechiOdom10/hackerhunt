@@ -1,17 +1,5 @@
 query Link($linkId: ID!) {
   link(id: $linkId) {
     ...LinkDetails
-    user {
-      ...RegularUser
-    }
-
-    comments {
-      id
-      createdAt
-      text
-      user {
-        ...RegularUser
-      }
-    }
   }
 }

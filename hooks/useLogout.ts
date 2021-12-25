@@ -9,7 +9,8 @@ export const useLogout = (redirectPath?: string) => {
   const toast = useToast();
   const handleLogout = async (lazyPath?: string) => {
     removeTokenCookie();
-    await router.replace(lazyPath || redirectPath || "/");
+    if (lazyPath || redirectPath)
+      await router.replace(lazyPath || redirectPath || "/");
     client.resetStore();
     toast({
       status: "success",

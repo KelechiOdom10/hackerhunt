@@ -1,0 +1,8 @@
+mutation CreateLink($title: String!, $url: String!, $tags: [String!]!) {
+  createLink(title: $title, url: $url, tags: $tags) {
+    ...LinkDetails
+    user {
+      ...RegularUser
+    }
+  }
+}

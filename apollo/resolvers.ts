@@ -16,7 +16,7 @@ import {
   SignInInput,
   SignUpInput,
 } from "./generated/graphql";
-import { HTMLResponse } from "../components/post/PostPreview";
+import { HTMLResponse } from "../components/post/preview/PostPreview";
 import { Comment, Link, User, Vote } from ".prisma/client";
 import { isValidUrl } from "../utils/isValidUrl";
 import prisma from "../lib/db";
@@ -163,6 +163,8 @@ export const resolvers = {
       const userId = getUserId(ctx);
       if (!userId) throw new AuthenticationError("Not Authenticated");
 
+      const link = await prisma.link.findFirst({ where: { id: args.id } });
+
       // check if the like already exists, if exists remove it
       const vote = await prisma.vote.findFirst({
         where: {
@@ -172,7 +174,7 @@ export const resolvers = {
 
       if (vote) {
         await prisma.vote.delete({ where: { id: vote.id } });
-        return true;
+        return link;
       }
 
       if (!vote) {
@@ -182,10 +184,10 @@ export const resolvers = {
             link: { connect: { id: args.id } },
           },
         });
-        return true;
+        return link;
       }
 
-      return false;
+      return null;
     },
 
     createComment: async (
@@ -242,17 +244,6 @@ export const resolvers = {
       return (
         await prisma.link.findFirst({ where: { id: parent?.id } }).votes()
       ).length;
-    },
-    upVoted: async (parent: Link, _args, ctx: GraphQLContext) => {
-      const votes = await prisma.link
-        .findFirst({ where: { id: parent?.id } })
-        .votes();
-
-      const userId = getUserId(ctx);
-      if (!userId) return false;
-
-      const user = await prisma.user.findUnique({ where: { id: userId } });
-      return votes.some(vote => vote.userId === user.id);
     },
   },
   Vote: {

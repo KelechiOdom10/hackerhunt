@@ -1,0 +1,5 @@
+mutation toggleVote($toggleVoteId: ID!) {
+  toggleVote(id: $toggleVoteId) {
+    ...LinkDetails
+  }
+}

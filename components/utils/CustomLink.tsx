@@ -25,6 +25,7 @@ export default function CustomLink({
         _hover={{
           textDecor: `${underline ? "underline" : "none"}`,
         }}
+        _focus={{ border: "none" }}
       >
         {children}
       </Link>

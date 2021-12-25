@@ -1,6 +1,6 @@
 import { HStack, VStack, Skeleton, Flex } from "@chakra-ui/react";
 
-export default function PostSkeleton() {
+export default function PostSkeletonPreview() {
   return (
     <Flex
       align="center"

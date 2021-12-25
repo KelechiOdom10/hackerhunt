@@ -8,8 +8,8 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { Link, useFeedQuery } from "../../apollo/generated/graphql";
-import PostSkeleton from "../skeleton/PostSkeleton";
-import PostPreview from "./PostPreview";
+import PostSkeletonPreview from "../skeletons/PostPreviewSkeleton";
+import PostPreview from "./preview/PostPreview";
 
 export const links = [
   {
@@ -126,7 +126,8 @@ export default function PostList() {
         divider={<StackDivider />}
         borderWidth={useColorModeValue(1, 0)}
       >
-        {loading && [...Array(5).keys()].map(key => <PostSkeleton key={key} />)}
+        {loading &&
+          [...Array(5).keys()].map(key => <PostSkeletonPreview key={key} />)}
         {data &&
           data.feed.map((link: Link) => (
             <PostPreview link={link} key={link.id} />
