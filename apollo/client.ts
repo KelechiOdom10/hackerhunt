@@ -6,30 +6,33 @@ import {
   ApolloClient,
   InMemoryCache,
   NormalizedCacheObject,
+  HttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { mergeDeep } from "@apollo/client/utilities";
+import { SchemaLink } from "@apollo/client/link/schema";
+import { schema } from "./schema";
 
 import { parseCookies, TOKEN_NAME } from "../lib/auth-cookies";
+
+export const isBrowser = typeof window !== "undefined";
 
 type Callback = () => string;
 type Options = {
   getToken: Callback;
 };
 
-let apolloClient: ApolloClient<NormalizedCacheObject>;
+let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
 function createIsomorphLink() {
-  if (typeof window === "undefined") {
-    const { SchemaLink } = require("@apollo/client/link/schema");
-    const { schema } = require("./schema");
+  if (!isBrowser) {
     return new SchemaLink({ schema });
+  } else {
+    return new HttpLink({
+      uri: "/api/graphql",
+      credentials: "same-origin",
+    });
   }
-  const { HttpLink } = require("@apollo/client/link/http");
-  return new HttpLink({
-    uri: "/api/graphql",
-    credentials: "same-origin",
-  });
 }
 
 function createApolloClient(
@@ -75,14 +78,14 @@ export function initializeApollo(
     _apolloClient.cache.restore(data);
   }
   // For SSG and SSR always create a new Apollo Client
-  if (typeof window === "undefined") return _apolloClient;
+  if (!isBrowser) return _apolloClient;
   // Create the Apollo Client once in the client
   if (!apolloClient) apolloClient = _apolloClient;
 
   return _apolloClient;
 }
 
-export function useApollo(initialState) {
+export function useApollo(initialState: any = null) {
   const store = useMemo(
     () =>
       initializeApollo(initialState, {
