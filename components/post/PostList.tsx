@@ -5,6 +5,7 @@ import {
   StackDivider,
   Button,
   useColorModeValue,
+  Heading,
 } from "@chakra-ui/react";
 import React from "react";
 import { Link, useFeedQuery } from "../../apollo/generated/graphql";
@@ -128,10 +129,19 @@ export default function PostList() {
       >
         {loading &&
           [...Array(5).keys()].map(key => <PostSkeletonPreview key={key} />)}
-        {data &&
+        {data && data.feed.length === 0 ? (
+          <Heading
+            fontSize={{ base: "xs", md: "sm", lg: "md" }}
+            fontFamily="Lato"
+            alignSelf="start"
+          >
+            No posts yet
+          </Heading>
+        ) : (
           data.feed.map((link: Link) => (
             <PostPreview link={link} key={link.id} />
-          ))}
+          ))
+        )}
       </VStack>
     </VStack>
   );
