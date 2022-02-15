@@ -4,7 +4,4 @@ module.exports = {
   images: {
     domains: ["*"],
   },
-  experimental: {
-    esmExternals: false,
-  },
 };

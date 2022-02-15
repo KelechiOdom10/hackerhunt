@@ -6,6 +6,7 @@ import {
 import * as bcrypt from "bcryptjs";
 import { getLinkPreview } from "link-preview-js";
 import { DateTimeResolver } from "graphql-scalars";
+import { Comment, Link, User, Vote } from "@prisma/client";
 import { GraphQLContext } from "../pages/api/graphql";
 import { jwtGenerator } from "../utils/jwtGenerator";
 import { getUserId } from "../utils/auth";
@@ -17,7 +18,6 @@ import {
   SignUpInput,
 } from "./generated/graphql";
 import { HTMLResponse } from "../components/post/preview/PostPreview";
-import { Comment, Link, User, Vote } from ".prisma/client";
 import { isValidUrl } from "../utils/isValidUrl";
 import prisma from "../lib/db";
 
@@ -54,8 +54,8 @@ export const resolvers = {
       const user = await prisma.user.findFirst({
         where: { id: args.id },
       });
-      if (!user) throw new Error("User not found");
 
+      if (!user) throw new Error("User not found");
       delete user.password;
 
       return user;

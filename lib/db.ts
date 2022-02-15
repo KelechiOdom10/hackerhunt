@@ -1,9 +1,27 @@
+/* eslint-disable import/no-mutable-exports */
+/* eslint-disable @typescript-eslint/no-namespace */
 import { PrismaClient } from "@prisma/client";
 
-declare const global: typeof globalThis & { prisma?: PrismaClient };
+declare global {
+  namespace NodeJS {
+    interface Global {
+      prisma: PrismaClient;
+    }
+  }
+}
 
-const prisma = global.prisma || new PrismaClient();
+let prisma: PrismaClient;
 
-if (process.env.NODE_ENV !== "production") global.prisma = prisma;
+if (typeof window === "undefined") {
+  if (process.env.NODE_ENV === "production") {
+    prisma = new PrismaClient();
+  } else {
+    if (!global.prisma) {
+      global.prisma = new PrismaClient();
+    }
+
+    prisma = global.prisma;
+  }
+}
 
 export default prisma;
