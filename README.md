@@ -34,7 +34,7 @@ The goal of this project was to create a platform that provided the social aspec
 ## Installation 💾
 
 ```bash
-git clone https://github.com/olafsulich/fullstack-nextjs-ecommerce.git
+git clone https://github.com/KelechiOdom10/hackerhunt.git
 ```
 
 Fill your `.env` variables:
