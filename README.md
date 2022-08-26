@@ -25,6 +25,7 @@ The goal of this project was to create a platform that provided the social aspec
 - Next.js(React)
 - TypeScript
 - GrahQL
+- Apollo
 - Prisma
 - Chakra UI
 - SWR
@@ -43,6 +44,8 @@ Fill your `.env` variables:
 POSTGRES_USER=
 POSTGRES_PASSWORD=
 POSTGRES_DB=
+POSTGRES_HOST=
+POSTGRES_PORT=
 DATABASE_URL="postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@<POSTGRES_HOST>:<POSTGRES_PORT>/<POSTGRES_DB>?schema=public&sslmode=prefer"
 SECRET=
 ```
