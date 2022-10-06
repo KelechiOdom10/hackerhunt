@@ -102,7 +102,7 @@ export default function PostList() {
             variant="link"
             color={useColorModeValue("gray.900", "white")}
             _hover={{ textDecor: "none" }}
-            fontSize={{ base: "xs", md: "sm" }}
+            fontSize="sm"
             fontWeight="extrabold"
           >
             Popular
@@ -112,7 +112,7 @@ export default function PostList() {
             color={useColorModeValue("brand.400", "whiteAlpha.600")}
             fontWeight="normal"
             variant="link"
-            fontSize={{ base: "xs", md: "sm" }}
+            fontSize="sm"
           >
             Newest
           </Button>

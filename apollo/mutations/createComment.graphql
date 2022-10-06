@@ -1,0 +1,5 @@
+mutation CreateComment($createCommentId: ID!, $text: String!) {
+  createComment(id: $createCommentId, text: $text) {
+    ...CommentDetails
+  }
+}

@@ -30,6 +30,7 @@ export default function PostDetail({ id }: { id: string }) {
               variant="primary"
               isExternal
               fontSize={{ base: "xl", md: "2xl" }}
+              mb={4}
               fontWeight="bold"
               href={link.url}
               alignSelf="flex-start"
@@ -66,7 +67,7 @@ export default function PostDetail({ id }: { id: string }) {
                   By {link.user.username.toLowerCase()}
                 </CustomLink>
                 <Text
-                  fontSize={{ base: "0.7rem", md: "xs" }}
+                  fontSize={{ base: "xs", md: "sm" }}
                   color={useColorModeValue("gray.600", "whiteAlpha.700")}
                 >
                   - {new Date(link.createdAt).toLocaleString()}

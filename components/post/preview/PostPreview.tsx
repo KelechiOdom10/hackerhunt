@@ -37,14 +37,14 @@ export default function PostPreview({ link }: Props) {
           <CustomLink
             variant="primary"
             isExternal
-            fontSize={{ base: "xs", md: "sm", lg: "md" }}
+            fontSize="md"
             fontWeight="bold"
             href={link.url}
           >
             {link.title}
           </CustomLink>
           <CustomLink
-            fontSize={{ base: "0.7rem", md: "xs" }}
+            fontSize={{ base: "0.85rem", md: "sm" }}
             underline
             variant="link"
             isTruncated
@@ -59,6 +59,7 @@ export default function PostPreview({ link }: Props) {
             <CustomLink href={`posts/${link.id}`} underline>
               <HStack
                 fontSize={{ base: "xs", md: "sm" }}
+                align="flex-end"
                 spacing={1}
                 color={useColorModeValue("gray.500", "whiteAlpha.800")}
                 mb={-2}
@@ -70,9 +71,7 @@ export default function PostPreview({ link }: Props) {
                   as={IoMdChatboxes}
                   aria-label="Toggle Like"
                 />
-                <Text fontSize={{ base: "0.7rem", md: "xs" }}>
-                  {link.commentCount}
-                </Text>
+                <Text fontSize="sm">{link.commentCount}</Text>
               </HStack>
             </CustomLink>
 

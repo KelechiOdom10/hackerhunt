@@ -3,10 +3,9 @@ import {
   useColorModeValue,
   Text,
   Box,
-  Icon,
   Divider,
 } from "@chakra-ui/react";
-import { FiArrowRight } from "react-icons/fi";
+import { darken } from "@chakra-ui/theme-tools";
 import { links } from "../post/PostList";
 import CustomButton from "../utils/CustomButton";
 import CustomLink from "../utils/CustomLink";
@@ -15,7 +14,7 @@ export const TagLink = ({ tag }: { tag: string }) => {
   return (
     <Box
       _hover={{
-        bg: useColorModeValue("gray.100", "gray.700"),
+        bg: useColorModeValue(darken("brand.50", 0.8), "gray.700"),
       }}
       py={2}
       px={3}
@@ -60,11 +59,7 @@ export default function Tags() {
         ))}
         <Divider />
         <CustomLink href="/tags" w="full" px={3}>
-          <CustomButton
-            variant="secondary"
-            w="full"
-            rightIcon={<Icon as={FiArrowRight} mt={1} />}
-          >
+          <CustomButton variant="primary" w="full">
             View all tags
           </CustomButton>
         </CustomLink>
