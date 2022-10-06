@@ -226,6 +226,7 @@ const MobileNavItem = ({ label, href }: NavItem) => {
         py={2}
         href={href}
         underline
+        textAlign="center"
         fontSize="sm"
         fontWeight="semibold"
       >

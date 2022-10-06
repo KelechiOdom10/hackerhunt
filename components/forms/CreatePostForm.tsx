@@ -182,7 +182,7 @@ export default function CreatePostForm() {
             w="full"
             isLoading={isSubmitting}
             loadingText="Creating"
-            isDisabled={!!errors.tags || !!errors.title || !!errors.url}
+            isDisabled={!!errors.title || !!errors.url}
           >
             Create story
           </Button>

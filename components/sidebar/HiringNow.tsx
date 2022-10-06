@@ -8,6 +8,7 @@ import {
   Box,
   Icon,
   StackDivider,
+  HStack,
 } from "@chakra-ui/react";
 import { SyntheticEvent, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
@@ -37,24 +38,25 @@ const JobPost = ({ job }: Props) => {
       w="full"
     >
       <VStack align="flex-start" spacing={0}>
-        <Heading fontFamily="body" fontSize={{ base: "sm", md: "md" }}>
-          {job.name}
+        <HStack align="center">
+          <Heading fontFamily="body" fontSize={{ base: "sm", md: "md" }}>
+            {job.name}
+          </Heading>
           <Icon
             display={isShown ? "inline-block" : "none"}
-            w={4}
-            mt={-1}
+            fontSize="lg"
             ml={1}
             as={FiArrowRight}
           />
-        </Heading>
+        </HStack>
         <Text
-          fontSize={{ base: "xs", md: "sm" }}
+          fontSize="sm"
           color={useColorModeValue("gray.600", "whiteAlpha.800")}
         >
           {job.role}
         </Text>
         <Text
-          fontSize={{ base: "xs", md: "sm" }}
+          fontSize="sm"
           color={useColorModeValue("gray.600", "whiteAlpha.800")}
         >
           {job.location}
