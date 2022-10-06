@@ -80,7 +80,7 @@ const theme = extendTheme({
         primary: props => ({
           color: mode("white", "gray.800")(props),
           bg: mode("gray.900", "white")(props),
-          fontSize: ["xs", "sm", "md", "md"],
+          fontSize: ["sm", "sm", "md", "md"],
           _disabled: {
             color: mode("white", "brand.900")(props),
             bg: mode("gray.700", "blackalpha.300")(props),
@@ -94,9 +94,9 @@ const theme = extendTheme({
         }),
         secondary: props => ({
           color: mode("gray.800", "white")(props),
-          fontSize: ["xs", "sm", "md", "md"],
+          fontSize: ["sm", "sm", "md", "md"],
           bg: "transparent",
-          borderWidth: 3,
+          borderWidth: 2,
           borderColor: mode("gray.900", "white")(props),
         }),
       },
