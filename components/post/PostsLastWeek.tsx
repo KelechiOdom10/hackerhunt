@@ -38,7 +38,7 @@ const LastWeekPost = ({ link }: Props) => {
           <CustomLink
             variant="primary"
             isExternal
-            fontSize={{ base: "xs", md: "sm", lg: "md" }}
+            fontSize={{ md: "sm", lg: "md" }}
             fontWeight="bold"
             href={link.url}
           >
@@ -47,7 +47,7 @@ const LastWeekPost = ({ link }: Props) => {
           <Text
             w="90%"
             noOfLines={2}
-            fontSize={{ base: "xs", md: "xs" }}
+            fontSize="sm"
             color={useColorModeValue("gray.600", "whiteAlpha.800")}
           >
             {link.description}
