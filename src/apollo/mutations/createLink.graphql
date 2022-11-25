@@ -1,0 +1,8 @@
+mutation CreateLink($input: CreateLinkInput!) {
+  createLink(input: $input) {
+    ...LinkDetails
+    user {
+      ...RegularUser
+    }
+  }
+}

@@ -1,48 +1,30 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "jest": true
   },
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
-    "airbnb",
-    "prettier",
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:import/typescript",
-    "plugin:prettier/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
   ],
+  "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": 12,
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint", "prettier", "import"],
+  "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
   "rules": {
-    "import/extensions": "off",
-    "vars-on-top": "off",
-    "no-var": "off",
-    "import/no-cycle": "off",
-    "no-console": "warn",
-    "no-plusplus": "off",
-    "no-shadow": "off",
-    "prettier/prettier": "off",
-    "consistent-return": "off",
-    "no-use-before-define": "off",
-    "no-nested-ternary": "off",
     "react/react-in-jsx-scope": "off",
-    "react/jsx-filename-extension": "off",
-    "react/jsx-props-no-spreading": "off",
-    "import/prefer-default-export": "off",
-    "react/require-default-props": "off",
-    "import/no-extraneous-dependencies": "off",
-    "no-else-return": "off",
-    "react/no-danger": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off"
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "no-duplicate-imports": "error"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
   }
 }

@@ -1,0 +1,11 @@
+fragment CommentDetails on Comment {
+  id
+  text
+  link {
+    id
+  }
+  user {
+    ...RegularUser
+  }
+  createdAt
+}

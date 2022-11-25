@@ -1,8 +1,8 @@
 overwrite: true
 schema: "http://localhost:3000/api/graphql"
-documents: "apollo/**/*.graphql" # parse graphql operations in matching files
+documents: "src/apollo/**/*.graphql" # parse graphql operations in matching files
 generates:
-  ./apollo/generated/graphql.tsx: # location for generated types, hooks and components
+  ./src/apollo/generated/graphql.tsx: # location for generated types, hooks and components
     plugins:
       - "typescript"
       - "typescript-operations"

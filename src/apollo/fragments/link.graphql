@@ -1,0 +1,20 @@
+fragment LinkDetails on Link {
+  id
+  title
+  description
+  image
+  url
+  tags
+  commentCount
+  voteCount
+  votes {
+    ...VoteResponse
+  }
+  user {
+    ...RegularUser
+  }
+  comments {
+    ...CommentDetails
+  }
+  createdAt
+}
