@@ -1,5 +1,0 @@
-query Link($linkId: ID!) {
-  link(id: $linkId) {
-    ...LinkDetails
-  }
-}

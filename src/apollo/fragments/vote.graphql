@@ -1,0 +1,8 @@
+fragment VoteResponse on Vote {
+  link {
+    id
+  }
+  user {
+    ...RegularUser
+  }
+}

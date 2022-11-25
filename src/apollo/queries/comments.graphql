@@ -1,0 +1,5 @@
+query Comments($linkId: String!) {
+  comments(linkId: $linkId) {
+    ...CommentDetails
+  }
+}
