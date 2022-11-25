@@ -1,10 +1,11 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions =  {}
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -12,7 +13,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: any;
 };
 
@@ -28,72 +28,89 @@ export type Comment = {
   id: Scalars['ID'];
   link: Link;
   text: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
   user: User;
+};
+
+export type CreateCommentInput = {
+  linkId: Scalars['String'];
+  text: Scalars['String'];
+};
+
+export type CreateLinkInput = {
+  tags: Array<Scalars['String']>;
+  title: Scalars['String'];
+  url: Scalars['String'];
 };
 
 export type Link = {
   __typename?: 'Link';
-  commentCount: Scalars['Int'];
+  commentCount: Scalars['Float'];
   comments: Array<Comment>;
   createdAt: Scalars['DateTime'];
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   image?: Maybe<Scalars['String']>;
-  tags: Array<Maybe<Scalars['String']>>;
+  tags: Array<Scalars['String']>;
   title: Scalars['String'];
   url: Scalars['String'];
-  user?: Maybe<User>;
-  voteCount: Scalars['Int'];
+  user: User;
+  voteCount: Scalars['Float'];
   votes: Array<Vote>;
+};
+
+export type LoginInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createComment: Comment;
   createLink: Link;
-  signIn: AuthPayload;
-  signUp: AuthPayload;
-  toggleVote: Link;
+  login: AuthPayload;
+  signup: AuthPayload;
+  toggleVote?: Maybe<Link>;
 };
 
 
 export type MutationCreateCommentArgs = {
-  id: Scalars['ID'];
-  text: Scalars['String'];
+  input: CreateCommentInput;
 };
 
 
 export type MutationCreateLinkArgs = {
-  tags: Array<Scalars['String']>;
-  title: Scalars['String'];
-  url: Scalars['String'];
+  input: CreateLinkInput;
 };
 
 
-export type MutationSignInArgs = {
-  email: Scalars['String'];
-  password: Scalars['String'];
+export type MutationLoginArgs = {
+  input: LoginInput;
 };
 
 
-export type MutationSignUpArgs = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-  username: Scalars['String'];
+export type MutationSignupArgs = {
+  input: SignupInput;
 };
 
 
 export type MutationToggleVoteArgs = {
-  id: Scalars['ID'];
+  linkId: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
+  comments: Array<Comment>;
   feed: Array<Link>;
   link: Link;
   me?: Maybe<User>;
-  sayHello?: Maybe<Scalars['String']>;
-  user: User;
+  user?: Maybe<User>;
+  users: Array<Maybe<User>>;
+};
+
+
+export type QueryCommentsArgs = {
+  linkId: Scalars['String'];
 };
 
 
@@ -106,12 +123,7 @@ export type QueryUserArgs = {
   id: Scalars['ID'];
 };
 
-export type SignInInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type SignUpInput = {
+export type SignupInput = {
   email: Scalars['String'];
   password: Scalars['String'];
   username: Scalars['String'];
@@ -119,101 +131,97 @@ export type SignUpInput = {
 
 export type User = {
   __typename?: 'User';
-  comments: Array<Comment>;
+  comments: Array<Maybe<Comment>>;
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
   id: Scalars['ID'];
-  links: Array<Link>;
+  links: Array<Maybe<Link>>;
+  updatedAt: Scalars['DateTime'];
   username: Scalars['String'];
-  votes: Array<Vote>;
+  votes: Array<Maybe<Vote>>;
 };
 
 export type Vote = {
   __typename?: 'Vote';
+  createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   link: Link;
   user: User;
 };
 
-export type CreateCommentInput = {
-  id: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type CreateLinkInput = {
-  tags: Array<Scalars['String']>;
-  title: Scalars['String'];
-  url: Scalars['String'];
-};
-
-export type IdInput = {
-  id: Scalars['ID'];
-};
-
 export type CommentDetailsFragment = { __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } };
 
-export type LinkDetailsFragment = { __typename?: 'Link', id: string, title: string, description?: string | null | undefined, image?: string | null | undefined, url: string, tags: Array<string | null | undefined>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user?: { __typename?: 'User', id: string, username: string } | null | undefined, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> };
+export type LinkDetailsFragment = { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user: { __typename?: 'User', id: string, username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> };
 
 export type RegularUserFragment = { __typename?: 'User', id: string, username: string };
 
 export type VoteResponseFragment = { __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } };
 
+export type CreateCommentMutationVariables = Exact<{
+  input: CreateCommentInput;
+}>;
+
+
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } } };
+
 export type CreateLinkMutationVariables = Exact<{
-  title: Scalars['String'];
-  url: Scalars['String'];
-  tags: Array<Scalars['String']> | Scalars['String'];
+  input: CreateLinkInput;
 }>;
 
 
-export type CreateLinkMutation = { __typename?: 'Mutation', createLink: { __typename?: 'Link', id: string, title: string, description?: string | null | undefined, image?: string | null | undefined, url: string, tags: Array<string | null | undefined>, commentCount: number, voteCount: number, createdAt: any, user?: { __typename?: 'User', id: string, username: string } | null | undefined, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } };
+export type CreateLinkMutation = { __typename?: 'Mutation', createLink: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string }, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } };
 
-export type SignInMutationVariables = Exact<{
-  email: Scalars['String'];
-  password: Scalars['String'];
+export type LoginMutationVariables = Exact<{
+  input: LoginInput;
 }>;
 
 
-export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'AuthPayload', token: string, user: { __typename?: 'User', id: string, username: string } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthPayload', token: string, user: { __typename?: 'User', id: string, username: string } } };
 
-export type SignUpMutationVariables = Exact<{
-  username: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
+export type SignupMutationVariables = Exact<{
+  input: SignupInput;
 }>;
 
 
-export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthPayload', token: string, user: { __typename?: 'User', id: string, username: string } } };
+export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'AuthPayload', token: string, user: { __typename?: 'User', id: string, username: string } } };
 
 export type ToggleVoteMutationVariables = Exact<{
-  toggleVoteId: Scalars['ID'];
+  linkId: Scalars['String'];
 }>;
 
 
-export type ToggleVoteMutation = { __typename?: 'Mutation', toggleVote: { __typename?: 'Link', id: string, title: string, description?: string | null | undefined, image?: string | null | undefined, url: string, tags: Array<string | null | undefined>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user?: { __typename?: 'User', id: string, username: string } | null | undefined, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } };
+export type ToggleVoteMutation = { __typename?: 'Mutation', toggleVote?: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user: { __typename?: 'User', id: string, username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } | null };
+
+export type CommentsQueryVariables = Exact<{
+  linkId: Scalars['String'];
+}>;
+
+
+export type CommentsQuery = { __typename?: 'Query', comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> };
 
 export type FeedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FeedQuery = { __typename?: 'Query', feed: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null | undefined, image?: string | null | undefined, url: string, tags: Array<string | null | undefined>, commentCount: number, voteCount: number, createdAt: any, user?: { __typename?: 'User', id: string, username: string } | null | undefined, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> }> };
+export type FeedQuery = { __typename?: 'Query', feed: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string }, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> }> };
 
 export type LinkQueryVariables = Exact<{
   linkId: Scalars['ID'];
 }>;
 
 
-export type LinkQuery = { __typename?: 'Query', link: { __typename?: 'Link', id: string, title: string, description?: string | null | undefined, image?: string | null | undefined, url: string, tags: Array<string | null | undefined>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user?: { __typename?: 'User', id: string, username: string } | null | undefined, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } };
+export type LinkQuery = { __typename?: 'Query', link: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user: { __typename?: 'User', id: string, username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, username: string } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, username: string } | null };
 
 export type UserQueryVariables = Exact<{
   userId: Scalars['ID'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, username: string, links: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null | undefined, image?: string | null | undefined, url: string, tags: Array<string | null | undefined>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user?: { __typename?: 'User', id: string, username: string } | null | undefined, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> }>, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string, title: string, description?: string | null | undefined, image?: string | null | undefined, url: string, tags: Array<string | null | undefined>, commentCount: number, voteCount: number, createdAt: any, user?: { __typename?: 'User', id: string, username: string } | null | undefined, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, link: { __typename?: 'Link', id: string } }> } };
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, username: string, links: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user: { __typename?: 'User', id: string, username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } | null>, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string }, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } } | null>, comments: Array<{ __typename?: 'Comment', id: string, text: string, link: { __typename?: 'Link', id: string } } | null> } | null };
 
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
@@ -268,9 +276,41 @@ export const LinkDetailsFragmentDoc = gql`
     ${VoteResponseFragmentDoc}
 ${RegularUserFragmentDoc}
 ${CommentDetailsFragmentDoc}`;
+export const CreateCommentDocument = gql`
+    mutation CreateComment($input: CreateCommentInput!) {
+  createComment(input: $input) {
+    ...CommentDetails
+  }
+}
+    ${CommentDetailsFragmentDoc}`;
+
+/**
+ * __useCreateCommentMutation__
+ *
+ * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, options);
+      }
+export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
+export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const CreateLinkDocument = gql`
-    mutation CreateLink($title: String!, $url: String!, $tags: [String!]!) {
-  createLink(title: $title, url: $url, tags: $tags) {
+    mutation CreateLink($input: CreateLinkInput!) {
+  createLink(input: $input) {
     ...LinkDetails
     user {
       ...RegularUser
@@ -293,9 +333,7 @@ ${RegularUserFragmentDoc}`;
  * @example
  * const [createLinkMutation, { data, loading, error }] = useCreateLinkMutation({
  *   variables: {
- *      title: // value for 'title'
- *      url: // value for 'url'
- *      tags: // value for 'tags'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -306,9 +344,9 @@ export function useCreateLinkMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateLinkMutationHookResult = ReturnType<typeof useCreateLinkMutation>;
 export type CreateLinkMutationResult = Apollo.MutationResult<CreateLinkMutation>;
 export type CreateLinkMutationOptions = Apollo.BaseMutationOptions<CreateLinkMutation, CreateLinkMutationVariables>;
-export const SignInDocument = gql`
-    mutation SignIn($email: String!, $password: String!) {
-  signIn(email: $email, password: $password) {
+export const LoginDocument = gql`
+    mutation Login($input: LoginInput!) {
+  login(input: $input) {
     user {
       ...RegularUser
     }
@@ -318,33 +356,32 @@ export const SignInDocument = gql`
     ${RegularUserFragmentDoc}`;
 
 /**
- * __useSignInMutation__
+ * __useLoginMutation__
  *
- * To run a mutation, you first call `useSignInMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSignInMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [signInMutation, { data, loading, error }] = useSignInMutation({
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
  *   variables: {
- *      email: // value for 'email'
- *      password: // value for 'password'
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useSignInMutation(baseOptions?: Apollo.MutationHookOptions<SignInMutation, SignInMutationVariables>) {
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument, options);
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
       }
-export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
-export type SignInMutationResult = Apollo.MutationResult<SignInMutation>;
-export type SignInMutationOptions = Apollo.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
-export const SignUpDocument = gql`
-    mutation signUp($username: String!, $email: String!, $password: String!) {
-  signUp(username: $username, email: $email, password: $password) {
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const SignupDocument = gql`
+    mutation Signup($input: SignupInput!) {
+  signup(input: $input) {
     user {
       ...RegularUser
     }
@@ -354,34 +391,32 @@ export const SignUpDocument = gql`
     ${RegularUserFragmentDoc}`;
 
 /**
- * __useSignUpMutation__
+ * __useSignupMutation__
  *
- * To run a mutation, you first call `useSignUpMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSignUpMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSignupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignupMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [signUpMutation, { data, loading, error }] = useSignUpMutation({
+ * const [signupMutation, { data, loading, error }] = useSignupMutation({
  *   variables: {
- *      username: // value for 'username'
- *      email: // value for 'email'
- *      password: // value for 'password'
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useSignUpMutation(baseOptions?: Apollo.MutationHookOptions<SignUpMutation, SignUpMutationVariables>) {
+export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<SignupMutation, SignupMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SignUpMutation, SignUpMutationVariables>(SignUpDocument, options);
+        return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
       }
-export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
-export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>;
-export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
+export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
+export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
+export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
 export const ToggleVoteDocument = gql`
-    mutation toggleVote($toggleVoteId: ID!) {
-  toggleVote(id: $toggleVoteId) {
+    mutation ToggleVote($linkId: String!) {
+  toggleVote(linkId: $linkId) {
     ...LinkDetails
   }
 }
@@ -400,7 +435,7 @@ export const ToggleVoteDocument = gql`
  * @example
  * const [toggleVoteMutation, { data, loading, error }] = useToggleVoteMutation({
  *   variables: {
- *      toggleVoteId: // value for 'toggleVoteId'
+ *      linkId: // value for 'linkId'
  *   },
  * });
  */
@@ -411,6 +446,41 @@ export function useToggleVoteMutation(baseOptions?: Apollo.MutationHookOptions<T
 export type ToggleVoteMutationHookResult = ReturnType<typeof useToggleVoteMutation>;
 export type ToggleVoteMutationResult = Apollo.MutationResult<ToggleVoteMutation>;
 export type ToggleVoteMutationOptions = Apollo.BaseMutationOptions<ToggleVoteMutation, ToggleVoteMutationVariables>;
+export const CommentsDocument = gql`
+    query Comments($linkId: String!) {
+  comments(linkId: $linkId) {
+    ...CommentDetails
+  }
+}
+    ${CommentDetailsFragmentDoc}`;
+
+/**
+ * __useCommentsQuery__
+ *
+ * To run a query within a React component, call `useCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommentsQuery({
+ *   variables: {
+ *      linkId: // value for 'linkId'
+ *   },
+ * });
+ */
+export function useCommentsQuery(baseOptions: Apollo.QueryHookOptions<CommentsQuery, CommentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CommentsQuery, CommentsQueryVariables>(CommentsDocument, options);
+      }
+export function useCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CommentsQuery, CommentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CommentsQuery, CommentsQueryVariables>(CommentsDocument, options);
+        }
+export type CommentsQueryHookResult = ReturnType<typeof useCommentsQuery>;
+export type CommentsLazyQueryHookResult = ReturnType<typeof useCommentsLazyQuery>;
+export type CommentsQueryResult = Apollo.QueryResult<CommentsQuery, CommentsQueryVariables>;
 export const FeedDocument = gql`
     query Feed {
   feed {
