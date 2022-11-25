@@ -1,19 +1,5 @@
-import { Box, chakra } from "@chakra-ui/react";
+import { Box, BoxProps } from "@chakra-ui/react";
 import NextImage, { ImageProps, ImageLoaderProps } from "next/image";
-
-const ChakraNextUnwrappedImage = chakra(NextImage, {
-  shouldForwardProp: prop =>
-    [
-      "width",
-      "height",
-      "src",
-      "alt",
-      "quality",
-      "placeholder",
-      "blurDataURL",
-      "loader ",
-    ].includes(prop),
-});
 
 const myLoader = (resolverProps: ImageLoaderProps): string => {
   return `${resolverProps.src}?w=${resolverProps.width}&q=${resolverProps.quality}`;
@@ -38,22 +24,22 @@ const toBase64 = (str: string) =>
     ? Buffer.from(str).toString("base64")
     : window.btoa(str);
 
-export const ChakraNextImage = (props: ImageProps) => {
-  const { src, alt, width, quality, height, ...rest } = props;
+type Props = ImageProps & {
+  chakraProps?: BoxProps;
+};
+
+export const ChakraNextImage = ({ chakraProps, ...props }: Props) => {
+  const { src, alt, quality, ...rest } = props;
   return (
-    <Box pos="relative" cursor="pointer" className="group" {...rest}>
-      <ChakraNextUnwrappedImage
-        w="auto"
-        h="auto"
+    <Box pos="relative" cursor="pointer" className="group" {...chakraProps}>
+      <NextImage
         loader={myLoader}
-        width={width}
         quality={quality}
-        height={height}
         placeholder="blur"
         blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
         src={src}
         alt={alt}
-        transition="all 0.2s"
+        {...rest}
       />
     </Box>
   );
