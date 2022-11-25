@@ -1,7 +1,7 @@
 import { useMemo } from "react";
+import { HTMLResponse } from "server/models";
 import useSWR from "swr";
-import { HTMLResponse } from "../components/post/preview/PostPreview";
-import { fetcher } from "../utils/fetcher";
+import { fetcher } from "~/utils/fetcher";
 
 export const usePreviewData = (
   url: string
