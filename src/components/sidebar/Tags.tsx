@@ -6,7 +6,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { darken } from "@chakra-ui/theme-tools";
-import { links } from "../post/PostList";
+import { links } from "../post/PostsLastWeek";
 import CustomButton from "../utils/CustomButton";
 import CustomLink from "../utils/CustomLink";
 
