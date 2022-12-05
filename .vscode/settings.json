@@ -1,5 +1,6 @@
 {
   "editor.formatOnPaste": true,
+  "editor.hover.enabled": true,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
