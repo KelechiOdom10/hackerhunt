@@ -5,6 +5,7 @@ import {
   FeedQuery,
   FeedDocument,
 } from "~/apollo/generated/graphql";
+import { maskApolloError } from "~/utils/errorUtils";
 
 export const useCreateLink = () => {
   const toast = useToast();
@@ -21,12 +22,25 @@ export const useCreateLink = () => {
       router.push("/");
     },
     update(cache, { data: { createLink } }) {
-      const { feed } = cache.readQuery<FeedQuery>({
+      const queryResult = cache.readQuery<FeedQuery>({
         query: FeedDocument,
       });
-      cache.writeQuery<FeedQuery>({
-        query: FeedDocument,
-        data: { feed: [createLink, ...feed] },
+      queryResult &&
+        cache.writeQuery<FeedQuery>({
+          query: FeedDocument,
+          data: { feed: [createLink, ...queryResult.feed] },
+        });
+    },
+    onError: e => {
+      toast({
+        description: maskApolloError(
+          e.message,
+          "Failed to add Link. Please try again. "
+        ),
+        status: "error",
+        position: "top-right",
+        isClosable: true,
+        duration: 4000,
       });
     },
   });
