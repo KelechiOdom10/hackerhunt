@@ -9,7 +9,6 @@ import {
   useColorModeValue,
   Text,
   FormErrorMessage,
-  useToast,
 } from "@chakra-ui/react";
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
 import { useForm } from "react-hook-form";
@@ -23,7 +22,6 @@ export interface Item {
 }
 
 export default function CreatePostForm() {
-  const toast = useToast();
   const [pickerItems, setPickerItems] = useState(tags);
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
   const selectedItemsFlat = selectedItems.map(item => item.label.toLowerCase());
@@ -36,17 +34,7 @@ export default function CreatePostForm() {
   const createLink = useCreateLink();
 
   const onSubmit = async (input: CreateLinkInput) => {
-    try {
-      await createLink({ variables: { input } });
-    } catch (error) {
-      toast({
-        description: error.message,
-        status: "error",
-        position: "top-right",
-        isClosable: true,
-        duration: 4000,
-      });
-    }
+    await createLink({ variables: { input } });
   };
 
   const handleCreateItem = (item: Item) => {
@@ -117,11 +105,18 @@ export default function CreatePostForm() {
               placeholder="Choose or create at least one tag"
               onCreateItem={handleCreateItem}
               items={pickerItems}
-              renderCustomInput={inputProps => (
-                <>
-                  <Input variant="primary" name="tags" {...inputProps} />
-                </>
-              )}
+              renderCustomInput={({ ref, ...inputProps }) => {
+                return (
+                  <Box ref={ref} w="full">
+                    <Input
+                      variant="primary"
+                      name="tags"
+                      {...inputProps}
+                      autoFocus={false}
+                    />
+                  </Box>
+                );
+              }}
               inputStyleProps={{
                 mt: selectedItemsFlat.length <= 0 ? -4 : 0,
               }}

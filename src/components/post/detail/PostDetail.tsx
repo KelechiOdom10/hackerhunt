@@ -5,19 +5,18 @@ import {
   Text,
   useColorModeValue,
   AspectRatio,
-  Textarea,
-  Button,
   StackDivider,
 } from "@chakra-ui/react";
 import { useLinkQuery } from "~/apollo/generated/graphql";
-import AddCommentSkeleton from "~/components/skeletons/AddCommentSkeleton";
 import { ChakraNextImage } from "~/components/utils/CustomImage";
 import CustomLink from "~/components/utils/CustomLink";
 import { useMe } from "~/hooks/useMe";
+import Comment from "./Comment";
+import CommentForm from "./CommentForm";
 import UpVoteButtonDetail from "./UpVoteButtonDetail";
 
 export default function PostDetail({ id }: { id: string }) {
-  const { me, loading } = useMe();
+  const { me } = useMe();
   const { data } = useLinkQuery({ variables: { linkId: id } });
   const { link } = data;
   return (
@@ -86,36 +85,18 @@ export default function PostDetail({ id }: { id: string }) {
               <Text alignSelf="flex-start">{link.description}</Text>
             </>
           )}
-          {me ? (
-            <VStack w="full" spacing={4}>
-              <Textarea
-                variant="primary"
-                resize="none"
-                height="100px"
-                placeholder={`Say something nice to ${me?.username}...`}
-              />
-              <Button variant="primary" alignSelf="flex-start">
-                Add comment
-              </Button>
-            </VStack>
-          ) : loading ? (
-            <AddCommentSkeleton />
-          ) : (
-            <CustomLink href="/signin" alignSelf="flex-start">
-              <Button variant="primary">Login to Comment</Button>
-            </CustomLink>
-          )}
-          <>
+          <CommentForm linkId={id} />
+          <VStack spacing={8} align="stretch" w="full">
             {data.link.comments.length === 0 ? (
               <Text alignSelf="flex-start" fontWeight="bold">
                 No Comments. Post comment to get started!
               </Text>
             ) : (
               data.link.comments.map(comment => (
-                <p key={comment.id}>{comment.id}</p>
+                <Comment key={comment.id} comment={comment} />
               ))
             )}
-          </>
+          </VStack>
         </VStack>
       )}
     </Box>

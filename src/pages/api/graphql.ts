@@ -15,10 +15,12 @@ export interface GraphQLContext {
 }
 
 async function createContext(req: NextApiRequest, res: NextApiResponse) {
-  const user = await getUser(req);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const user = await getUser(req.req);
 
   return {
-    req,
+    ...req,
     res,
     prisma,
     user,

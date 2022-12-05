@@ -36,13 +36,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   await client.query<LinkQuery>({
     query: LinkDocument,
-    variables: { linkId: params.id },
+    variables: { linkId: params?.id },
   });
 
   return {
     props: {
       initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
-      id: params.id,
+      id: params?.id,
     },
   };
 };

@@ -12,7 +12,8 @@ export const schema = buildSchemaSync({
   validate: async argValue => {
     const errors = await validate(argValue);
     if (errors.length > 0) {
-      throw new GraphQLError("Argument Validation Error", {
+      const message = Object.values(errors[0].constraints)[0];
+      throw new GraphQLError(message || "Argument Validation Error", {
         extensions: {
           code: "BAD_USER_INPUT",
           validationErrors: errors,
