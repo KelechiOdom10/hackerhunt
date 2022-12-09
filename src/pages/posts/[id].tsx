@@ -5,6 +5,9 @@ import {
   FeedDocument,
   LinkQuery,
   LinkDocument,
+  FeedQueryVariables,
+  TotalLinksQuery,
+  TotalLinksDocument,
 } from "~/apollo/generated/graphql";
 import Layout from "~/components/layout/Layout";
 import PostDetail from "~/components/post/detail/PostDetail";
@@ -20,14 +23,23 @@ export default function Story({ id }: { id: string }) {
 export const getStaticPaths: GetStaticPaths = async () => {
   const client = initializeApollo({});
 
-  const { data } = await client.query<FeedQuery>({ query: FeedDocument });
-  const paths = data.feed.map(link => ({
+  const {
+    data: { totalLinks },
+  } = await client.query<TotalLinksQuery>({
+    query: TotalLinksDocument,
+  });
+
+  const { data } = await client.query<FeedQuery, FeedQueryVariables>({
+    query: FeedDocument,
+    variables: { args: { take: totalLinks ?? 100 } },
+  });
+  const paths = data.feed.links.map(link => ({
     params: { id: link.id },
   }));
 
   return {
     paths: paths || [],
-    fallback: false,
+    fallback: "blocking",
   };
 };
 
