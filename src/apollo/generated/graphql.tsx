@@ -43,6 +43,20 @@ export type CreateLinkInput = {
   url: Scalars['String'];
 };
 
+export type Feed = {
+  __typename?: 'Feed';
+  count: Scalars['Float'];
+  id: Scalars['ID'];
+  links: Array<Link>;
+};
+
+export type FeedArgs = {
+  filter?: InputMaybe<Scalars['String']>;
+  orderBy?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
 export type Link = {
   __typename?: 'Link';
   commentCount: Scalars['Float'];
@@ -101,9 +115,12 @@ export type MutationToggleVoteArgs = {
 export type Query = {
   __typename?: 'Query';
   comments: Array<Comment>;
-  feed: Array<Link>;
+  feed: Feed;
   link: Link;
   me?: Maybe<User>;
+  popularTags: Array<Scalars['String']>;
+  topLinks: Array<Link>;
+  totalLinks: Scalars['Float'];
   user?: Maybe<User>;
   users: Array<Maybe<User>>;
 };
@@ -111,6 +128,11 @@ export type Query = {
 
 export type QueryCommentsArgs = {
   linkId: Scalars['String'];
+};
+
+
+export type QueryFeedArgs = {
+  args?: InputMaybe<FeedArgs>;
 };
 
 
@@ -199,10 +221,12 @@ export type CommentsQueryVariables = Exact<{
 
 export type CommentsQuery = { __typename?: 'Query', comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> };
 
-export type FeedQueryVariables = Exact<{ [key: string]: never; }>;
+export type FeedQueryVariables = Exact<{
+  args: FeedArgs;
+}>;
 
 
-export type FeedQuery = { __typename?: 'Query', feed: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string }, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> }> };
+export type FeedQuery = { __typename?: 'Query', feed: { __typename?: 'Feed', id: string, count: number, links: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string }, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> }> } };
 
 export type LinkQueryVariables = Exact<{
   linkId: Scalars['ID'];
@@ -215,6 +239,21 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, username: string } | null };
+
+export type PopularTagsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PopularTagsQuery = { __typename?: 'Query', popularTags: Array<string> };
+
+export type TopLinksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TopLinksQuery = { __typename?: 'Query', topLinks: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user: { __typename?: 'User', id: string, username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> }> };
+
+export type TotalLinksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TotalLinksQuery = { __typename?: 'Query', totalLinks: number };
 
 export type UserQueryVariables = Exact<{
   userId: Scalars['ID'];
@@ -482,11 +521,15 @@ export type CommentsQueryHookResult = ReturnType<typeof useCommentsQuery>;
 export type CommentsLazyQueryHookResult = ReturnType<typeof useCommentsLazyQuery>;
 export type CommentsQueryResult = Apollo.QueryResult<CommentsQuery, CommentsQueryVariables>;
 export const FeedDocument = gql`
-    query Feed {
-  feed {
-    ...LinkDetails
-    user {
-      ...RegularUser
+    query Feed($args: FeedArgs!) {
+  feed(args: $args) {
+    id
+    count
+    links {
+      ...LinkDetails
+      user {
+        ...RegularUser
+      }
     }
   }
 }
@@ -505,10 +548,11 @@ ${RegularUserFragmentDoc}`;
  * @example
  * const { data, loading, error } = useFeedQuery({
  *   variables: {
+ *      args: // value for 'args'
  *   },
  * });
  */
-export function useFeedQuery(baseOptions?: Apollo.QueryHookOptions<FeedQuery, FeedQueryVariables>) {
+export function useFeedQuery(baseOptions: Apollo.QueryHookOptions<FeedQuery, FeedQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<FeedQuery, FeedQueryVariables>(FeedDocument, options);
       }
@@ -588,6 +632,104 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const PopularTagsDocument = gql`
+    query PopularTags {
+  popularTags
+}
+    `;
+
+/**
+ * __usePopularTagsQuery__
+ *
+ * To run a query within a React component, call `usePopularTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePopularTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePopularTagsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePopularTagsQuery(baseOptions?: Apollo.QueryHookOptions<PopularTagsQuery, PopularTagsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PopularTagsQuery, PopularTagsQueryVariables>(PopularTagsDocument, options);
+      }
+export function usePopularTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PopularTagsQuery, PopularTagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PopularTagsQuery, PopularTagsQueryVariables>(PopularTagsDocument, options);
+        }
+export type PopularTagsQueryHookResult = ReturnType<typeof usePopularTagsQuery>;
+export type PopularTagsLazyQueryHookResult = ReturnType<typeof usePopularTagsLazyQuery>;
+export type PopularTagsQueryResult = Apollo.QueryResult<PopularTagsQuery, PopularTagsQueryVariables>;
+export const TopLinksDocument = gql`
+    query TopLinks {
+  topLinks {
+    ...LinkDetails
+  }
+}
+    ${LinkDetailsFragmentDoc}`;
+
+/**
+ * __useTopLinksQuery__
+ *
+ * To run a query within a React component, call `useTopLinksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTopLinksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTopLinksQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTopLinksQuery(baseOptions?: Apollo.QueryHookOptions<TopLinksQuery, TopLinksQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TopLinksQuery, TopLinksQueryVariables>(TopLinksDocument, options);
+      }
+export function useTopLinksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TopLinksQuery, TopLinksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TopLinksQuery, TopLinksQueryVariables>(TopLinksDocument, options);
+        }
+export type TopLinksQueryHookResult = ReturnType<typeof useTopLinksQuery>;
+export type TopLinksLazyQueryHookResult = ReturnType<typeof useTopLinksLazyQuery>;
+export type TopLinksQueryResult = Apollo.QueryResult<TopLinksQuery, TopLinksQueryVariables>;
+export const TotalLinksDocument = gql`
+    query TotalLinks {
+  totalLinks
+}
+    `;
+
+/**
+ * __useTotalLinksQuery__
+ *
+ * To run a query within a React component, call `useTotalLinksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTotalLinksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTotalLinksQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTotalLinksQuery(baseOptions?: Apollo.QueryHookOptions<TotalLinksQuery, TotalLinksQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TotalLinksQuery, TotalLinksQueryVariables>(TotalLinksDocument, options);
+      }
+export function useTotalLinksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TotalLinksQuery, TotalLinksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TotalLinksQuery, TotalLinksQueryVariables>(TotalLinksDocument, options);
+        }
+export type TotalLinksQueryHookResult = ReturnType<typeof useTotalLinksQuery>;
+export type TotalLinksLazyQueryHookResult = ReturnType<typeof useTotalLinksLazyQuery>;
+export type TotalLinksQueryResult = Apollo.QueryResult<TotalLinksQuery, TotalLinksQueryVariables>;
 export const UserDocument = gql`
     query User($userId: ID!) {
   user(id: $userId) {
