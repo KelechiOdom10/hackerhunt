@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Box,
   VStack,
@@ -25,11 +25,12 @@ export default function CreatePostForm() {
   const [pickerItems, setPickerItems] = useState(tags);
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
   const selectedItemsFlat = selectedItems.map(item => item.label.toLowerCase());
+  const form = useForm<CreateLinkInput>();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<CreateLinkInput>();
+  } = form;
 
   const createLink = useCreateLink();
 
@@ -42,12 +43,19 @@ export default function CreatePostForm() {
     setSelectedItems(curr => [...curr, item]);
   };
 
-  const handleSelectedItemsChange = (items?: Item[]) => {
-    if (items) {
-      setSelectedItems(items);
-    }
-    if (selectedItems.length > 0) errors.tags = null;
-  };
+  const handleSelectedItemsChange = useCallback(
+    (items?: Item[]) => {
+      if (items) {
+        setSelectedItems(items);
+        form.setValue(
+          "tags",
+          items.map(item => item.label.toLowerCase())
+        );
+      }
+      if (selectedItems.length > 0) errors.tags = null;
+    },
+    [form]
+  );
 
   return (
     <Box

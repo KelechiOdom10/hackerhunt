@@ -1,7 +1,6 @@
-import { LoginInput } from "../dtos/login.input";
 import { Resolver, Mutation, Arg, Ctx } from "type-graphql";
 import { compare, genSalt, hash } from "bcryptjs";
-import { SignupInput } from "../dtos/signup.input";
+import { SignupInput, LoginInput } from "../dtos";
 import { GraphQLError } from "graphql";
 import { jwtGenerator } from "server/utils/jwtGenerator";
 import type { GraphQLContext } from "~/pages/api/graphql";

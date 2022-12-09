@@ -1,13 +1,20 @@
 import { Grid, GridItem } from "@chakra-ui/react";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { initializeApollo } from "~/apollo/client";
-import { FeedDocument } from "~/apollo/generated/graphql";
+import {
+  FeedDocument,
+  FeedQuery,
+  FeedQueryVariables,
+  PopularTagsDocument,
+  TopLinksDocument,
+} from "~/apollo/generated/graphql";
 import Layout from "~/components/layout/Layout";
 import PostList from "~/components/post/PostList";
 import PostsLastWeek from "~/components/post/PostsLastWeek";
 import HiringNow from "~/components/sidebar/HiringNow";
 import Tags from "~/components/sidebar/Tags";
+import { PAGE_SIZE } from "~/config";
 
 export default function Home() {
   return (
@@ -33,15 +40,30 @@ export default function Home() {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const client = initializeApollo({});
+  const page = (query?.page as string) ?? "1";
+  const variables: FeedQueryVariables = {
+    args: {
+      filter: (query?.filter as string) ?? "",
+      skip: (parseInt(page) - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      orderBy: (query?.orderBy as string) ?? "votes",
+    },
+  };
 
-  await client.query({
+  await client.query<FeedQuery, FeedQueryVariables>({
     query: FeedDocument,
+    variables,
+  });
+  await client.query({
+    query: TopLinksDocument,
+  });
+  await client.query({
+    query: PopularTagsDocument,
   });
 
   return {
-    revalidate: 60 * 60,
     props: {
       initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
     },

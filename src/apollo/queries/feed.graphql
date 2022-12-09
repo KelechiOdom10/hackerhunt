@@ -1,8 +1,12 @@
-query Feed {
-  feed {
-    ...LinkDetails
-    user {
-      ...RegularUser
+query Feed($args: FeedArgs!) {
+  feed(args: $args) {
+    id
+    count
+    links {
+      ...LinkDetails
+      user {
+        ...RegularUser
+      }
     }
   }
 }

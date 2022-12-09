@@ -33,6 +33,19 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
+type Feed {
+  count: Float!
+  id: ID!
+  links: [Link!]!
+}
+
+input FeedArgs {
+  filter: String
+  orderBy: String = "votes"
+  skip: Int = 0
+  take: Int = 10
+}
+
 type Link {
   commentCount: Float!
   comments: [Comment!]!
@@ -63,9 +76,12 @@ type Mutation {
 
 type Query {
   comments(linkId: String!): [Comment!]!
-  feed: [Link!]!
+  feed(args: FeedArgs): Feed!
   link(id: ID!): Link!
   me: User
+  popularTags: [String!]!
+  topLinks: [Link!]!
+  totalLinks: Float!
   user(id: ID!): User
   users: [User]!
 }

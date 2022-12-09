@@ -25,10 +25,17 @@ export const useCreateLink = () => {
       const queryResult = cache.readQuery<FeedQuery>({
         query: FeedDocument,
       });
+
       queryResult &&
         cache.writeQuery<FeedQuery>({
           query: FeedDocument,
-          data: { feed: [createLink, ...queryResult.feed] },
+          data: {
+            feed: {
+              ...queryResult.feed,
+              count: queryResult.feed.count + 1,
+              links: [createLink, ...queryResult.feed.links],
+            },
+          },
         });
     },
     onError: e => {
