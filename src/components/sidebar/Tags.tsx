@@ -6,7 +6,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { darken } from "@chakra-ui/theme-tools";
-import { links } from "../post/PostsLastWeek";
+import { usePopularTagsQuery } from "~/apollo/generated/graphql";
 import CustomButton from "../utils/CustomButton";
 import CustomLink from "../utils/CustomLink";
 
@@ -29,11 +29,9 @@ export const TagLink = ({ tag }: { tag: string }) => {
 };
 
 export default function Tags() {
-  let tags = [];
-  links.forEach(link => {
-    tags = tags.concat(link.tags);
-  });
-  tags = [...new Set(tags.map(tag => tag.toLowerCase()))];
+  const { data } = usePopularTagsQuery();
+  const tags = data.popularTags || [];
+
   const bgColor = useColorModeValue("white", "gray.800");
 
   return (
