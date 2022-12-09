@@ -1,23 +1,19 @@
-import NextLink from "next/link";
+import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { Link, LinkProps } from "@chakra-ui/react";
 import { ReactNode } from "react";
-// import { useRouter } from "next/router";
 
-type Props = {
-  href: string;
+interface Props {
+  href: NextLinkProps["href"];
   children: ReactNode;
   underline?: boolean;
-};
+}
 
 export default function CustomLink({
   href,
   children,
   underline,
   ...props
-}: Props & LinkProps) {
-  // const router = useRouter();
-  // const isActive = router.pathname === "/";
-
+}: Props & Omit<LinkProps, "href">) {
   return (
     <NextLink href={href} legacyBehavior passHref>
       <Link
