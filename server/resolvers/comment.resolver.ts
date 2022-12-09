@@ -9,7 +9,7 @@ import {
 } from "type-graphql";
 import type { GraphQLContext } from "~/pages/api/graphql";
 import { Authorize } from "server/decorators/authorize";
-import { CreateCommentInput } from "../dtos/create-comment.input";
+import { CreateCommentInput } from "../dtos";
 import { User, Comment } from "server/models";
 
 @Resolver(Comment)
