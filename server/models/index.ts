@@ -94,6 +94,18 @@ export class Link {
 }
 
 @ObjectType()
+export class Feed {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => Number)
+  count: number;
+
+  @Field(() => [Link])
+  links: Link[];
+}
+
+@ObjectType()
 export class Vote {
   @Field(() => ID)
   id: string;
