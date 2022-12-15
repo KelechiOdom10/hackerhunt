@@ -4,6 +4,7 @@ import {
   Text,
   Box,
   Divider,
+  Skeleton,
 } from "@chakra-ui/react";
 import { darken } from "@chakra-ui/theme-tools";
 import { usePopularTagsQuery } from "~/apollo/generated/graphql";
@@ -29,8 +30,8 @@ export const TagLink = ({ tag }: { tag: string }) => {
 };
 
 export default function Tags() {
-  const { data } = usePopularTagsQuery();
-  const tags = data.popularTags || [];
+  const { data, loading } = usePopularTagsQuery();
+  const tags = data?.popularTags || [];
 
   const bgColor = useColorModeValue("white", "gray.800");
 
@@ -52,6 +53,10 @@ export default function Tags() {
         align="start"
         borderWidth={useColorModeValue(1, 0)}
       >
+        {loading &&
+          [...Array(5).keys()].map(key => (
+            <Skeleton key={key} w="full" h={10} rounded="md" />
+          ))}
         {tags.map(tag => (
           <TagLink key={tag} tag={tag} />
         ))}
