@@ -32,7 +32,7 @@ const JobDetail = ({ job }: Props) => {
         width={100}
         height={100}
         chakraProps={{
-          borderRadius: "md",
+          borderRadius: "sm",
           display: "flex",
           bg: "white",
           maxW: { base: "70px", md: "100px" },

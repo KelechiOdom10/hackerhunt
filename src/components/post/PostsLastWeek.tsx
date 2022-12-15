@@ -27,17 +27,22 @@ const LastWeekPost = ({ link }: Props) => {
   return (
     <Flex align="center" justify="space-between" rounded="md" w="full">
       <HStack spacing={4}>
-        <ChakraNextImage
-          src={link.image}
-          onError={addDefaultSrc}
-          alt={link.title}
-          fill
-          sizes="(max-width: 768px) 100vw,
+        <CustomLink href={link.url} variant="primary" isExternal>
+          <ChakraNextImage
+            src={link.image}
+            onError={addDefaultSrc}
+            alt={link.title}
+            fill
+            sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 50vw,
               33vw"
-          chakraProps={{ minWidth: "50px", height: "50px", borderRadius: "md" }}
-          style={{ objectFit: "cover" }}
-        />
+            chakraProps={{
+              minWidth: "50px",
+              height: "50px",
+            }}
+            style={{ objectFit: "cover" }}
+          />
+        </CustomLink>
         <VStack align="flex-start" spacing={0}>
           <CustomLink
             variant="primary"
@@ -48,14 +53,15 @@ const LastWeekPost = ({ link }: Props) => {
           >
             {link.title}
           </CustomLink>
-          <Text
+          <CustomLink
+            href={`/posts/${link.id}`}
             w="90%"
             noOfLines={2}
             fontSize="sm"
             color={useColorModeValue("gray.600", "whiteAlpha.800")}
           >
             {link.description}
-          </Text>
+          </CustomLink>
         </VStack>
       </HStack>
     </Flex>

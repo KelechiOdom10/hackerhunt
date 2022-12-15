@@ -71,7 +71,7 @@ const JobModal = ({ isOpen, onClose, job }: Props) => {
                 minH: { base: "70px", md: "90px" },
                 display: "flex",
                 bg: "white",
-                borderRadius: "md",
+                borderRadius: "sm",
               }}
               style={{
                 objectFit: "contain",

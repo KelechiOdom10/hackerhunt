@@ -69,10 +69,10 @@ const JobPreview = ({ job }: Props) => {
               (max-width: 1200px) 50vw,
               33vw"
         chakraProps={{
-          width: { base: "35px", md: "50px" },
+          minW: { base: "35px", md: "50px" },
           height: { base: "35px", md: "50px" },
           bg: "white",
-          borderRadius: "md",
+          borderRadius: "sm",
         }}
         style={{
           objectFit: "contain",

@@ -42,7 +42,7 @@ export default function PostDetail({ id }: { id: string }) {
                 height={300}
                 alt={link.title}
                 chakraProps={{
-                  borderRadius: "md",
+                  borderRadius: "sm",
                 }}
                 style={{ objectFit: "cover" }}
               />
