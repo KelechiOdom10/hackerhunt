@@ -1,3 +1,4 @@
+import sanitize from "sanitize-html";
 import { Company, Job } from "server/models";
 import { getAllJobs, getCompanyById } from "server/services/jobs.service";
 import { Arg, FieldResolver, Query, Resolver, Root } from "type-graphql";
@@ -13,7 +14,7 @@ export class JobResolver {
           id: job.id,
           name: job.name,
           companyId: job.company.id,
-          description: job.contents,
+          description: sanitize(job.contents),
           landingPage: job.refs.landing_page,
           level: job.levels[0].name,
           location: job.locations[0].name,
