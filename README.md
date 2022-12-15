@@ -19,12 +19,14 @@ The goal of this project was to create a platform that provided the social aspec
 - Like and Unlike posts
 - Comment on posts
 - Logout functionality
+- View list of software engineering jobs available in the UK
 
 ## Technologies 🔧
 
 - Next.js(React)
 - TypeScript
 - GrahQL
+- TypeGraphQL
 - Apollo
 - Prisma
 - Chakra UI
@@ -41,11 +43,6 @@ git clone https://github.com/KelechiOdom10/hackerhunt.git
 Fill your `.env` variables:
 
 ```
-POSTGRES_USER=
-POSTGRES_PASSWORD=
-POSTGRES_DB=
-POSTGRES_HOST=
-POSTGRES_PORT=
 DATABASE_URL="postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@<POSTGRES_HOST>:<POSTGRES_PORT>/<POSTGRES_DB>?schema=public&sslmode=prefer"
 SECRET=
 ```
