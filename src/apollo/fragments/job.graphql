@@ -1,0 +1,13 @@
+fragment JobDetails on Job {
+  id
+  name
+  location
+  description
+  categories
+  level
+  landingPage
+  publicationDate
+  company {
+    ...CompanyDetails
+  }
+}

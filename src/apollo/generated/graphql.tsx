@@ -32,6 +32,19 @@ export type Comment = {
   user: User;
 };
 
+export type Company = {
+  __typename?: 'Company';
+  description: Scalars['String'];
+  id: Scalars['ID'];
+  image: Scalars['String'];
+  industries: Array<Scalars['String']>;
+  jobsPage: Scalars['String'];
+  landingPage: Scalars['String'];
+  location: Scalars['String'];
+  name: Scalars['String'];
+  publicationDate: Scalars['String'];
+};
+
 export type CreateCommentInput = {
   linkId: Scalars['String'];
   text: Scalars['String'];
@@ -55,6 +68,20 @@ export type FeedArgs = {
   orderBy?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
+};
+
+export type Job = {
+  __typename?: 'Job';
+  categories: Array<Scalars['String']>;
+  company: Company;
+  companyId: Scalars['Float'];
+  description: Scalars['String'];
+  id: Scalars['ID'];
+  landingPage: Scalars['String'];
+  level: Scalars['String'];
+  location: Scalars['String'];
+  name: Scalars['String'];
+  publicationDate: Scalars['String'];
 };
 
 export type Link = {
@@ -116,6 +143,7 @@ export type Query = {
   __typename?: 'Query';
   comments: Array<Comment>;
   feed: Feed;
+  jobs: Array<Job>;
   link: Link;
   me?: Maybe<User>;
   popularTags: Array<Scalars['String']>;
@@ -133,6 +161,11 @@ export type QueryCommentsArgs = {
 
 export type QueryFeedArgs = {
   args?: InputMaybe<FeedArgs>;
+};
+
+
+export type QueryJobsArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
 };
 
 
@@ -172,6 +205,10 @@ export type Vote = {
 };
 
 export type CommentDetailsFragment = { __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } };
+
+export type CompanyDetailsFragment = { __typename?: 'Company', id: string, image: string, name: string, location: string, description: string };
+
+export type JobDetailsFragment = { __typename?: 'Job', id: string, name: string, location: string, description: string, categories: Array<string>, level: string, landingPage: string, publicationDate: string, company: { __typename?: 'Company', id: string, image: string, name: string, location: string, description: string } };
 
 export type LinkDetailsFragment = { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user: { __typename?: 'User', id: string, username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> };
 
@@ -228,6 +265,13 @@ export type FeedQueryVariables = Exact<{
 
 export type FeedQuery = { __typename?: 'Query', feed: { __typename?: 'Feed', id: string, count: number, links: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string }, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> }> } };
 
+export type JobsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+}>;
+
+
+export type JobsQuery = { __typename?: 'Query', jobs: Array<{ __typename?: 'Job', id: string, name: string, location: string, description: string, categories: Array<string>, level: string, landingPage: string, publicationDate: string, company: { __typename?: 'Company', id: string, image: string, name: string, location: string, description: string } }> };
+
 export type LinkQueryVariables = Exact<{
   linkId: Scalars['ID'];
 }>;
@@ -262,6 +306,30 @@ export type UserQueryVariables = Exact<{
 
 export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, username: string, links: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, user: { __typename?: 'User', id: string, username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } | null>, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string }, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string } }> } } | null>, comments: Array<{ __typename?: 'Comment', id: string, text: string, link: { __typename?: 'Link', id: string } } | null> } | null };
 
+export const CompanyDetailsFragmentDoc = gql`
+    fragment CompanyDetails on Company {
+  id
+  image
+  name
+  location
+  description
+}
+    `;
+export const JobDetailsFragmentDoc = gql`
+    fragment JobDetails on Job {
+  id
+  name
+  location
+  description
+  categories
+  level
+  landingPage
+  publicationDate
+  company {
+    ...CompanyDetails
+  }
+}
+    ${CompanyDetailsFragmentDoc}`;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
@@ -563,6 +631,41 @@ export function useFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedQ
 export type FeedQueryHookResult = ReturnType<typeof useFeedQuery>;
 export type FeedLazyQueryHookResult = ReturnType<typeof useFeedLazyQuery>;
 export type FeedQueryResult = Apollo.QueryResult<FeedQuery, FeedQueryVariables>;
+export const JobsDocument = gql`
+    query Jobs($limit: Float) {
+  jobs(limit: $limit) {
+    ...JobDetails
+  }
+}
+    ${JobDetailsFragmentDoc}`;
+
+/**
+ * __useJobsQuery__
+ *
+ * To run a query within a React component, call `useJobsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJobsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJobsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useJobsQuery(baseOptions?: Apollo.QueryHookOptions<JobsQuery, JobsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<JobsQuery, JobsQueryVariables>(JobsDocument, options);
+      }
+export function useJobsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JobsQuery, JobsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<JobsQuery, JobsQueryVariables>(JobsDocument, options);
+        }
+export type JobsQueryHookResult = ReturnType<typeof useJobsQuery>;
+export type JobsLazyQueryHookResult = ReturnType<typeof useJobsLazyQuery>;
+export type JobsQueryResult = Apollo.QueryResult<JobsQuery, JobsQueryVariables>;
 export const LinkDocument = gql`
     query Link($linkId: ID!) {
   link(id: $linkId) {

@@ -1,0 +1,7 @@
+fragment CompanyDetails on Company {
+  id
+  image
+  name
+  location
+  description
+}

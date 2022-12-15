@@ -1,0 +1,5 @@
+query Jobs($limit: Float) {
+  jobs(limit: $limit) {
+    ...JobDetails
+  }
+}
