@@ -11,6 +11,7 @@ import React, { SyntheticEvent, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { JobDetailsFragment } from "~/apollo/generated/graphql";
 import { ChakraNextImage } from "../utils/CustomImage";
+import CustomLink from "../utils/CustomLink";
 
 type Props = {
   job: JobDetailsFragment;
@@ -24,6 +25,8 @@ const JobPreview = ({ job }: Props) => {
 
   return (
     <Flex
+      as={CustomLink}
+      href={`/jobs?id=${job.id}`}
       _hover={{
         cursor: "pointer",
       }}
