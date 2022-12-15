@@ -7,6 +7,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React from "react";
 import { JobDetailsFragment } from "~/apollo/generated/graphql";
 import { ChakraNextImage } from "~/components/utils/CustomImage";
@@ -17,7 +18,15 @@ type Props = {
 };
 
 const JobDetail = ({ job }: Props) => {
+  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const onModalClose = () => {
+    router.query?.id &&
+      router.replace(router.pathname, undefined, { shallow: true });
+    onClose();
+  };
+
   return (
     <HStack
       spacing={8}
@@ -75,7 +84,11 @@ const JobDetail = ({ job }: Props) => {
         ))}
       </VStack>
 
-      <JobModal isOpen={isOpen} onClose={onClose} job={job} />
+      <JobModal
+        isOpen={isOpen || router.query?.id === job.id}
+        onClose={onModalClose}
+        job={job}
+      />
     </HStack>
   );
 };
