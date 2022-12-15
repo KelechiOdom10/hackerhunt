@@ -6,6 +6,9 @@ import {
   FeedDocument,
   FeedQuery,
   FeedQueryVariables,
+  JobsDocument,
+  JobsQuery,
+  JobsQueryVariables,
   PopularTagsDocument,
   TopLinksDocument,
 } from "~/apollo/generated/graphql";
@@ -52,16 +55,24 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     },
   };
 
-  await client.query<FeedQuery, FeedQueryVariables>({
-    query: FeedDocument,
-    variables,
-  });
-  await client.query({
-    query: TopLinksDocument,
-  });
-  await client.query({
-    query: PopularTagsDocument,
-  });
+  await Promise.all([
+    client.query<FeedQuery, FeedQueryVariables>({
+      query: FeedDocument,
+      variables,
+    }),
+    client.query({
+      query: TopLinksDocument,
+    }),
+    client.query({
+      query: PopularTagsDocument,
+    }),
+    client.query<JobsQuery, JobsQueryVariables>({
+      query: JobsDocument,
+      variables: {
+        limit: 4,
+      },
+    }),
+  ]);
 
   return {
     props: {
