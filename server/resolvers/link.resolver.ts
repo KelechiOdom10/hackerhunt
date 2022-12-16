@@ -151,7 +151,9 @@ export class LinkResolver {
         title,
         description: urlData?.description,
         tags,
-        image: urlData?.images ? urlData?.images[0] : "",
+        image: urlData?.images
+          ? urlData?.images[0]
+          : urlData?.favicons[0] || "",
         url,
         user: { connect: { id: ctx.user.id } },
       },

@@ -7,7 +7,7 @@ import {
   useColorModeValue,
   Text,
 } from "@chakra-ui/react";
-import React, { SyntheticEvent, useState } from "react";
+import React, { useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { JobDetailsFragment } from "~/apollo/generated/graphql";
 import { ChakraNextImage } from "../utils/CustomImage";
@@ -19,9 +19,6 @@ type Props = {
 
 const JobPreview = ({ job }: Props) => {
   const [isShown, setIsShown] = useState(false);
-  const addDefaultSrc = (e: SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = "/assets/fallback.jpeg";
-  };
 
   return (
     <Flex
@@ -65,7 +62,6 @@ const JobPreview = ({ job }: Props) => {
       </VStack>
       <ChakraNextImage
         src={job.company.image ?? "/assets/fallback.jpeg"}
-        onError={addDefaultSrc}
         alt={`${job.name} Image`}
         fill
         sizes="(max-width: 768px) 100vw,

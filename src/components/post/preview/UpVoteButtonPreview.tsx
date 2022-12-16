@@ -4,6 +4,7 @@ import {
   VStack,
   useColorModeValue,
   useToast,
+  ButtonProps,
 } from "@chakra-ui/react";
 import { BiUpArrow } from "react-icons/bi";
 import { BsFillCaretUpFill } from "react-icons/bs";
@@ -18,7 +19,7 @@ export default function UpVoteButton({
   id: string;
   upvoted: boolean;
   count: number;
-}) {
+} & ButtonProps) {
   const toast = useToast();
   const toggleVote = useToggleVotePreview(id);
 

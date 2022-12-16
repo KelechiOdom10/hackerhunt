@@ -1,5 +1,6 @@
 import { Box, BoxProps } from "@chakra-ui/react";
 import NextImage, { ImageProps, ImageLoaderProps } from "next/image";
+import { useEffect, useState } from "react";
 
 const myLoader = (resolverProps: ImageLoaderProps): string => {
   return `${resolverProps.src}?w=${resolverProps.width}&q=${resolverProps.quality}`;
@@ -30,6 +31,12 @@ type Props = ImageProps & {
 
 export const ChakraNextImage = ({ chakraProps, ...props }: Props) => {
   const { src, alt, quality, ...rest } = props;
+  const [imgSrc, setImgSrc] = useState(src);
+
+  useEffect(() => {
+    setImgSrc(src);
+  }, [src]);
+
   return (
     <Box pos="relative" cursor="pointer" className="group" {...chakraProps}>
       <NextImage
@@ -37,8 +44,17 @@ export const ChakraNextImage = ({ chakraProps, ...props }: Props) => {
         quality={quality}
         placeholder="blur"
         blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
-        src={src}
+        src={imgSrc}
         alt={alt}
+        onLoadingComplete={result => {
+          if (result.naturalWidth === 0) {
+            // Broken image
+            setImgSrc("/assets/fallback.webp");
+          }
+        }}
+        onError={() => {
+          setImgSrc("/assets/fallback.webp");
+        }}
         {...rest}
       />
     </Box>
