@@ -7,7 +7,6 @@ import {
   Text,
   Box,
 } from "@chakra-ui/react";
-import { SyntheticEvent } from "react";
 import {
   LinkDetailsFragment,
   useTopLinksQuery,
@@ -20,17 +19,12 @@ type Props = {
 };
 
 const LastWeekPost = ({ link }: Props) => {
-  const addDefaultSrc = (e: SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = "/assets/fallback.jpeg";
-  };
-
   return (
     <Flex align="center" justify="space-between" rounded="md" w="full">
       <HStack spacing={4}>
         <CustomLink href={link.url} variant="primary" isExternal>
           <ChakraNextImage
             src={link.image}
-            onError={addDefaultSrc}
             alt={link.title}
             fill
             sizes="(max-width: 768px) 100vw,
