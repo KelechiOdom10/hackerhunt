@@ -21,6 +21,7 @@ type Props = {
 
 export default function PostPreview({ link }: Props) {
   const { me } = useMe();
+
   return (
     <Flex align="center" justify="space-between" py={1} rounded="md" w="full">
       <HStack spacing={4}>
@@ -110,6 +111,7 @@ export default function PostPreview({ link }: Props) {
         count={link.voteCount}
         upvoted={link.votes.some(vote => vote.user.id === me?.id)}
         id={link.id}
+        h="auto"
       />
     </Flex>
   );
