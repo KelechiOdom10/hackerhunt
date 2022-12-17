@@ -13,7 +13,7 @@ import {
   TopLinksDocument,
 } from "~/apollo/generated/graphql";
 import Layout from "~/components/layout/Layout";
-import PostList from "~/components/post/PostList";
+import PostListContainer from "~/components/post/PostListContainer";
 import PostsLastWeek from "~/components/post/PostsLastWeek";
 import HiringNow from "~/components/sidebar/HiringNow";
 import Tags from "~/components/sidebar/Tags";
@@ -31,7 +31,7 @@ export default function Home() {
         <Grid h="200px" templateColumns="repeat(6, 1fr)" gap={6} mt={6}>
           <GridItem colSpan={{ base: 6, md: 4 }}>
             <PostsLastWeek />
-            <PostList />
+            <PostListContainer />
           </GridItem>
           <GridItem colSpan={2} display={{ base: "none", md: "block" }}>
             <HiringNow />
