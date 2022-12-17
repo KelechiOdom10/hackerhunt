@@ -2,15 +2,16 @@
 
 # HackerHunt
 
-What is HackerHunt?
----------------------
-* It is a Hackernews inspired social news and sharing webapp/platform.
+## What is HackerHunt?
 
-Introduction
----------------------
-The goal of this project was to create a platform that provided the social aspect of news sharing similar to Hackernews but with a Produchunt feel to it. I wanted to learn all about design principles on both frontend and backend while building a fullstack GraphQL Next.js application to make this work. 
+- It is a Hackernews inspired social news and sharing webapp/platform.
+
+## Introduction
+
+The goal of this project was to create a platform that provided the social aspect of news sharing similar to Hackernews but with a Produchunt feel to it. I wanted to learn all about design principles on both frontend and backend while building a fullstack GraphQL Next.js application to make this work.
 
 ### Key Features
+
 - Authentication
   - Login
   - Sign Up
@@ -66,9 +67,11 @@ npm run dev
 ```
 
 ## TODO
+
+- [x] Add profile page for users to view all their likes, comments, posts and general information
+- [ ] Add search functionality
+- [ ] Add tags features (Find posts with tags selected, view all tags)
 - [ ] Add ability to comment on a comment
-- [ ] Users should be able to follow each other and get feed curated based on who they follow
-- [ ] Add profile page for users to view all their likes, comments, posts and general information
 
 ## Contributing
 
