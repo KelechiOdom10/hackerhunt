@@ -45,6 +45,7 @@ export default function PostPreview({ link }: Props) {
             variant="primary"
             isExternal
             fontSize="md"
+            noOfLines={2}
             fontWeight="bold"
             href={link.url}
           >
@@ -56,14 +57,14 @@ export default function PostPreview({ link }: Props) {
             variant="link"
             noOfLines={1}
             fontWeight={500}
-            href={`/${link.user?.id}`}
+            href={`/user/${link.user?.id}`}
             color={useColorModeValue("gray.600", "whiteAlpha.700")}
           >
             by {link.user.username.toLowerCase()} -
             {` ${timeDifferenceForDate(link.createdAt)}`}
           </CustomLink>
           <HStack spacing={4} align="center">
-            <CustomLink href={`posts/${link.id}`} underline>
+            <CustomLink href={`/posts/${link.id}`} underline>
               <HStack
                 fontSize={{ base: "xs", md: "sm" }}
                 align="flex-end"

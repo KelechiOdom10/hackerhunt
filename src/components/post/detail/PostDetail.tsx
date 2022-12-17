@@ -62,7 +62,7 @@ export default function PostDetail({ id }: { id: string }) {
                   variant="link"
                   noOfLines={1}
                   fontWeight={500}
-                  href={`/${link.user?.id}`}
+                  href={`/user/${link.user?.id}`}
                 >
                   By {link.user.username.toLowerCase()}
                 </CustomLink>
