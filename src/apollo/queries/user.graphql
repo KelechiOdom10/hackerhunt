@@ -13,11 +13,7 @@ query User($userId: ID!) {
       }
     }
     comments {
-      id
-      text
-      link {
-        id
-      }
+      ...CommentDetails
     }
   }
 }

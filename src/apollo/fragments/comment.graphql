@@ -3,6 +3,7 @@ fragment CommentDetails on Comment {
   text
   link {
     id
+    title
   }
   user {
     ...RegularUser
