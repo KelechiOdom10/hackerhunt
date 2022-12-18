@@ -56,5 +56,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
       id: params?.id,
     },
+    revalidate: 60 * 60 * 2,
   };
 };
