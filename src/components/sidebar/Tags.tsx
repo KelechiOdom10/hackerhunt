@@ -3,12 +3,10 @@ import {
   useColorModeValue,
   Text,
   Box,
-  Divider,
   Skeleton,
 } from "@chakra-ui/react";
 import { darken } from "@chakra-ui/theme-tools";
 import { usePopularTagsQuery } from "~/apollo/generated/graphql";
-import CustomButton from "../utils/CustomButton";
 import CustomLink from "../utils/CustomLink";
 
 export const TagLink = ({ tag }: { tag: string }) => {
@@ -60,12 +58,6 @@ export default function Tags() {
         {tags.map(tag => (
           <TagLink key={tag} tag={tag} />
         ))}
-        <Divider />
-        <CustomLink href="/tags" w="full" px={3}>
-          <CustomButton variant="primary" w="full">
-            View all tags
-          </CustomButton>
-        </CustomLink>
       </VStack>
     </Box>
   );

@@ -55,6 +55,7 @@ input FeedArgs {
   filter: String
   orderBy: String = "votes"
   skip: Int = 0
+  tag: String
   take: Int = 10
 }
 

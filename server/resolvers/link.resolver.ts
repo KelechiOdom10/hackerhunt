@@ -31,10 +31,16 @@ export class LinkResolver {
     const where: Prisma.LinkWhereInput = args?.filter
       ? {
           OR: [
-            { description: { contains: args.filter } },
-            { title: { contains: args.filter } },
-            { url: { contains: args.filter } },
+            { description: { contains: args.filter, mode: "insensitive" } },
+            { title: { contains: args.filter, mode: "insensitive" } },
+            { url: { contains: args.filter, mode: "insensitive" } },
           ],
+        }
+      : args?.tag
+      ? {
+          tags: {
+            has: args.tag,
+          },
         }
       : {};
 
