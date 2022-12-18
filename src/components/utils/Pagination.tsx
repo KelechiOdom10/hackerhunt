@@ -63,7 +63,7 @@ const Pagination = (props: PaginationProps) => {
     <Flex py={8} w="full" alignItems="center" justifyContent="center">
       <Flex>
         <PagButton
-          disabled={currentPage === 1}
+          disabled={currentPage === 1 || totalPosts === 0}
           onClick={() =>
             !(currentPage === 1) &&
             push({ pathname, query: { ...query, page: currentPage - 1 } })
@@ -83,7 +83,7 @@ const Pagination = (props: PaginationProps) => {
           </CustomLink>
         ))}
         <PagButton
-          disabled={currentPage === length}
+          disabled={currentPage === length || totalPosts === 0}
           onClick={() =>
             !(currentPage === length) &&
             push({ pathname, query: { ...query, page: currentPage + 1 } })

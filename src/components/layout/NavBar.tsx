@@ -29,6 +29,8 @@ import { ColorModeSwitcher } from "../utils/ColorModeSwitcher";
 import CustomAvatar from "../utils/CustomAvatar";
 import CustomButton from "../utils/CustomButton";
 import CustomLink from "../utils/CustomLink";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function NavBar() {
   const { isOpen, onToggle } = useDisclosure();
@@ -237,6 +239,9 @@ const MobileNavItem = ({ label, href }: NavItem) => {
 };
 
 const NavMenuInput = () => {
+  const { push } = useRouter();
+  const [filter, setFilter] = useState("");
+
   return (
     <InputGroup>
       <InputLeftElement pointerEvents="none" mt={-1}>
@@ -247,6 +252,17 @@ const NavMenuInput = () => {
         size="sm"
         placeholder="Search Hacker Hunt..."
         variant="primary"
+        min={2}
+        value={filter}
+        onChange={e => setFilter(e.currentTarget.value)}
+        onKeyDown={event => {
+          if (event.key === "Enter" && filter.length >= 2) {
+            push({
+              pathname: "/search",
+              query: { filter },
+            });
+          }
+        }}
       />
     </InputGroup>
   );
