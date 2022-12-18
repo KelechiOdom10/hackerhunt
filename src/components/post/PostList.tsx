@@ -34,7 +34,7 @@ const PostList = ({ links, loading }: Props) => {
           fontFamily="Lato"
           alignSelf="start"
         >
-          No posts yet
+          No posts
         </Heading>
       ) : (
         links.map((link: Link) => <PostPreview link={link} key={link.id} />)

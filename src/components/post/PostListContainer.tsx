@@ -12,7 +12,11 @@ import { PAGE_SIZE } from "~/config";
 import Pagination from "../utils/Pagination";
 import PostList from "./PostList";
 
-export default function PostListContainer() {
+export default function PostListContainer({
+  title = "Stories",
+}: {
+  title?: string;
+}) {
   const { query, pathname, push } = useRouter();
   const page = (query?.page as string) || "1";
   const args: FeedArgs = {
@@ -27,13 +31,14 @@ export default function PostListContainer() {
 
   return (
     <VStack spacing={4} align="start" w="full" mb={8}>
-      <HStack justify="space-between" align="flex-end" w="full">
+      <HStack justify="space-between" align="center" w="full">
         <Text
           fontFamily="heading"
+          w="50%"
           fontSize={{ base: "md", md: "lg" }}
           textAlign="start"
         >
-          Stories
+          {title}
         </Text>
         <HStack
           divider={<StackDivider borderColor="gray.200" />}
