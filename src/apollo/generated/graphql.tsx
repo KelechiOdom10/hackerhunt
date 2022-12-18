@@ -67,6 +67,7 @@ export type FeedArgs = {
   filter?: InputMaybe<Scalars['String']>;
   orderBy?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
+  tag?: InputMaybe<Scalars['String']>;
   take?: InputMaybe<Scalars['Int']>;
 };
 

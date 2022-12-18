@@ -7,6 +7,9 @@ export class FeedArgs {
   filter?: string;
 
   @Field(() => String, { nullable: true })
+  tag?: string;
+
+  @Field(() => String, { nullable: true })
   orderBy?: "createdAt" | "votes" = "votes";
 
   @Field(() => Int, { nullable: true, defaultValue: 0 })
