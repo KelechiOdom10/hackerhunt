@@ -69,7 +69,7 @@ npm run dev
 ## TODO
 
 - [x] Add profile page for users to view all their likes, comments, posts and general information
-- [ ] Add search functionality
+- [x] Add search functionality
 - [ ] Add tags features (Find posts with tags selected, view all tags)
 - [ ] Add ability to comment on a comment
 
