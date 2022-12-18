@@ -70,7 +70,9 @@ npm run dev
 
 - [x] Add profile page for users to view all their likes, comments, posts and general information
 - [x] Add search functionality
-- [ ] Add tags features (Find posts with tags selected, view all tags)
+- [x] Add tags features (Find posts with tags selected)
+- [ ] Add Meta tags to pages for SEO purposes
+- [ ] Add proper error handling
 - [ ] Add ability to comment on a comment
 
 ## Contributing
