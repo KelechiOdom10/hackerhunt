@@ -33,7 +33,15 @@ const cors = Cors({
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 204,
-  allowedHeaders: [""],
+  allowedHeaders: [
+    "X-Requested-With",
+    "Access-Control-Allow-Origin",
+    "X-HTTP-Method-Override",
+    "Content-Type",
+    "Authorization",
+    "Accept",
+  ],
+  exposedHeaders: ["Content-Length"],
 });
 
 // Helper method to wait for a middleware to execute before continuing
