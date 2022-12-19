@@ -17,18 +17,6 @@ type Comment {
   user: User!
 }
 
-type Company {
-  description: String!
-  id: ID!
-  image: String!
-  industries: [String!]!
-  jobsPage: String!
-  landingPage: String!
-  location: String!
-  name: String!
-  publicationDate: String!
-}
-
 input CreateCommentInput {
   linkId: String!
   text: String!
@@ -57,19 +45,6 @@ input FeedArgs {
   skip: Int = 0
   tag: String
   take: Int = 10
-}
-
-type Job {
-  categories: [String!]!
-  company: Company!
-  companyId: Float!
-  description: String!
-  id: ID!
-  landingPage: String!
-  level: String!
-  location: String!
-  name: String!
-  publicationDate: String!
 }
 
 type Link {
@@ -103,7 +78,6 @@ type Mutation {
 type Query {
   comments(linkId: String!): [Comment!]!
   feed(args: FeedArgs): Feed!
-  jobs(limit: Float): [Job!]!
   link(id: ID!): Link!
   me: User
   popularTags: [String!]!
