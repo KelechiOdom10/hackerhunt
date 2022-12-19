@@ -27,6 +27,7 @@
     "chakra-ui-autocomplete": "^1.4.5",
     "class-validator": "^0.13.2",
     "cookie": "^0.5.0",
+    "cors": "^2.8.5",
     "framer-motion": "^6.5.1",
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.20.1",

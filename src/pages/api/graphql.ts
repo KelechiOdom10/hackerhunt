@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "reflect-metadata";
-import { ApolloServer } from "@apollo/server";
-import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
-import { startServerAndCreateNextHandler } from "@as-integrations/next";
+// import { ApolloServer } from "@apollo/server";
+// import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
+// import { startServerAndCreateNextHandler } from "@as-integrations/next";
+import Cors from "cors";
 // import { gql } from "@apollo/client";
 import { PrismaClient, User } from "@prisma/client";
 import prisma from "server/db";
@@ -18,6 +20,7 @@ import {
 import { GraphQLError } from "graphql";
 import { validate } from "class-validator";
 import { buildSchema } from "type-graphql";
+import { ApolloServer } from "apollo-server-micro";
 // import { makeExecutableSchema } from "@graphql-tools/schema";
 
 export interface GraphQLContext {
@@ -27,42 +30,42 @@ export interface GraphQLContext {
   user: User | null;
 }
 
-// export const resolvers = {
-//   Query: {
-//     viewer() {
-//       return { id: 1, name: "John Smith", status: "cached" };
-//     },
-//   },
-// };
+async function createContext(req: NextApiRequest, res: NextApiResponse) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const user = await getUser(req.req);
 
-// export const typeDefs = gql`
-//   type User {
-//     id: ID!
-//     name: String!
-//     status: String!
-//   }
-//   type Query {
-//     viewer: User
-//   }
-// `;
+  return {
+    ...req,
+    res,
+    prisma,
+    user,
+  };
+}
 
-// export const schema = makeExecutableSchema({
-//   typeDefs,
-//   resolvers,
-// });
+// Setup cors
+const cors = Cors({
+  methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  credentials: true,
+  origin: [
+    "https://studio.apollographql.com",
+    "http://localhost:3000",
+    `${process.env.NEXT_PUBLIC_VERCEL_URL}`,
+  ],
+});
 
-// async function createContext(req: NextApiRequest, res: NextApiResponse) {
-//   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//   // @ts-ignore
-//   const user = await getUser(req.req);
+// Middleware to run the cors configuration
+function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: any) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result: unknown) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
 
-//   return {
-//     ...req,
-//     res,
-//     prisma,
-//     user,
-//   };
-// }
+      return resolve(result);
+    });
+  });
+}
 
 const schema = await buildSchema({
   emitSchemaFile: {
@@ -95,12 +98,34 @@ const schema = await buildSchema({
   },
 });
 
-const apolloServer = new ApolloServer<GraphQLContext>({
+const server = new ApolloServer({
   schema,
-  plugins: [ApolloServerPluginLandingPageLocalDefault()],
-  introspection: true,
+  context: createContext,
 });
 
-export default startServerAndCreateNextHandler(apolloServer, {
-  context: async (req, res) => ({ req, res, prisma, user: await getUser(req) }),
-});
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+const startServer = server.start();
+
+// const apolloServer = new ApolloServer<GraphQLContext>({
+//   schema,
+//   plugins: [ApolloServerPluginLandingPageLocalDefault()],
+//   introspection: true,
+// });
+
+// export default startServerAndCreateNextHandler(apolloServer, {
+//   context: async (req, res) => ({ req, res, prisma, user: await getUser(req) }),
+// });
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  await runMiddleware(req, res, cors);
+  await startServer;
+  await server.createHandler({ path: "/api/graphql" })(req, res);
+}
