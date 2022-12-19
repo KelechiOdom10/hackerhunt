@@ -3,7 +3,7 @@ import Cors from "micro-cors";
 import { PrismaClient, User } from "@prisma/client";
 import { ApolloServer } from "apollo-server-micro";
 import prisma from "server/db";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { schema } from "server/schema";
 import { getUser } from "server/utils/auth";
 
@@ -61,16 +61,18 @@ const cors = Cors({
   ],
 });
 
-const handler = cors(async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === "OPTIONS") {
-    return res.status(200).send("ok");
+const handler: NextApiHandler = cors(
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    if (req.method === "OPTIONS") {
+      return res.status(200).send("ok");
+    }
+
+    await startServer;
+
+    await apolloServer.createHandler({
+      path: "/api/graphql",
+    })(req, res);
   }
-
-  await startServer;
-
-  await apolloServer.createHandler({
-    path: "/api/graphql",
-  })(req, res);
-});
+);
 
 export default handler;
