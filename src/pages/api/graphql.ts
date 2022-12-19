@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import Cors from "micro-cors";
+import { ApolloServer } from "@apollo/server";
+import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { PrismaClient, User } from "@prisma/client";
-import { ApolloServer } from "apollo-server-micro";
 import prisma from "server/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { schema } from "server/schema";
@@ -14,53 +14,23 @@ export interface GraphQLContext {
   user: User | null;
 }
 
-async function createContext(req: NextApiRequest, res: NextApiResponse) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const user = await getUser(req.req);
+// async function createContext(req: NextApiRequest, res: NextApiResponse) {
+//   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//   // @ts-ignore
+//   const user = await getUser(req.req);
 
-  return {
-    ...req,
-    res,
-    prisma,
-    user,
-  };
-}
+//   return {
+//     ...req,
+//     res,
+//     prisma,
+//     user,
+//   };
+// }
 
-const apolloServer = new ApolloServer({
+const apolloServer = new ApolloServer<GraphQLContext>({
   schema,
-  context: createContext,
-  introspection: true,
 });
 
-const startServer = apolloServer.start();
-
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true,
-  },
-};
-
-const cors = Cors({
-  allowMethods: ["POST", "OPTIONS"],
-  allowHeaders: [
-    "Access-Control-Allow-Origin",
-    "Origin, X-Requested-With, Content-Type, Accept",
-    "X-HTTP-Method-Override, Authorization",
-  ],
+export default startServerAndCreateNextHandler(apolloServer, {
+  context: async (req, res) => ({ req, res, prisma, user: await getUser(req) }),
 });
-
-const handler = cors(async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === "OPTIONS") {
-    return res.status(200).send("ok");
-  }
-
-  await startServer;
-
-  await apolloServer.createHandler({
-    path: "/api/graphql",
-  })(req, res);
-});
-
-export default handler;
