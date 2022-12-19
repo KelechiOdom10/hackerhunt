@@ -46,7 +46,7 @@ function createApolloClient(
 ) {
   const link = createHttpLink({
     uri: `${urls[process.env.NODE_ENV]}/api/graphql`,
-    credentials: "same-origin",
+    credentials: "include",
   });
 
   let authLink;

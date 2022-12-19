@@ -27,7 +27,11 @@ async function createContext(req: NextApiRequest, res: NextApiResponse) {
   };
 }
 
-const apolloServer = new ApolloServer({ schema, context: createContext });
+const apolloServer = new ApolloServer({
+  schema,
+  context: createContext,
+  introspection: true,
+});
 
 const startServer = apolloServer.start();
 
