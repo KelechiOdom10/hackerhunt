@@ -1,7 +1,7 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { GraphQLError } from "graphql";
 import { validate } from "class-validator";
-import { buildTypeDefsAndResolversSync } from "type-graphql";
+import { buildTypeDefsAndResolvers } from "type-graphql";
 import {
   UserResolver,
   AuthResolver,
@@ -11,7 +11,7 @@ import {
   JobResolver,
 } from "./resolvers";
 
-const { typeDefs, resolvers } = buildTypeDefsAndResolversSync({
+const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
   resolvers: [
     UserResolver,
     AuthResolver,
