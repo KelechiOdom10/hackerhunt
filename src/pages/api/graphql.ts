@@ -50,6 +50,7 @@ const typeSchema = await schema();
 const apolloServer = new ApolloServer({
   schema: typeSchema,
   context: createContext,
+  introspection: true,
 });
 
 const startServer = apolloServer.start();
