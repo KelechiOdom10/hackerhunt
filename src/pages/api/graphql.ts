@@ -1,17 +1,14 @@
 import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
-import {
-  ApolloServerPluginLandingPageLocalDefault,
-  ApolloServerPluginLandingPageProductionDefault,
-} from "@apollo/server/plugin/landingPage/default";
+import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
-import { gql } from "@apollo/client";
+// import { gql } from "@apollo/client";
 import { PrismaClient, User } from "@prisma/client";
 import prisma from "server/db";
 import { NextApiRequest, NextApiResponse } from "next";
-// import { schema } from "server/schema";
+import { schema } from "server/schema";
 import { getUser } from "server/utils/auth";
-import { makeExecutableSchema } from "@graphql-tools/schema";
+// import { makeExecutableSchema } from "@graphql-tools/schema";
 
 export interface GraphQLContext {
   req: NextApiRequest;
@@ -20,29 +17,29 @@ export interface GraphQLContext {
   user: User | null;
 }
 
-export const resolvers = {
-  Query: {
-    viewer() {
-      return { id: 1, name: "John Smith", status: "cached" };
-    },
-  },
-};
+// export const resolvers = {
+//   Query: {
+//     viewer() {
+//       return { id: 1, name: "John Smith", status: "cached" };
+//     },
+//   },
+// };
 
-export const typeDefs = gql`
-  type User {
-    id: ID!
-    name: String!
-    status: String!
-  }
-  type Query {
-    viewer: User
-  }
-`;
+// export const typeDefs = gql`
+//   type User {
+//     id: ID!
+//     name: String!
+//     status: String!
+//   }
+//   type Query {
+//     viewer: User
+//   }
+// `;
 
-export const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
+// export const schema = makeExecutableSchema({
+//   typeDefs,
+//   resolvers,
+// });
 
 // async function createContext(req: NextApiRequest, res: NextApiResponse) {
 //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -60,6 +57,7 @@ export const schema = makeExecutableSchema({
 const apolloServer = new ApolloServer<GraphQLContext>({
   schema,
   plugins: [ApolloServerPluginLandingPageLocalDefault()],
+  introspection: true,
 });
 
 export default startServerAndCreateNextHandler(apolloServer, {
