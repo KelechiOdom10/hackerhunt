@@ -21,6 +21,12 @@ type Options = {
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
+const urls = {
+  test: "http://localhost:3000",
+  development: "http://localhost:3000",
+  production: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
+};
+
 // Log server errors.
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
@@ -39,7 +45,7 @@ function createApolloClient(
   options?: Options
 ) {
   const link = createHttpLink({
-    uri: `${process.env.NEXT_PUBLIC_URL.replace(/\/$/, "")}/api/graphql`,
+    uri: `${urls[process.env.NODE_ENV]}/api/graphql`,
     credentials: "same-origin",
   });
 
