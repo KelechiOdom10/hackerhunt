@@ -10,6 +10,7 @@ import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { mergeDeep } from "@apollo/client/utilities";
 import { parseCookies, TOKEN_NAME } from "../../server/utils/auth-cookies";
+import crossFetch from "cross-fetch";
 // import { schema } from "server/schema";
 
 export const isBrowser = typeof window !== "undefined";
@@ -46,7 +47,8 @@ function createApolloClient(
 ) {
   const link = createHttpLink({
     uri: `${urls[process.env.NODE_ENV]}/api/graphql`,
-    credentials: "include",
+    credentials: "same-origin",
+    fetch: crossFetch,
   });
 
   let authLink;
