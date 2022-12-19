@@ -5,19 +5,14 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
   createHttpLink,
+  from,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { mergeDeep } from "@apollo/client/utilities";
-import { parseCookies, TOKEN_NAME } from "../../server/utils/auth-cookies";
 // import { schema } from "server/schema";
 
 export const isBrowser = typeof window !== "undefined";
-
-type Callback = () => string;
-type Options = {
-  getToken: Callback;
-};
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
@@ -40,45 +35,33 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-function createApolloClient(
-  initialState: null | Record<string, any>,
-  options?: Options
-) {
-  const link = createHttpLink({
+function createApolloClient(initialState: null | Record<string, any>) {
+  const httpLink = createHttpLink({
     uri: `${urls[process.env.NODE_ENV]}/api/graphql`,
     credentials: "include",
   });
 
-  let authLink;
-
-  if (options) {
-    const { getToken } = options;
-    authLink = setContext((_, { headers }) => {
-      const token = getToken();
-      return {
-        headers: {
-          ...headers,
-          authorization: token ? `Bearer ${token}` : "",
-        },
-      };
-    });
-  }
+  const authLink = setContext((_, { headers }) => {
+    const token = isBrowser ? localStorage.getItem("ACCESS_TOKEN") : null;
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+      },
+    };
+  });
 
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: options
-      ? authLink?.concat(errorLink.concat(link))
-      : errorLink.concat(link),
+    link: from([errorLink, authLink, httpLink]),
     cache: new InMemoryCache().restore(initialState || {}),
   });
 }
 
 export function initializeApollo(
-  initialState: null | Record<string, any> = null,
-  options?: Options
+  initialState: null | Record<string, any> = null
 ) {
-  const _apolloClient =
-    apolloClient ?? createApolloClient(initialState, options);
+  const _apolloClient = apolloClient ?? createApolloClient(initialState);
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // gets hydrated here
@@ -96,12 +79,6 @@ export function initializeApollo(
 }
 
 export function useApollo(initialState: any = null) {
-  const store = useMemo(
-    () =>
-      initializeApollo(initialState, {
-        getToken: () => parseCookies()[TOKEN_NAME],
-      }),
-    [initialState]
-  );
+  const store = useMemo(() => initializeApollo(initialState), [initialState]);
   return store;
 }
