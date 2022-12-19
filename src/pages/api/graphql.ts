@@ -89,7 +89,10 @@ const apolloServer = new ApolloServer<GraphQLContext>({
   introspection: true,
 });
 
-const handler: NextApiHandler = (req: NextApiRequest, res: NextApiResponse) => {
+const handler: NextApiHandler = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
   res.setHeader("access-control-allow-credentials", "true");
   res.setHeader(
     "access-control-allow-Origin",
@@ -112,7 +115,7 @@ const handler: NextApiHandler = (req: NextApiRequest, res: NextApiResponse) => {
   //   return res.status(200).send("ok");
   // }
 
-  return startServerAndCreateNextHandler(apolloServer, {
+  startServerAndCreateNextHandler(apolloServer, {
     context: async (req, res) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -120,7 +123,7 @@ const handler: NextApiHandler = (req: NextApiRequest, res: NextApiResponse) => {
 
       return { req, res, prisma, user };
     },
-  });
+  })(req, res);
 };
 
 export default handler;
