@@ -21,6 +21,7 @@ import { GraphQLError } from "graphql";
 import { validate } from "class-validator";
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "apollo-server-micro";
+import { schema } from "server/schema";
 // import { makeExecutableSchema } from "@graphql-tools/schema";
 
 export interface GraphQLContext {
@@ -67,40 +68,43 @@ function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: any) {
   });
 }
 
-const schema = await buildSchema({
-  emitSchemaFile: {
-    path: "../../apollo/schema.graphql",
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  resolvers: [
-    UserResolver,
-    AuthResolver,
-    CommentResolver,
-    VoteResolver,
-    LinkResolver,
-    JobResolver,
-  ],
-  validate: async argValue => {
-    const errors = await validate(argValue);
-    if (errors.length > 0) {
-      const message = Object.values(errors[0].constraints)[0];
-      throw new GraphQLError(message || "Argument Validation Error", {
-        extensions: {
-          code: "BAD_USER_INPUT",
-          validationErrors: errors,
-          message: "One or more fields are invalid",
-          http: {
-            status: 400,
-          },
-        },
-      });
-    }
-  },
-});
+// const schema = await buildSchema({
+//   emitSchemaFile: {
+//     path: "../../apollo/schema.graphql",
+//   },
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   resolvers: [
+//     UserResolver,
+//     AuthResolver,
+//     CommentResolver,
+//     VoteResolver,
+//     LinkResolver,
+//     JobResolver,
+//   ],
+//   validate: async argValue => {
+//     const errors = await validate(argValue);
+//     if (errors.length > 0) {
+//       const message = Object.values(errors[0].constraints)[0];
+//       throw new GraphQLError(message || "Argument Validation Error", {
+//         extensions: {
+//           code: "BAD_USER_INPUT",
+//           validationErrors: errors,
+//           message: "One or more fields are invalid",
+//           http: {
+//             status: 400,
+//           },
+//         },
+//       });
+//     }
+//   },
+// });
+
+const typeSchema = await schema();
 
 const server = new ApolloServer({
-  schema,
+  schema: typeSchema,
   context: createContext,
+  introspection: true,
 });
 
 export const config = {
