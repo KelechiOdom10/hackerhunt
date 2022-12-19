@@ -30,7 +30,7 @@ export default function Home() {
             <PostListContainer />
           </GridItem>
           <GridItem colSpan={2} display={{ base: "none", md: "block" }}>
-            {/* <HiringNow /> */}
+            <HiringNow />
             <Tags />
           </GridItem>
         </Grid>
@@ -63,12 +63,12 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     client.query({
       query: PopularTagsDocument,
     }),
-    // client.query<JobsQuery, JobsQueryVariables>({
-    //   query: JobsDocument,
-    //   variables: {
-    //     limit: 4,
-    //   },
-    // }),
+    client.query<JobsQuery, JobsQueryVariables>({
+      query: JobsDocument,
+      variables: {
+        limit: 4,
+      },
+    }),
   ]);
 
   return {
