@@ -62,12 +62,13 @@ export const config = {
 };
 
 const cors = Cors({
-  allowMethods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  origin: "https://studio.apollographql.com",
+  allowCredentials: true,
+  allowMethods: ["GET", "POST", "PUT", "DELETE"],
   allowHeaders: [
-    "Access-Control-Allow-Origin",
+    "access-control-allow-credentials",
     "access-control-allow-origin",
-    "Origin, X-Requested-With, Content-Type, Accept",
-    "X-HTTP-Method-Override, Authorization",
+    "content-type",
   ],
   // origin: [
   //   "https://studio.apollographql.com",
@@ -77,19 +78,19 @@ const cors = Cors({
 });
 
 const handler = cors(async (req: NextApiRequest, res: NextApiResponse) => {
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://studio.apollographql.com"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Headers"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "POST, GET, PUT, PATCH, DELETE, OPTIONS, HEAD"
-  );
+  // res.setHeader("Access-Control-Allow-Credentials", "true");
+  // res.setHeader(
+  //   "Access-Control-Allow-Origin",
+  //   "https://studio.apollographql.com"
+  // );
+  // res.setHeader(
+  //   "Access-Control-Allow-Headers",
+  //   "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Headers"
+  // );
+  // res.setHeader(
+  //   "Access-Control-Allow-Methods",
+  //   "POST, GET, PUT, PATCH, DELETE, OPTIONS, HEAD"
+  // );
   if (req.method === "OPTIONS") {
     res.end();
     return false;
