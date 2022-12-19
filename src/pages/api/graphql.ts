@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import Cors from "cors";
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { ApolloServer } from "apollo-server-micro";
 import prisma from "server/db";
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { schema } from "server/schema";
 // import { getUser } from "server/utils/auth";
 
@@ -80,18 +80,11 @@ export const config = {
 
 const startServer = apolloServer.start();
 
-const handler: NextApiHandler = async (
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
-) => {
-  // if (req.method === "OPTIONS") {
-  //   return res.status(200).send("ok");
-  // }
+) {
   await runMiddleware(req, res, cors);
   await startServer;
-  await apolloServer.createHandler({
-    path: "/api/graphql",
-  })(req, res);
-};
-
-export default handler;
+  await apolloServer.createHandler({ path: "/api/graphql" })(req, res);
+}
