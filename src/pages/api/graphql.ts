@@ -11,19 +11,19 @@ export interface GraphQLContext {
   req: NextApiRequest;
   res: NextApiResponse;
   prisma: PrismaClient;
-  user: User | null;
+  // user: User | null;
 }
 
 async function createContext(req: NextApiRequest, res: NextApiResponse) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const user = await getUser(req.req);
+  // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // // @ts-ignore
+  // const user = await getUser(req.req);
 
   return {
     ...req,
     res,
     prisma,
-    user,
+    // user,
   };
 }
 
