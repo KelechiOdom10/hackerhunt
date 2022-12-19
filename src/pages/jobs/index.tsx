@@ -18,8 +18,9 @@ function Jobs() {
 
 export default Jobs;
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ params, preview }) => {
   const client = initializeApollo({});
+  console.log(`Building slug: ${params} ${preview}`);
 
   await client.query({
     query: JobsDocument,
