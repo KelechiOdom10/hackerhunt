@@ -31,6 +31,7 @@
     "framer-motion": "^6.5.1",
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.20.1",
+    "graphql-yoga": "^3.1.1",
     "jsonwebtoken": "^8.5.1",
     "link-preview-js": "^3.0.4",
     "micro": "^9.4.1",

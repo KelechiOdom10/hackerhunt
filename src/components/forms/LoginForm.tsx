@@ -61,6 +61,7 @@ export default function LoginForm() {
         router.replace("/");
       }
     } catch (error) {
+      console.log({ error });
       toast({
         description: error.message,
         status: "error",
