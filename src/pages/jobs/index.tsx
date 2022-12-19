@@ -5,6 +5,8 @@ import JobList from "~/components/job/JobList";
 import Layout from "~/components/layout/Layout";
 import Meta from "~/components/layout/Meta";
 
+const client = initializeApollo({});
+
 function Jobs() {
   return (
     <>
@@ -19,7 +21,6 @@ function Jobs() {
 export default Jobs;
 
 export const getStaticProps: GetStaticProps = async ({ params, preview }) => {
-  const client = initializeApollo({});
   console.log(`Building slug: ${params} ${preview}`);
 
   await client.query({

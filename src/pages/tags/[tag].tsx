@@ -14,6 +14,8 @@ import PostListContainer from "~/components/post/PostListContainer";
 import Tags from "~/components/sidebar/Tags";
 import { PAGE_SIZE } from "~/config";
 
+const client = initializeApollo({});
+
 const TagPage = ({ tag }: { tag: string }) => {
   return (
     <>
@@ -39,7 +41,6 @@ const TagPage = ({ tag }: { tag: string }) => {
 export default TagPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const client = initializeApollo({});
   const page = (query?.page as string) ?? "1";
   const tag = (query?.tag as string) ?? "";
 
