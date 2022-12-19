@@ -34,6 +34,7 @@ const apolloServer = new ApolloServer({
   context: createContext,
   csrfPrevention: true,
   introspection: true,
+  debug: true,
 });
 
 const cors = Cors({
