@@ -1,5 +1,9 @@
 import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from "@apollo/server/plugin/landingPage/default";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { gql } from "@apollo/client";
 import { PrismaClient, User } from "@prisma/client";
@@ -55,6 +59,7 @@ export const schema = makeExecutableSchema({
 
 const apolloServer = new ApolloServer<GraphQLContext>({
   schema,
+  plugins: [ApolloServerPluginLandingPageLocalDefault()],
 });
 
 export default startServerAndCreateNextHandler(apolloServer, {
