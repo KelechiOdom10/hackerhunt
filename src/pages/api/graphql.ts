@@ -91,7 +91,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       "access-control-allow-Methods",
       "PUT, POST, PATCH, DELETE, GET"
     );
-    return res.status(200).send("ok");
+    res.end();
+    return false;
   }
 
   await startServer;
