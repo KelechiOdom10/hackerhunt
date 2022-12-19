@@ -1,7 +1,6 @@
-import { makeExecutableSchema } from "@graphql-tools/schema";
 import { GraphQLError } from "graphql";
 import { validate } from "class-validator";
-import { buildTypeDefsAndResolvers } from "type-graphql";
+import { buildSchema } from "type-graphql";
 import {
   UserResolver,
   AuthResolver,
@@ -11,7 +10,11 @@ import {
   JobResolver,
 } from "./resolvers";
 
-const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
+export const schema = await buildSchema({
+  emitSchemaFile: {
+    path: "./src/apollo/schema.graphql",
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   resolvers: [
     UserResolver,
     AuthResolver,
@@ -20,9 +23,6 @@ const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
     LinkResolver,
     JobResolver,
   ],
-  emitSchemaFile: {
-    path: "./src/apollo/schema.graphql",
-  },
   validate: async argValue => {
     const errors = await validate(argValue);
     if (errors.length > 0) {
@@ -39,10 +39,4 @@ const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
       });
     }
   },
-  skipCheck: true, // allow for schema without queries
-});
-
-export const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
 });

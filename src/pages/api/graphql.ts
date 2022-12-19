@@ -6,8 +6,18 @@ import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { PrismaClient, User } from "@prisma/client";
 import prisma from "server/db";
 import { NextApiRequest, NextApiResponse } from "next";
-import { schema } from "server/schema";
 import { getUser } from "server/utils/auth";
+import {
+  AuthResolver,
+  CommentResolver,
+  JobResolver,
+  LinkResolver,
+  UserResolver,
+  VoteResolver,
+} from "server/resolvers";
+import { GraphQLError } from "graphql";
+import { validate } from "class-validator";
+import { buildSchema } from "type-graphql";
 // import { makeExecutableSchema } from "@graphql-tools/schema";
 
 export interface GraphQLContext {
@@ -53,6 +63,37 @@ export interface GraphQLContext {
 //     user,
 //   };
 // }
+
+const schema = await buildSchema({
+  emitSchemaFile: {
+    path: "../../apollo/schema.graphql",
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resolvers: [
+    UserResolver,
+    AuthResolver,
+    CommentResolver,
+    VoteResolver,
+    LinkResolver,
+    JobResolver,
+  ],
+  validate: async argValue => {
+    const errors = await validate(argValue);
+    if (errors.length > 0) {
+      const message = Object.values(errors[0].constraints)[0];
+      throw new GraphQLError(message || "Argument Validation Error", {
+        extensions: {
+          code: "BAD_USER_INPUT",
+          validationErrors: errors,
+          message: "One or more fields are invalid",
+          http: {
+            status: 400,
+          },
+        },
+      });
+    }
+  },
+});
 
 const apolloServer = new ApolloServer<GraphQLContext>({
   schema,
