@@ -28,33 +28,20 @@ export interface GraphQLContext {
   user: User | null;
 }
 
-async function createContext(req: NextApiRequest, res: NextApiResponse) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const user = await getUser(req.req);
-
-  return {
-    ...req,
-    res,
-    prisma,
-    user,
-  };
-}
-
-// Setup cors
-const cors = Cors({
-  allowMethods: ["POST", "GET", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowCredentials: true,
-  origin: "*",
-  allowHeaders: [
-    "X-Requested-With",
-    "Access-Control-Allow-Origin",
-    "X-HTTP-Method-Override",
-    "Content-Type",
-    "Authorization",
-    "Accept",
-  ],
-});
+// // Setup cors
+// const cors = Cors({
+//   allowMethods: ["POST", "GET", "PUT", "PATCH", "DELETE", "OPTIONS"],
+//   allowCredentials: true,
+//   origin: "*",
+//   allowHeaders: [
+//     "X-Requested-With",
+//     "Access-Control-Allow-Origin",
+//     "X-HTTP-Method-Override",
+//     "Content-Type",
+//     "Authorization",
+//     "Accept",
+//   ],
+// });
 
 const schema = await buildSchema({
   emitSchemaFile: {
@@ -93,7 +80,7 @@ const apolloServer = new ApolloServer<GraphQLContext>({
   introspection: true,
 });
 
-const handler = startServerAndCreateNextHandler(apolloServer, {
+export default startServerAndCreateNextHandler(apolloServer, {
   context: async (req, res) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -102,5 +89,3 @@ const handler = startServerAndCreateNextHandler(apolloServer, {
     return { req, res, prisma, user };
   },
 });
-
-export default handler;
