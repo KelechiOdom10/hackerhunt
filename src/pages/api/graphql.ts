@@ -50,24 +50,20 @@ const typeSchema = await schema();
 const apolloServer = new ApolloServer({
   schema: typeSchema,
   context: createContext,
-  introspection: true,
 });
 
 const startServer = apolloServer.start();
 
 const cors = Cors({
-  // origin: "https://studio.apollographql.com",
-  // allowCredentials: true,
-  // allowMethods: ["GET", "POST", "PUT", "DELETE"],
-  // allowHeaders: [
-  //   "access-control-allow-credentials",
-  //   "access-control-allow-origin",
-  //   "content-type",
-  // ],
-  allowMethods: ["Access-Control-Allow-Methods: *"],
-  allowHeaders: ["Access-Control-Allow-Origin: *"],
+  origin: "https://studio.apollographql.com",
   allowCredentials: true,
-  origin: "*",
+  allowMethods: ["GET", "POST", "PUT", "DELETE"],
+  allowHeaders: [
+    "access-control-allow-credentials",
+    "access-control-allow-methods: POST",
+    "access-control-allow-origin",
+    "content-type",
+  ],
   // origin: [
   //   "https://studio.apollographql.com",
   //   "http://localhost:3000",
@@ -75,30 +71,31 @@ const cors = Cors({
   // ],
 });
 
-const handler = cors(async (req: NextApiRequest, res: NextApiResponse) => {
-  // res.setHeader("Access-Control-Allow-Credentials", "true");
-  // res.setHeader(
-  //   "Access-Control-Allow-Origin",
-  //   "https://studio.apollographql.com"
-  // );
-  // res.setHeader(
-  //   "Access-Control-Allow-Headers",
-  //   "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Headers"
-  // );
-  // res.setHeader(
-  //   "Access-Control-Allow-Methods",
-  //   "POST, GET, PUT, PATCH, DELETE, OPTIONS, HEAD"
-  // );
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://studio.apollographql.com"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Headers"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "POST, GET, PUT, PATCH, DELETE, OPTIONS, HEAD"
+  );
   if (req.method === "OPTIONS") {
     res.end();
     return false;
   }
+
   await startServer;
 
   await apolloServer.createHandler({
     path: "/api/graphql",
   })(req, res);
-});
+};
 
 export default handler;
 
