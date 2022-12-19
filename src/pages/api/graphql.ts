@@ -9,17 +9,6 @@ import { PrismaClient, User } from "@prisma/client";
 import prisma from "server/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getUser } from "server/utils/auth";
-import {
-  AuthResolver,
-  CommentResolver,
-  JobResolver,
-  LinkResolver,
-  UserResolver,
-  VoteResolver,
-} from "server/resolvers";
-import { GraphQLError } from "graphql";
-import { validate } from "class-validator";
-import { buildSchema } from "type-graphql";
 import { ApolloServer } from "apollo-server-micro";
 import { schema } from "server/schema";
 // import { makeExecutableSchema } from "@graphql-tools/schema";
@@ -56,19 +45,6 @@ async function createContext(req: NextApiRequest, res: NextApiResponse) {
 //   ],
 // });
 
-// Middleware to run the cors configuration
-function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: any) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result: unknown) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-
-      return resolve(result);
-    });
-  });
-}
-
 const typeSchema = await schema();
 
 const apolloServer = new ApolloServer({
@@ -101,10 +77,23 @@ const cors = Cors({
 });
 
 const handler = cors(async (req: NextApiRequest, res: NextApiResponse) => {
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://studio.apollographql.com"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Headers"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "POST, GET, PUT, PATCH, DELETE, OPTIONS, HEAD"
+  );
   if (req.method === "OPTIONS") {
-    return res.status(200).send("ok");
+    res.end();
+    return false;
   }
-
   await startServer;
 
   await apolloServer.createHandler({
