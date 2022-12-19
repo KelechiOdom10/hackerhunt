@@ -2,11 +2,11 @@ import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
-import Cors from "cors";
+import Cors from "micro-cors";
 // import { gql } from "@apollo/client";
 import { PrismaClient, User } from "@prisma/client";
 import prisma from "server/db";
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { getUser } from "server/utils/auth";
 import {
   AuthResolver,
@@ -43,12 +43,16 @@ async function createContext(req: NextApiRequest, res: NextApiResponse) {
 
 // Setup cors
 const cors = Cors({
-  methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  credentials: true,
-  origin: [
-    "https://studio.apollographql.com",
-    "http://localhost:8000",
-    "http://localhost:3000",
+  allowMethods: ["POST", "GET", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowCredentials: true,
+  origin: "*",
+  allowHeaders: [
+    "X-Requested-With",
+    "Access-Control-Allow-Origin",
+    "X-HTTP-Method-Override",
+    "Content-Type",
+    "Authorization",
+    "Accept",
   ],
 });
 
@@ -89,41 +93,14 @@ const apolloServer = new ApolloServer<GraphQLContext>({
   introspection: true,
 });
 
-const handler: NextApiHandler = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
-  res.setHeader("access-control-allow-credentials", "true");
-  res.setHeader(
-    "access-control-allow-Origin",
-    "https://studio.apollographql.com"
-  );
-  res.setHeader(
-    "access-control-allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, access-control-allow-Methods, access-control-allow-Origin, access-control-allow-credentials, access-control-allow-Headers"
-  );
-  res.setHeader(
-    "access-control-allow-Methods",
-    "POST, GET, PUT, PATCH, DELETE, OPTIONS, HEAD"
-  );
+const handler = startServerAndCreateNextHandler(apolloServer, {
+  context: async (req, res) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const user = await getUser(req.req);
 
-  // if (req.method == "OPTIONS") {
-  //   res.setHeader(
-  //     "access-control-allow-Methods",
-  //     "PUT, POST, PATCH, DELETE, GET"
-  //   );
-  //   return res.status(200).send("ok");
-  // }
+    return { req, res, prisma, user };
+  },
+});
 
-  startServerAndCreateNextHandler(apolloServer, {
-    context: async (req, res) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const user = await getUser(req.req);
-
-      return { req, res, prisma, user };
-    },
-  })(req, res);
-};
-
-export default handler;
+export default cors(handler);
