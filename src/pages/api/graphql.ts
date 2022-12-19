@@ -30,16 +30,10 @@ async function createContext(req: NextApiRequest, res: NextApiResponse) {
 const apolloServer = new ApolloServer({
   schema: await schema(),
   context: createContext,
+  introspection: true,
 });
 
 const startServer = apolloServer.start();
-
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true,
-  },
-};
 
 const cors = Cors({
   allowMethods: ["POST", "OPTIONS"],
@@ -48,6 +42,8 @@ const cors = Cors({
     "Origin, X-Requested-With, Content-Type, Accept",
     "X-HTTP-Method-Override, Authorization",
   ],
+  allowCredentials: true,
+  origin: "*",
 });
 
 const handler = cors(async (req: NextApiRequest, res: NextApiResponse) => {
@@ -63,3 +59,9 @@ const handler = cors(async (req: NextApiRequest, res: NextApiResponse) => {
 });
 
 export default handler;
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
