@@ -54,22 +54,19 @@ const apolloServer = new ApolloServer({
 
 const startServer = apolloServer.start();
 
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true,
-  },
-};
-
 const cors = Cors({
-  origin: "https://studio.apollographql.com",
+  // origin: "https://studio.apollographql.com",
+  // allowCredentials: true,
+  // allowMethods: ["GET", "POST", "PUT", "DELETE"],
+  // allowHeaders: [
+  //   "access-control-allow-credentials",
+  //   "access-control-allow-origin",
+  //   "content-type",
+  // ],
+  allowMethods: ["Access-Control-Allow-Methods: *"],
+  allowHeaders: ["Access-Control-Allow-Origin: *"],
   allowCredentials: true,
-  allowMethods: ["GET", "POST", "PUT", "DELETE"],
-  allowHeaders: [
-    "access-control-allow-credentials",
-    "access-control-allow-origin",
-    "content-type",
-  ],
+  origin: "*",
   // origin: [
   //   "https://studio.apollographql.com",
   //   "http://localhost:3000",
@@ -103,3 +100,9 @@ const handler = cors(async (req: NextApiRequest, res: NextApiResponse) => {
 });
 
 export default handler;
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
