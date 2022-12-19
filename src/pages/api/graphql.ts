@@ -103,4 +103,4 @@ const handler = startServerAndCreateNextHandler(apolloServer, {
   },
 });
 
-export default cors(handler);
+export default handler;
