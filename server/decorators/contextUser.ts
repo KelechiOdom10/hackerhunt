@@ -5,15 +5,8 @@ import { GraphQLContext } from "~/pages/api/graphql";
 
 export function ContextUser() {
   return createParamDecorator<GraphQLContext>(async ({ context }) => {
-    const contextUser = await getUser(context.req);
-    if (contextUser) {
-      const user = await context.prisma.user.findUnique({
-        where: { id: contextUser.id },
-      });
-      return user;
-    } else {
-      return null;
-    }
+    const user = await getUser(context.req);
+    return user ?? null;
   });
 }
 export type ContextUser = User | null;

@@ -9,8 +9,12 @@ export interface Decoded {
 }
 
 export const getUser = async (req: NextApiRequest) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const request = req.req as NextApiRequest;
+
   try {
-    const authHeader = req.headers.authorization;
+    const authHeader = request.headers.authorization;
     const token = authHeader.replace("Bearer ", "");
 
     if (!token) throw new AuthenticationError("No access token found");
