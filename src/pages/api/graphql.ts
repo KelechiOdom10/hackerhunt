@@ -22,7 +22,7 @@ async function createContext(req: NextApiRequest, res: NextApiResponse) {
   // console.log({ user });
 
   return {
-    ...req,
+    req,
     res,
     prisma,
     // user,
