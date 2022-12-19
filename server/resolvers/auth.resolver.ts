@@ -48,15 +48,14 @@ export class AuthResolver {
     const salt = await genSalt(10);
     const hashedPassword = await hash(password, salt);
 
-    const user = await ctx.prisma.user.create({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _, ...user } = await ctx.prisma.user.create({
       data: {
         email,
         username,
         password: hashedPassword,
       },
     });
-
-    delete user.password;
 
     const token = jwtGenerator(user.id);
 
@@ -73,24 +72,24 @@ export class AuthResolver {
   ) {
     const { email, password } = input;
 
-    const user = await ctx.prisma.user.findUnique({
+    const existingUser = await ctx.prisma.user.findUnique({
       where: {
         email,
       },
     });
 
-    if (!user)
+    if (!existingUser)
       throw new GraphQLError("User not found", {
         extensions: { code: "NOT_FOUND", http: { status: 404 } },
       });
 
-    const validPassword = await compare(password, user.password);
+    const { password: existingPassword, ...user } = existingUser;
+
+    const validPassword = await compare(password, existingPassword);
     if (!validPassword)
       throw new GraphQLError("Invalid password", {
         extensions: { code: "BAD_USER_INPUT", http: { status: 401 } },
       });
-
-    delete user.password;
 
     const token = jwtGenerator(user.id);
 

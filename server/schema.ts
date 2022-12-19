@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { GraphQLError } from "graphql";
 import { validate } from "class-validator";
 import { buildSchema } from "type-graphql";
@@ -37,9 +38,9 @@ export const schema = await buildSchema({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   resolvers,
   validate: async argValue => {
-    const errors = await validate(argValue);
+    const errors = await validate(argValue!);
     if (errors.length > 0) {
-      const message = Object.values(errors[0].constraints)[0];
+      const message = Object.values(errors[0].constraints!)[0];
       throw new GraphQLError(message || "Argument Validation Error", {
         extensions: {
           code: "BAD_USER_INPUT",

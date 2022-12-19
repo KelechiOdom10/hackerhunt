@@ -67,7 +67,7 @@ function createApolloClient(
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: options
-      ? authLink.concat(errorLink.concat(link))
+      ? authLink?.concat(errorLink.concat(link))
       : errorLink.concat(link),
     cache: new InMemoryCache().restore(initialState || {}),
   });

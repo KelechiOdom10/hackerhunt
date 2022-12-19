@@ -8,7 +8,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { IoMdChatboxes } from "react-icons/io";
-import { Link } from "~/apollo/generated/graphql";
+import { LinkDetailsFragment } from "~/apollo/generated/graphql";
 import { ChakraNextImage } from "~/components/utils/CustomImage";
 import CustomLink from "~/components/utils/CustomLink";
 import { useMe } from "~/hooks/useMe";
@@ -16,7 +16,7 @@ import { timeDifferenceForDate } from "~/utils/timeDifference";
 import UpVoteButtonPreview from "./UpVoteButtonPreview";
 
 type Props = {
-  link: Link;
+  link: LinkDetailsFragment;
 };
 
 export default function PostPreview({ link }: Props) {
@@ -26,7 +26,7 @@ export default function PostPreview({ link }: Props) {
     <Flex align="center" justify="space-between" py={1} rounded="md" w="full">
       <HStack spacing={4}>
         <ChakraNextImage
-          src={link.image}
+          src={link.image as string}
           alt={link.title}
           fill
           sizes="(max-width: 768px) 100vw,

@@ -37,8 +37,8 @@ const UserProfile = ({ userId }: Props) => {
         <Box py={8}>
           <HStack align="center">
             <ChakraNextImage
-              src={`https://avatars.dicebear.com/api/open-peeps/${data.user.username}.svg`}
-              alt={`Generated avatar for ${data.user.username}`}
+              src={`https://avatars.dicebear.com/api/open-peeps/${data.user?.username}.svg`}
+              alt={`Generated avatar for ${data.user?.username}`}
               width={100}
               height={100}
               style={{ borderRadius: "50%" }}
@@ -49,13 +49,13 @@ const UserProfile = ({ userId }: Props) => {
                 fontWeight="semibold"
                 color={useColorModeValue("brand.500", "white")}
               >
-                @{data.user.username}
+                @{data.user?.username}
               </Text>
               <Text
                 fontSize={{ base: "sm", md: "md" }}
                 color={useColorModeValue("gray.600", "whiteAlpha.800")}
               >
-                {`Joined ${timeDifferenceForDate(data.user.createdAt)}`}
+                {`Joined ${timeDifferenceForDate(data.user?.createdAt)}`}
               </Text>
             </VStack>
           </HStack>
@@ -75,15 +75,15 @@ const UserProfile = ({ userId }: Props) => {
 
             <TabPanels>
               <TabPanel>
-                <PostList loading={loading} links={data.user.links} />
+                <PostList loading={loading} links={data.user?.links || []} />
               </TabPanel>
               <TabPanel>
-                <UserCommentList comments={data.user.comments} />
+                <UserCommentList comments={data.user?.comments || []} />
               </TabPanel>
               <TabPanel>
                 <PostList
                   loading={loading}
-                  links={data.user.votes.map(vote => vote.link)}
+                  links={data.user?.votes.map(vote => vote.link)}
                 />
               </TabPanel>
             </TabPanels>

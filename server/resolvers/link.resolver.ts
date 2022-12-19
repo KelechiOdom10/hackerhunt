@@ -45,7 +45,7 @@ export class LinkResolver {
       : {};
 
     const orderBy: Prisma.Enumerable<Prisma.LinkOrderByWithRelationInput> = {
-      [args?.orderBy]:
+      [args?.orderBy as string]:
         args?.orderBy === "votes"
           ? {
               _count: "desc",
@@ -191,13 +191,16 @@ export class LinkResolver {
   @FieldResolver(() => Number)
   async commentCount(@Root() link: Link, @Ctx() ctx: GraphQLContext) {
     return (
-      await ctx.prisma.link.findFirst({ where: { id: link.id } }).comments()
-    ).length;
+      (await ctx.prisma.link.findFirst({ where: { id: link.id } }).comments())
+        ?.length || 0
+    );
   }
 
   @FieldResolver(() => Number)
   async voteCount(@Root() link: Link, @Ctx() ctx: GraphQLContext) {
-    return (await ctx.prisma.link.findFirst({ where: { id: link.id } }).votes())
-      .length;
+    return (
+      (await ctx.prisma.link.findFirst({ where: { id: link.id } }).votes())
+        ?.length || 0
+    );
   }
 }

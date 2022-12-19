@@ -52,7 +52,7 @@ export default function CreatePostForm() {
           items.map(item => item.label.toLowerCase())
         );
       }
-      if (selectedItems.length > 0) errors.tags = null;
+      if (selectedItems.length > 0) errors.tags = undefined;
     },
     [form]
   );
@@ -81,7 +81,6 @@ export default function CreatePostForm() {
             <Input
               variant="primary"
               type="text"
-              name="title"
               placeholder="Enter title of story "
               fontSize={{ base: "sm", md: "md" }}
               {...register("title", { required: "Title is required" })}
@@ -97,7 +96,6 @@ export default function CreatePostForm() {
             <Input
               variant="primary"
               type="url"
-              name="url"
               placeholder="Enter URL of story "
               fontSize={{ base: "sm", md: "md" }}
               {...register("url", { required: "URL is required" })}

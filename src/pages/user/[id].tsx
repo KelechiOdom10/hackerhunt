@@ -1,4 +1,4 @@
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { initializeApollo } from "~/apollo/client";
 import {
   UserDocument,
@@ -13,11 +13,10 @@ import UserProfile from "~/components/user/UserProfile";
 
 type Props = {
   userId: string;
-  username;
-  string;
+  username: string;
 };
 
-const UserDetail: NextPage = ({ userId, username }: Props) => {
+const UserDetail = ({ userId, username }: Props) => {
   return (
     <>
       <Meta
@@ -38,12 +37,12 @@ export default UserDetail;
 export const getStaticPaths: GetStaticPaths = async () => {
   const client = initializeApollo({});
 
-  const { data } = await client.query<UsersQuery>({
+  const result = await client.query<UsersQuery>({
     query: UsersDocument,
   });
 
-  const paths = data.users.map(user => ({
-    params: { id: user.id },
+  const paths = result.data.users.map(user => ({
+    params: { id: user?.id || "" },
   }));
 
   return {
@@ -67,7 +66,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
       userId,
-      username: result.data.user.username,
+      username: result.data.user?.username || "",
     },
     revalidate: 60 * 60 * 2,
   };

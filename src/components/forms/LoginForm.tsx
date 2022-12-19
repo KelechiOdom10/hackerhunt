@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 import {
   Box,
@@ -46,6 +47,7 @@ export default function LoginForm() {
       await client.resetStore();
       const { data } = await login({ variables: { input } });
       if (data?.login.token) {
+        console.log(data.login.token);
         setTokenCookie(data.login.token);
         client.writeQuery<MeQuery>({
           query: MeDocument,
@@ -60,8 +62,7 @@ export default function LoginForm() {
         });
         router.replace("/");
       }
-    } catch (error) {
-      console.log({ error });
+    } catch (error: any) {
       toast({
         description: error.message,
         status: "error",
@@ -74,8 +75,7 @@ export default function LoginForm() {
 
   const [show, setShow] = useState(false);
 
-  const toggle = e => {
-    e.preventDefault();
+  const toggle = () => {
     setShow(!show);
   };
 
@@ -90,7 +90,6 @@ export default function LoginForm() {
           <Input
             variant="primary"
             type="email"
-            name="email"
             placeholder="Enter your email address"
             fontSize={{ base: "sm", md: "md" }}
             {...register("email", {
@@ -116,7 +115,6 @@ export default function LoginForm() {
               variant="primary"
               pr="4.5rem"
               type={show ? "text" : "password"}
-              name="password"
               placeholder="Enter password"
               fontSize={{ base: "sm", md: "md" }}
               {...register("password", {

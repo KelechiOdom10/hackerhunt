@@ -15,11 +15,11 @@ export const getUser = async (req: NextApiRequest) => {
 
   try {
     const authHeader = request.headers.authorization;
-    const token = authHeader.replace("Bearer ", "");
+    const token = authHeader?.replace("Bearer ", "");
 
     if (!token) throw new AuthenticationError("No access token found");
 
-    const decoded = verifyToken(token) as Decoded;
+    const decoded = verifyToken(token) as unknown as Decoded;
 
     if (!decoded) throw new AuthenticationError("Invalid access token");
 
