@@ -5,27 +5,27 @@ import { ApolloServer } from "apollo-server-micro";
 import prisma from "server/db";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { schema } from "server/schema";
-import { getUser } from "server/utils/auth";
+// import { getUser } from "server/utils/auth";
 
 export interface GraphQLContext {
   req: NextApiRequest;
   res: NextApiResponse;
   prisma: PrismaClient;
-  user: User | null;
+  // user: User | null;
 }
 
 async function createContext(req: NextApiRequest, res: NextApiResponse) {
   // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // // @ts-ignore
-  const user = await getUser(req);
+  // const user = await getUser(req);
 
-  console.log({ user });
+  // console.log({ user });
 
   return {
     ...req,
     res,
     prisma,
-    user,
+    // user,
   };
 }
 
