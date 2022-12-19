@@ -72,22 +72,26 @@ const cors = Cors({
 });
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("access-control-allow-credentials", "true");
   res.setHeader(
-    "Access-Control-Allow-Origin",
+    "access-control-allow-Origin",
     "https://studio.apollographql.com"
   );
   res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Headers"
+    "access-control-allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, access-control-allow-Methods, access-control-allow-Origin, access-control-allow-credentials, access-control-allow-Headers"
   );
   res.setHeader(
-    "Access-Control-Allow-Methods",
+    "access-control-allow-Methods",
     "POST, GET, PUT, PATCH, DELETE, OPTIONS, HEAD"
   );
-  if (req.method === "OPTIONS") {
-    res.end();
-    return false;
+
+  if (req.method == "OPTIONS") {
+    res.setHeader(
+      "access-control-allow-Methods",
+      "PUT, POST, PATCH, DELETE, GET"
+    );
+    return res.status(200).send("ok");
   }
 
   await startServer;
