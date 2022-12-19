@@ -4,7 +4,6 @@ import {
   HStack,
   Text,
   useColorModeValue,
-  useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
@@ -12,6 +11,8 @@ import React from "react";
 import { JobDetailsFragment } from "~/apollo/generated/graphql";
 import { ChakraNextImage } from "~/components/utils/CustomImage";
 import JobModal from "../JobModal";
+import Meta from "~/components/layout/Meta";
+import CustomLink from "~/components/utils/CustomLink";
 
 type Props = {
   job: JobDetailsFragment;
@@ -19,22 +20,34 @@ type Props = {
 
 const JobDetail = ({ job }: Props) => {
   const router = useRouter();
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onModalClose = () => {
     router.query?.id &&
-      router.replace(router.pathname, undefined, { shallow: true });
-    onClose();
+      router.push(router.pathname, undefined, { shallow: true });
   };
 
   return (
     <HStack
+      as={CustomLink}
+      href={`/jobs?id=${job.id}`}
+      _hover={{
+        cursor: "pointer",
+      }}
       spacing={8}
       align="center"
-      onClick={onOpen}
       cursor="pointer"
       w="full"
     >
+      <Meta
+        meta={{
+          title: router.query.id
+            ? `${job.name} - ${job.company.name} | Hacker Hunt`
+            : "Job Board | Hacker Hunt",
+          image: router.query.id
+            ? job.company.image
+            : "http://localhost:3000/assets/hacker-hunt.jpeg",
+        }}
+      />
       <ChakraNextImage
         src={job.company.image}
         alt={job.company.name}
@@ -85,7 +98,7 @@ const JobDetail = ({ job }: Props) => {
       </VStack>
 
       <JobModal
-        isOpen={isOpen || router.query?.id === job.id}
+        isOpen={router.query?.id === job.id}
         onClose={onModalClose}
         job={job}
       />
