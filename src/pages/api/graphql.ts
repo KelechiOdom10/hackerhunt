@@ -1,11 +1,25 @@
 import "reflect-metadata";
+import { ApolloServer } from "@apollo/server";
+import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
+import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import Cors from "cors";
+// import { gql } from "@apollo/client";
 import { PrismaClient, User } from "@prisma/client";
-import { createYoga } from "graphql-yoga";
 import prisma from "server/db";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import { schema } from "server/schema";
 import { getUser } from "server/utils/auth";
+import {
+  AuthResolver,
+  CommentResolver,
+  JobResolver,
+  LinkResolver,
+  UserResolver,
+  VoteResolver,
+} from "server/resolvers";
+import { GraphQLError } from "graphql";
+import { validate } from "class-validator";
+import { buildSchema } from "type-graphql";
+// import { makeExecutableSchema } from "@graphql-tools/schema";
 
 export interface GraphQLContext {
   req: NextApiRequest;
@@ -27,78 +41,86 @@ async function createContext(req: NextApiRequest, res: NextApiResponse) {
   };
 }
 
-// const cors = Cors({
-//   allowMethods: ["POST", "OPTIONS"],
-//   allowHeaders: [
-//     "Access-Control-Allow-Origin",
-//     "Origin, X-Requested-With, Content-Type, Accept",
-//     "X-HTTP-Method-Override, Authorization",
-//   ],
-// });
-
+// Setup cors
 const cors = Cors({
   methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-  allowedHeaders: [
-    "access-control-allow-origin",
-    "https://studio.apollographql.com/",
-    "access-control-allow-credentials",
-    "*",
-    // "Access-Control-Allow-Origin",
-    // "X-HTTP-Method-Override, Authorization",
-    // "Origin, X-Requested-With, Content-Type, Accept",
-  ],
   origin: [
     "https://studio.apollographql.com",
+    "http://localhost:8000",
     "http://localhost:3000",
-    `${process.env.NEXT_PUBLIC_VERCEL_URL}`,
   ],
 });
-// Helper method to wait for a middleware to execute before continuing
-// And to throw an error when an error happens in a middleware
-function runMiddleware(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  fn: Function
-) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result: unknown) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
 
-      return resolve(result);
-    });
-  });
-}
-
-// Next.js API route config
-// https://nextjs.org/docs/api-routes/api-middlewares
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true,
+const schema = await buildSchema({
+  emitSchemaFile: {
+    path: "../../apollo/schema.graphql",
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resolvers: [
+    UserResolver,
+    AuthResolver,
+    CommentResolver,
+    VoteResolver,
+    LinkResolver,
+    JobResolver,
+  ],
+  validate: async argValue => {
+    const errors = await validate(argValue);
+    if (errors.length > 0) {
+      const message = Object.values(errors[0].constraints)[0];
+      throw new GraphQLError(message || "Argument Validation Error", {
+        extensions: {
+          code: "BAD_USER_INPUT",
+          validationErrors: errors,
+          message: "One or more fields are invalid",
+          http: {
+            status: 400,
+          },
+        },
+      });
+    }
+  },
+});
+
+const apolloServer = new ApolloServer<GraphQLContext>({
+  schema,
+  plugins: [ApolloServerPluginLandingPageLocalDefault()],
+  introspection: true,
+});
+
+const handler: NextApiHandler = (req: NextApiRequest, res: NextApiResponse) => {
+  res.setHeader("access-control-allow-credentials", "true");
+  res.setHeader(
+    "access-control-allow-Origin",
+    "https://studio.apollographql.com"
+  );
+  res.setHeader(
+    "access-control-allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, access-control-allow-Methods, access-control-allow-Origin, access-control-allow-credentials, access-control-allow-Headers"
+  );
+  res.setHeader(
+    "access-control-allow-Methods",
+    "POST, GET, PUT, PATCH, DELETE, OPTIONS, HEAD"
+  );
+
+  // if (req.method == "OPTIONS") {
+  //   res.setHeader(
+  //     "access-control-allow-Methods",
+  //     "PUT, POST, PATCH, DELETE, GET"
+  //   );
+  //   return res.status(200).send("ok");
+  // }
+
+  return startServerAndCreateNextHandler(apolloServer, {
+    context: async (req, res) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const user = await getUser(req.req);
+
+      return { req, res, prisma, user };
+    },
+  });
 };
 
-const apiHandler: NextApiHandler = async (req, res) => {
-  if (req.method === "OPTIONS") {
-    return res.status(200).send("ok");
-  }
-
-  const context = await createContext(req, res);
-  // Run the middleware
-  await runMiddleware(req, res, cors);
-
-  // Create new handler.
-  return createYoga({
-    graphqlEndpoint: "/api/graphql",
-    schema,
-    context,
-  })(req, res);
-};
-
-export default apiHandler;
+export default handler;
