@@ -4,7 +4,7 @@ import {
   ApolloClient,
   InMemoryCache,
   NormalizedCacheObject,
-  HttpLink,
+  createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { mergeDeep } from "@apollo/client/utilities";
@@ -22,7 +22,7 @@ type Options = {
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
 function createIsomorphLink() {
-  return new HttpLink({
+  return createHttpLink({
     uri: API_URL,
     credentials: "same-origin",
   });
