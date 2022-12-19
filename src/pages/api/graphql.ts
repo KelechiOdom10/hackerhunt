@@ -14,24 +14,28 @@ export interface GraphQLContext {
   // user: User | null;
 }
 
-async function createContext(req: NextApiRequest, res: NextApiResponse) {
-  // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // // @ts-ignore
-  // const user = await getUser(req);
+// async function createContext(req: NextApiRequest, res: NextApiResponse) {
+//   // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//   // // @ts-ignore
+//   // const user = await getUser(req);
 
-  // console.log({ user });
+//   // console.log({ user });
 
-  return {
-    req,
-    res,
-    prisma,
-    // user,
-  };
-}
+//   return {
+//     req,
+//     res,
+//     prisma,
+//     // user,
+//   };
+// }
 
 const apolloServer = new ApolloServer({
   schema,
-  context: createContext,
+  context: ({ req, res }: { req: NextApiRequest; res: NextApiResponse }) => ({
+    req,
+    res,
+    prisma,
+  }),
   csrfPrevention: true,
   introspection: true,
   debug: true,

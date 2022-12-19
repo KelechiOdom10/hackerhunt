@@ -27,6 +27,7 @@ import {
   MeQuery,
   MeDocument,
 } from "~/apollo/generated/graphql";
+import { setTokenCookie } from "server/utils/auth-cookies";
 import CustomLink from "../utils/CustomLink";
 
 export default function LoginForm() {
@@ -46,8 +47,7 @@ export default function LoginForm() {
       await client.resetStore();
       const { data } = await login({ variables: { input } });
       if (data?.login.token) {
-        console.log(data.login.token);
-        window.localStorage.setItem("ACCESS_TOKEN", data.login.token);
+        setTokenCookie(data.login.token);
         client.writeQuery<MeQuery>({
           query: MeDocument,
           data: { me: data.login.user },
