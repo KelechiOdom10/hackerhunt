@@ -15,6 +15,7 @@ import {
   FeedQueryVariables,
 } from "~/apollo/generated/graphql";
 import Layout from "~/components/layout/Layout";
+import Meta from "~/components/layout/Meta";
 import PostListContainer from "~/components/post/PostListContainer";
 import { PAGE_SIZE } from "~/config";
 
@@ -34,6 +35,14 @@ const Search = ({ filter }: { filter: string }) => {
 
   return (
     <Layout>
+      <Meta
+        meta={{
+          title:
+            filter.length === 0
+              ? "Search - All stories | Hacker Hunt"
+              : `${filter} - Hacker Hunt Search`,
+        }}
+      />
       <Container maxW="4xl" py={12}>
         <HStack mb={8}>
           {" "}

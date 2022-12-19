@@ -9,22 +9,30 @@ import {
   PopularTagsDocument,
 } from "~/apollo/generated/graphql";
 import Layout from "~/components/layout/Layout";
+import Meta from "~/components/layout/Meta";
 import PostListContainer from "~/components/post/PostListContainer";
 import Tags from "~/components/sidebar/Tags";
 import { PAGE_SIZE } from "~/config";
 
 const TagPage = ({ tag }: { tag: string }) => {
   return (
-    <Layout>
-      <Grid h="200px" templateColumns="repeat(6, 1fr)" gap={6} my={12}>
-        <GridItem colSpan={{ base: 6, md: 4 }}>
-          <PostListContainer title={`Results for "#${tag}"`} />
-        </GridItem>
-        <GridItem colSpan={2} display={{ base: "none", md: "block" }}>
-          <Tags />
-        </GridItem>
-      </Grid>
-    </Layout>
+    <>
+      <Meta
+        meta={{
+          title: `#${tag} - Tag | Hacker Hunt`,
+        }}
+      />
+      <Layout>
+        <Grid h="200px" templateColumns="repeat(6, 1fr)" gap={6} my={12}>
+          <GridItem colSpan={{ base: 6, md: 4 }}>
+            <PostListContainer title={`Results for "#${tag}"`} />
+          </GridItem>
+          <GridItem colSpan={2} display={{ base: "none", md: "block" }}>
+            <Tags />
+          </GridItem>
+        </Grid>
+      </Layout>
+    </>
   );
 };
 

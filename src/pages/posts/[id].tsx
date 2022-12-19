@@ -8,15 +8,32 @@ import {
   FeedQueryVariables,
   TotalLinksQuery,
   TotalLinksDocument,
+  LinkDetailsFragment,
 } from "~/apollo/generated/graphql";
 import Layout from "~/components/layout/Layout";
+import Meta from "~/components/layout/Meta";
 import PostDetail from "~/components/post/detail/PostDetail";
 
-export default function Story({ id }: { id: string }) {
+export default function Story({
+  id,
+  link,
+}: {
+  id: string;
+  link: LinkDetailsFragment;
+}) {
   return (
-    <Layout>
-      <PostDetail id={id} />
-    </Layout>
+    <>
+      <Meta
+        meta={{
+          title: `${link.title} | Hacker Hunt`,
+          image: `${link.image}`,
+          keywords: link.tags,
+        }}
+      />
+      <Layout>
+        <PostDetail id={id} />
+      </Layout>
+    </>
   );
 }
 
@@ -46,7 +63,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const client = initializeApollo({});
 
-  await client.query<LinkQuery>({
+  const result = await client.query<LinkQuery>({
     query: LinkDocument,
     variables: { linkId: params?.id },
   });
@@ -55,6 +72,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
       id: params?.id,
+      link: result.data.link,
     },
     revalidate: 60 * 60 * 2,
   };

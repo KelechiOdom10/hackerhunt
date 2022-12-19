@@ -3,12 +3,16 @@ import { initializeApollo } from "~/apollo/client";
 import { JobsDocument } from "~/apollo/generated/graphql";
 import JobList from "~/components/job/JobList";
 import Layout from "~/components/layout/Layout";
+import Meta from "~/components/layout/Meta";
 
 function Jobs() {
   return (
-    <Layout>
-      <JobList />
-    </Layout>
+    <>
+      <Meta meta={{ title: "Job Board | Hacker Hunt" }} />
+      <Layout>
+        <JobList />
+      </Layout>
+    </>
   );
 }
 
