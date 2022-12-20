@@ -8,9 +8,9 @@ import {
   Root,
 } from "type-graphql";
 import type { GraphQLContext } from "~/pages/api/graphql";
-import { Authorize } from "server/decorators/authorize";
 import { CreateCommentInput } from "../dtos";
 import { User, Comment } from "server/models";
+import { getUser } from "server/utils/auth";
 
 @Resolver(Comment)
 export class CommentResolver {
@@ -23,15 +23,15 @@ export class CommentResolver {
   }
 
   @Mutation(() => Comment)
-  @Authorize()
   async createComment(
     @Arg("input", () => CreateCommentInput) input: CreateCommentInput,
     @Ctx() ctx: GraphQLContext
   ) {
+    const user = await getUser(ctx.req);
     const { linkId, text } = input;
     const comment = await ctx.prisma.comment.create({
       data: {
-        user: { connect: { id: ctx.user.id } },
+        user: { connect: { id: user.id } },
         link: { connect: { id: linkId } },
         text,
       },

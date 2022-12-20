@@ -6,10 +6,10 @@ import {
   NormalizedCacheObject,
   createHttpLink,
 } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { mergeDeep } from "@apollo/client/utilities";
 import { parseCookies, TOKEN_NAME } from "../../server/utils/auth-cookies";
-// import { schema } from "server/schema";
 import { API_URL } from "~/config";
 
 export const isBrowser = typeof window !== "undefined";
@@ -21,17 +21,28 @@ type Options = {
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
-function createIsomorphLink() {
-  return createHttpLink({
-    uri: API_URL,
-    credentials: "same-origin",
-  });
-}
+// Log server errors.
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.map(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
+          locations
+        )}, Path: ${path}`
+      )
+    );
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+});
 
 function createApolloClient(
   initialState: null | Record<string, any>,
   options?: Options
 ) {
+  const link = createHttpLink({
+    uri: API_URL,
+    credentials: "include",
+  });
+
   let authLink;
 
   if (options) {
@@ -49,9 +60,14 @@ function createApolloClient(
 
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
+    ssrForceFetchDelay: 100,
     link: options
-      ? authLink.concat(createIsomorphLink())
-      : createIsomorphLink(),
+      ? authLink.concat(errorLink.concat(link))
+      : errorLink.concat(link),
+    defaultOptions: {
+      mutate: { errorPolicy: "all" },
+      query: { errorPolicy: "all" },
+    },
     cache: new InMemoryCache().restore(initialState || {}),
   });
 }

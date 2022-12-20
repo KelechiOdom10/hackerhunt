@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 import {
   Box,
@@ -60,7 +61,7 @@ export default function LoginForm() {
         });
         router.replace("/");
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         description: error.message,
         status: "error",
@@ -73,8 +74,7 @@ export default function LoginForm() {
 
   const [show, setShow] = useState(false);
 
-  const toggle = e => {
-    e.preventDefault();
+  const toggle = () => {
     setShow(!show);
   };
 
@@ -89,7 +89,6 @@ export default function LoginForm() {
           <Input
             variant="primary"
             type="email"
-            name="email"
             placeholder="Enter your email address"
             fontSize={{ base: "sm", md: "md" }}
             {...register("email", {
@@ -115,7 +114,6 @@ export default function LoginForm() {
               variant="primary"
               pr="4.5rem"
               type={show ? "text" : "password"}
-              name="password"
               placeholder="Enter password"
               fontSize={{ base: "sm", md: "md" }}
               {...register("password", {

@@ -18,7 +18,6 @@ import UpVoteButtonDetail from "./UpVoteButtonDetail";
 export default function PostDetail({ id }: { id: string }) {
   const { me } = useMe();
   const { data } = useLinkQuery({ variables: { linkId: id } });
-  const { link } = data;
   return (
     <Box maxW="xl" mx="auto" my={4}>
       {data && (
@@ -30,17 +29,17 @@ export default function PostDetail({ id }: { id: string }) {
               fontSize={{ base: "xl", md: "2xl" }}
               mb={4}
               fontWeight="bold"
-              href={link.url}
+              href={data.link.url}
               alignSelf="flex-start"
             >
-              {link.title}
+              {data.link.title}
             </CustomLink>
             <AspectRatio maxW="xl" width="100%" ratio={6 / 3}>
               <ChakraNextImage
-                src={link.image}
+                src={data.link.image as string}
                 width={600}
                 height={300}
-                alt={link.title}
+                alt={data.link.title}
                 chakraProps={{
                   borderRadius: "sm",
                 }}
@@ -62,27 +61,27 @@ export default function PostDetail({ id }: { id: string }) {
                   variant="link"
                   noOfLines={1}
                   fontWeight={500}
-                  href={`/user/${link.user?.id}`}
+                  href={`/user/${data.link.user?.id}`}
                 >
-                  By {link.user.username.toLowerCase()}
+                  By {data.link.user.username.toLowerCase()}
                 </CustomLink>
                 <Text
                   fontSize={{ base: "xs", md: "sm" }}
                   color={useColorModeValue("gray.600", "whiteAlpha.700")}
                 >
-                  - {new Date(link.createdAt).toLocaleString()}
+                  - {new Date(data.link.createdAt).toLocaleString()}
                 </Text>
               </HStack>
               <UpVoteButtonDetail
-                count={link.voteCount}
-                upvoted={link.votes.some(vote => vote.user.id === me?.id)}
-                id={link.id}
+                count={data.link.voteCount}
+                upvoted={data.link.votes.some(vote => vote.user.id === me?.id)}
+                id={data.link.id}
               />
             </HStack>
           </>
-          {link.description && (
+          {data.link.description && (
             <>
-              <Text alignSelf="flex-start">{link.description}</Text>
+              <Text alignSelf="flex-start">{data.link.description}</Text>
             </>
           )}
           <CommentForm linkId={id} />

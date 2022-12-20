@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Icon,
   Button,
@@ -25,7 +26,7 @@ export default function UpVoteButtonDetail({
   const onToggleVote = async () => {
     try {
       await toggleVote({ variables: { linkId: id } });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         description: error.message,
         status: "error",
@@ -48,12 +49,12 @@ export default function UpVoteButtonDetail({
           base: upvoted ? "md" : "sm",
           md: upvoted ? "md" : "sm",
         }}
-        fontWeight={upvoted && "extrabold"}
+        {...(upvoted && { fontWeight: "bold" })}
         color={useColorModeValue("gray.900", "white")}
       >
         <span>{count}</span>
         <Icon
-          fontSize={{ base: upvoted ? "xl" : "lg", md: upvoted && "2xl" }}
+          fontSize={{ base: upvoted ? "xl" : "lg", md: upvoted ? "2xl" : "md" }}
           color="inherit"
           as={upvoted ? BsFillCaretUpFill : BiUpArrow}
           aria-label="Toggle Upvote"

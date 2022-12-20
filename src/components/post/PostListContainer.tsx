@@ -89,8 +89,15 @@ export default function PostListContainer({
           </Button>
         </HStack>
       </HStack>
-      <PostList loading={loading} links={data.feed.links} />
-      <Pagination currentPage={parseInt(page)} totalPosts={data.feed.count} />
+      {data && (
+        <>
+          <PostList loading={loading} links={data.feed?.links} />
+          <Pagination
+            currentPage={parseInt(page)}
+            totalPosts={data.feed.count}
+          />
+        </>
+      )}
     </VStack>
   );
 }

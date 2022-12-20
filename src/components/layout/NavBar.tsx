@@ -149,7 +149,7 @@ export default function NavBar() {
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav logout={logout} me={me} />
+        {me && <MobileNav logout={logout} me={me} />}
       </Collapse>
     </Box>
   );

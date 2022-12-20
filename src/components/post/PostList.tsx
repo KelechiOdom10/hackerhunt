@@ -7,7 +7,7 @@ import {
 import React from "react";
 import PostSkeletonPreview from "../skeletons/PostPreviewSkeleton";
 import PostPreview from "./preview/PostPreview";
-import { Link, LinkDetailsFragment } from "~/apollo/generated/graphql";
+import { LinkDetailsFragment } from "~/apollo/generated/graphql";
 
 type Props = {
   loading: boolean;
@@ -37,7 +37,7 @@ const PostList = ({ links, loading }: Props) => {
           No posts
         </Heading>
       ) : (
-        links.map((link: Link) => <PostPreview link={link} key={link.id} />)
+        links && links.map(link => <PostPreview link={link} key={link.id} />)
       )}
     </VStack>
   );

@@ -1,13 +1,8 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { initializeApollo } from "~/apollo/client";
 import {
-  FeedQuery,
-  FeedDocument,
   LinkQuery,
   LinkDocument,
-  FeedQueryVariables,
-  TotalLinksQuery,
-  TotalLinksDocument,
   LinkDetailsFragment,
 } from "~/apollo/generated/graphql";
 import Layout from "~/components/layout/Layout";
@@ -37,43 +32,32 @@ export default function Story({
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const client = initializeApollo({});
-
-  const {
-    data: { totalLinks },
-  } = await client.query<TotalLinksQuery>({
-    query: TotalLinksDocument,
-  });
-
-  const { data } = await client.query<FeedQuery, FeedQueryVariables>({
-    query: FeedDocument,
-    variables: { args: { take: totalLinks ?? 100 } },
-  });
-  const paths = data.feed.links.map(link => ({
-    params: { id: link.id },
-  }));
-
-  return {
-    paths: paths || [],
-    fallback: "blocking",
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  query,
+  res,
+}) => {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=180, stale-while-revalidate=59"
+  );
   const client = initializeApollo({});
 
   const result = await client.query<LinkQuery>({
     query: LinkDocument,
-    variables: { linkId: params?.id },
+    variables: { linkId: query?.id },
   });
+
+  if (!result.data) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
       initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
-      id: params?.id,
+      id: query?.id,
       link: result.data.link,
     },
-    revalidate: 60 * 60 * 2,
   };
 };

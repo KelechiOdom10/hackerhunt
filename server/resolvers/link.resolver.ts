@@ -12,9 +12,9 @@ import {
 import { getLinkPreview } from "link-preview-js";
 import { Prisma } from "@prisma/client";
 import type { GraphQLContext } from "~/pages/api/graphql";
-import { Authorize } from "server/decorators/authorize";
 import { User, Vote, Comment, Link, HTMLResponse, Feed } from "server/models";
 import { CreateLinkInput, FeedArgs } from "../dtos";
+import { getUser } from "server/utils/auth";
 
 @Resolver(Link)
 export class LinkResolver {
@@ -45,7 +45,7 @@ export class LinkResolver {
       : {};
 
     const orderBy: Prisma.Enumerable<Prisma.LinkOrderByWithRelationInput> = {
-      [args?.orderBy]:
+      [args?.orderBy as string]:
         args?.orderBy === "votes"
           ? {
               _count: "desc",
@@ -144,11 +144,12 @@ export class LinkResolver {
   }
 
   @Mutation(() => Link)
-  @Authorize()
   async createLink(
     @Arg("input", () => CreateLinkInput) input: CreateLinkInput,
     @Ctx() ctx: GraphQLContext
   ) {
+    const user = await getUser(ctx.req);
+
     const { title, url, tags } = input;
     const urlData = (await getLinkPreview(url)) as HTMLResponse;
 
@@ -161,7 +162,7 @@ export class LinkResolver {
           ? urlData?.images[0]
           : urlData?.favicons[0] || "",
         url,
-        user: { connect: { id: ctx.user.id } },
+        user: { connect: { id: user.id } },
       },
     });
 
@@ -190,13 +191,16 @@ export class LinkResolver {
   @FieldResolver(() => Number)
   async commentCount(@Root() link: Link, @Ctx() ctx: GraphQLContext) {
     return (
-      await ctx.prisma.link.findFirst({ where: { id: link.id } }).comments()
-    ).length;
+      (await ctx.prisma.link.findFirst({ where: { id: link.id } }).comments())
+        ?.length || 0
+    );
   }
 
   @FieldResolver(() => Number)
   async voteCount(@Root() link: Link, @Ctx() ctx: GraphQLContext) {
-    return (await ctx.prisma.link.findFirst({ where: { id: link.id } }).votes())
-      .length;
+    return (
+      (await ctx.prisma.link.findFirst({ where: { id: link.id } }).votes())
+        ?.length || 0
+    );
   }
 }

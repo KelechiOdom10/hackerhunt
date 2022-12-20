@@ -38,7 +38,7 @@ const JobList = () => {
             No Jobs yet
           </Heading>
         ) : (
-          data.jobs.map(job => <JobDetail job={job} key={job.id} />)
+          data && data.jobs.map(job => <JobDetail job={job} key={job.id} />)
         )}
       </VStack>
     </VStack>

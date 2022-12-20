@@ -19,6 +19,8 @@ import HiringNow from "~/components/sidebar/HiringNow";
 import Tags from "~/components/sidebar/Tags";
 import { PAGE_SIZE } from "~/config";
 
+const client = initializeApollo({});
+
 export default function Home() {
   return (
     <div>
@@ -40,7 +42,6 @@ export default function Home() {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const client = initializeApollo({});
   const page = (query?.page as string) ?? "1";
   const variables: FeedQueryVariables = {
     args: {

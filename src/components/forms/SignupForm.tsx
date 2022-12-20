@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 import {
   Box,
@@ -44,7 +45,7 @@ export default function SignupForm() {
         });
         router.replace("/signin");
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         description: error.message,
         status: "error",
@@ -56,8 +57,7 @@ export default function SignupForm() {
   };
 
   const [show, setShow] = useState(false);
-  const toggle = e => {
-    e.preventDefault();
+  const toggle = () => {
     setShow(!show);
   };
 
@@ -74,7 +74,6 @@ export default function SignupForm() {
           <Input
             variant="primary"
             type="text"
-            name="username"
             placeholder="Enter your username"
             fontSize={{ base: "sm", md: "md" }}
             {...register("username", {
@@ -93,7 +92,6 @@ export default function SignupForm() {
           <Input
             variant="primary"
             type="email"
-            name="email"
             placeholder="Enter your email address"
             fontSize={{ base: "sm", md: "md" }}
             {...register("email", {
@@ -119,7 +117,6 @@ export default function SignupForm() {
               variant="primary"
               pr="4.5rem"
               type={show ? "text" : "password"}
-              name="password"
               placeholder="Enter password"
               fontSize={{ base: "sm", md: "md" }}
               {...register("password", {

@@ -23,7 +23,7 @@ const JobDetail = ({ job }: Props) => {
 
   const onModalClose = () => {
     router.query?.id &&
-      router.push(router.pathname, undefined, { shallow: true });
+      router.replace(router.pathname, undefined, { shallow: true });
   };
 
   return (
@@ -45,7 +45,7 @@ const JobDetail = ({ job }: Props) => {
             : "Job Board | Hacker Hunt",
           image: router.query.id
             ? job.company.image
-            : "http://localhost:3000/assets/hacker-hunt.jpeg",
+            : "https://hackerhunt-livid.vercel.app/assets/hacker-hunt.jpeg",
         }}
       />
       <ChakraNextImage

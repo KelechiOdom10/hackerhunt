@@ -10,7 +10,7 @@ import {
   ID,
 } from "type-graphql";
 import { User, Link, Vote } from "server/models";
-import { ContextUser } from "server/decorators/contextUser";
+import { getUser } from "server/utils/auth";
 
 @Resolver(() => User)
 export class UserResolver {
@@ -21,22 +21,29 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   async user(@Arg("id", () => ID) id: string, @Ctx() ctx: GraphQLContext) {
-    const user = await ctx.prisma.user.findFirst({
+    const existingUser = await ctx.prisma.user.findFirst({
       where: { id },
     });
 
-    if (!user)
+    if (!existingUser)
       throw new GraphQLError("User not found", {
         extensions: { code: "NOT_FOUND", http: { status: 404 } },
       });
 
-    delete user.password;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _, ...user } = existingUser;
+
     return user;
   }
 
   @Query(() => User, { nullable: true })
-  async me(@ContextUser() user: ContextUser) {
-    return user;
+  async me(@Ctx() ctx: GraphQLContext) {
+    try {
+      const user = await getUser(ctx.req);
+      return user;
+    } catch (error) {
+      return null;
+    }
   }
 
   @FieldResolver(() => [Link])

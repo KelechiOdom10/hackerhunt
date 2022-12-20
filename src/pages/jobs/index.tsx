@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { initializeApollo } from "~/apollo/client";
 import { JobsDocument } from "~/apollo/generated/graphql";
 import JobList from "~/components/job/JobList";
@@ -18,9 +18,13 @@ function Jobs() {
 
 export default Jobs;
 
-export const getStaticProps: GetStaticProps = async () => {
-  const client = initializeApollo({});
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=31536000, stale-while-revalidate"
+  );
 
+  const client = initializeApollo({});
   await client.query({
     query: JobsDocument,
   });

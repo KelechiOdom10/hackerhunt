@@ -1,0 +1,31 @@
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import {
+  authTypeDef as AuthPayload,
+  authResolver,
+} from "./resolvers/auth.resolver";
+import { userTypeDef as User, userResolver } from "./resolvers/user.resolver";
+import { jobTypeDef as Job, jobResolver } from "./resolvers/job.resolver";
+import { linkTypeDef as Link, linkResolver } from "./resolvers/link.resolver";
+import { voteTypeDef as Vote, voteResolver } from "./resolvers/vote.resolver";
+import {
+  commentTypeDef as Comment,
+  commentResolver,
+} from "./resolvers/comment.resolver";
+import { gql } from "apollo-server-micro";
+import { merge } from "lodash";
+
+const Query = gql`
+  scalar DateTime
+`;
+
+export const schema = makeExecutableSchema({
+  typeDefs: [Query, AuthPayload, User, Job, Link, Comment, Vote],
+  resolvers: merge(
+    authResolver,
+    userResolver,
+    jobResolver,
+    linkResolver,
+    voteResolver,
+    commentResolver
+  ),
+});

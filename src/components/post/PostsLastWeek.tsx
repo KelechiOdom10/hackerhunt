@@ -24,7 +24,7 @@ const LastWeekPost = ({ link }: Props) => {
       <HStack spacing={4}>
         <CustomLink href={link.url} variant="primary" isExternal>
           <ChakraNextImage
-            src={link.image}
+            src={link.image as string}
             alt={link.title}
             fill
             sizes="(max-width: 768px) 100vw,
