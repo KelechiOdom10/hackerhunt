@@ -4,7 +4,7 @@ import {
   LinkQuery,
   LinkDocument,
 } from "~/apollo/generated/graphql";
-import { maskApolloError } from "~/utils/errorUtils";
+import { formatError, maskApolloError } from "~/utils/errorUtils";
 
 export const useCreateComment = () => {
   const toast = useToast();
@@ -36,10 +36,11 @@ export const useCreateComment = () => {
         });
     },
     onError: e => {
+      const formattedError = formatError(e);
       toast({
         status: "error",
         description: maskApolloError(
-          e.message,
+          formattedError.message,
           "Failed to add comment. Please try again."
         ),
         position: "top-right",
