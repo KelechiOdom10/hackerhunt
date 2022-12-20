@@ -66,6 +66,7 @@ const JobModal = ({ isOpen, onClose, job }: Props) => {
               alt={`${job.name} Image`}
               width={100}
               height={100}
+              placeholder="empty"
               chakraProps={{
                 maxW: { base: "70px", md: "90px" },
                 minH: { base: "70px", md: "90px" },
