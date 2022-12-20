@@ -14,7 +14,7 @@ export const withAuth = (WrappedComponent: NextPage, location?: string) => {
       if (!me) {
         router.replace(location || "/signin");
       }
-    }, [loading, me, router, location]);
+    }, [loading, me, router]);
 
     if (loading || !me) {
       return <LoadingScreen />;

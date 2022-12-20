@@ -18,6 +18,7 @@ import UpVoteButtonDetail from "./UpVoteButtonDetail";
 export default function PostDetail({ id }: { id: string }) {
   const { me } = useMe();
   const { data } = useLinkQuery({ variables: { linkId: id } });
+  const subTextColor = useColorModeValue("gray.600", "whiteAlpha.700");
   return (
     <Box maxW="xl" mx="auto" my={4}>
       {data && (
@@ -65,10 +66,7 @@ export default function PostDetail({ id }: { id: string }) {
                 >
                   By {data.link.user.username.toLowerCase()}
                 </CustomLink>
-                <Text
-                  fontSize={{ base: "xs", md: "sm" }}
-                  color={useColorModeValue("gray.600", "whiteAlpha.700")}
-                >
+                <Text fontSize={{ base: "xs", md: "sm" }} color={subTextColor}>
                   - {new Date(data.link.createdAt).toLocaleString()}
                 </Text>
               </HStack>

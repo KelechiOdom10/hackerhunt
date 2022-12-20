@@ -17,6 +17,7 @@ export default function HiringNow() {
     },
   });
   const bgColor = useColorModeValue("white", "gray.800");
+  const borderWidth = useColorModeValue(1, 0);
 
   return (
     data && (
@@ -35,7 +36,7 @@ export default function HiringNow() {
           p={6}
           rounded="md"
           divider={<StackDivider />}
-          borderWidth={useColorModeValue(1, 0)}
+          borderWidth={borderWidth}
         >
           {data.jobs.map(job => (
             <JobPreview key={job.id} job={job} />

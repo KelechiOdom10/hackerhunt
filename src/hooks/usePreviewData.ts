@@ -15,5 +15,5 @@ export const usePreviewData = (
   );
   return useMemo(() => {
     return { data, error };
-  }, [url, error, data]);
+  }, [error, data]);
 };

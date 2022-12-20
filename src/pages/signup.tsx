@@ -1,8 +1,9 @@
-import { useColorModeValue, Flex, Box, Image } from "@chakra-ui/react";
+import { useColorModeValue, Flex, Box } from "@chakra-ui/react";
 import SignupForm from "~/components/forms/SignupForm";
 import Logo from "~/components/Logo";
 import Meta from "~/components/layout/Meta";
 import withoutAuth from "~/hoc/withNoAuth";
+import { ChakraNextImage } from "~/components/utils/CustomImage";
 
 export default withoutAuth(function SignUp() {
   const textColor = useColorModeValue("white", "brand.800");
@@ -28,12 +29,18 @@ export default withoutAuth(function SignUp() {
           py={4}
         >
           <Logo color={textColor} />
-          <Image
+          <ChakraNextImage
             src="https://www.pinclipart.com/picdir/big/420-4206452_think-tech-illustration-clipart.png"
-            alignSelf="center"
-            justifySelf="center"
-            mt="25vh"
-            display={{ base: "none", md: "block" }}
+            width={800}
+            height={800}
+            placeholder="empty"
+            chakraProps={{
+              alignSelf: "center",
+              justifySelf: "center",
+              mt: "25vh",
+              display: { base: "none", md: "block" },
+            }}
+            alt="Tech illustration"
           />
         </Flex>
         <Flex

@@ -30,6 +30,8 @@ const UserProfile = ({ userId }: Props) => {
       userId,
     },
   });
+  const textColor = useColorModeValue("brand.500", "white");
+  const subTextColor = useColorModeValue("gray.600", "whiteAlpha.800");
 
   return (
     <>
@@ -47,14 +49,11 @@ const UserProfile = ({ userId }: Props) => {
               <Text
                 fontSize={{ base: "md", md: "lg" }}
                 fontWeight="semibold"
-                color={useColorModeValue("brand.500", "white")}
+                color={textColor}
               >
                 @{data.user?.username}
               </Text>
-              <Text
-                fontSize={{ base: "sm", md: "md" }}
-                color={useColorModeValue("gray.600", "whiteAlpha.800")}
-              >
+              <Text fontSize={{ base: "sm", md: "md" }} color={subTextColor}>
                 {`Joined ${timeDifferenceForDate(data.user?.createdAt)}`}
               </Text>
             </VStack>
