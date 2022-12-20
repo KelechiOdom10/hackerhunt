@@ -5,12 +5,13 @@ import { MetaSeo } from "~/types";
 
 const Meta = ({ meta: pageMeta }: { meta?: Partial<MetaSeo> }) => {
   const router = useRouter();
+  const URL = "https://hacker-hunt.vercel.app";
   const meta = {
     title: "Hacker Hunt",
     description:
       "Hackernews inspired social news webapp with a modern design reminiscent of hacker culture.",
-    image: "https://hackerhunt-livid.vercel.app/assets/hacker-hunt.jpeg",
-    feed: "https://hackerhunt-livid.vercel.app/search",
+    image: `${URL}/assets/hacker-hunt.jpeg`,
+    feed: `${URL}/search`,
     keywords: [
       "technology",
       "social",
@@ -62,10 +63,7 @@ const Meta = ({ meta: pageMeta }: { meta?: Partial<MetaSeo> }) => {
       <meta httpEquiv="x-ua-compatible" content="ie=edge" />
       <meta content={meta.keywords.join(", ")} name="keywords" />
       {/** OpenGraph Metadata */}
-      <meta
-        property="og:url"
-        content={`https://hackerhunt-livid.vercel.app${router.asPath}`}
-      />
+      <meta property="og:url" content={`${URL}${router.asPath}`} />
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="Hacker Hunt" />
       <meta property="og:title" content={meta.title} />
