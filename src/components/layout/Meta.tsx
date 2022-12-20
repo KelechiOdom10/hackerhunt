@@ -9,8 +9,8 @@ const Meta = ({ meta: pageMeta }: { meta?: Partial<MetaSeo> }) => {
     title: "Hacker Hunt",
     description:
       "Hackernews inspired social news webapp with a modern design reminiscent of hacker culture.",
-    image: "http://localhost:3000/assets/hacker-hunt.jpeg",
-    feed: "http://localhost:3000/search",
+    image: "https://hackerhunt-livid.vercel.app/assets/hacker-hunt.jpeg",
+    feed: "https://hackerhunt-livid.vercel.app/search",
     keywords: [
       "technology",
       "social",
@@ -64,7 +64,7 @@ const Meta = ({ meta: pageMeta }: { meta?: Partial<MetaSeo> }) => {
       {/** OpenGraph Metadata */}
       <meta
         property="og:url"
-        content={`http://localhost:3000${router.asPath}`}
+        content={`https://hackerhunt-livid.vercel.app${router.asPath}`}
       />
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="Hacker Hunt" />

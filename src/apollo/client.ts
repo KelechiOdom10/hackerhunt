@@ -10,6 +10,7 @@ import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { mergeDeep } from "@apollo/client/utilities";
 import { parseCookies, TOKEN_NAME } from "../../server/utils/auth-cookies";
+import { API_URL } from "~/config";
 
 export const isBrowser = typeof window !== "undefined";
 
@@ -19,12 +20,6 @@ type Options = {
 };
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
-
-const urls = {
-  test: "http://localhost:3000",
-  development: "http://localhost:3000",
-  production: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
-};
 
 // Log server errors.
 const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -44,7 +39,7 @@ function createApolloClient(
   options?: Options
 ) {
   const link = createHttpLink({
-    uri: `${urls[process.env.NODE_ENV]}/api/graphql`,
+    uri: API_URL,
     credentials: "include",
   });
 

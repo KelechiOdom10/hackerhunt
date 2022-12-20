@@ -1,11 +1,9 @@
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { initializeApollo } from "~/apollo/client";
 import {
   UserDocument,
   UserQuery,
   UserQueryVariables,
-  UsersDocument,
-  UsersQuery,
 } from "~/apollo/generated/graphql";
 import Layout from "~/components/layout/Layout";
 import Meta from "~/components/layout/Meta";
@@ -35,26 +33,16 @@ const UserDetail: NextPage = ({ userId, username }: Props) => {
 
 export default UserDetail;
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getServerSideProps: GetServerSideProps = async ({
+  query,
+  res,
+}) => {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=60, stale-while-revalidate=59"
+  );
   const client = initializeApollo({});
-
-  const { data } = await client.query<UsersQuery>({
-    query: UsersDocument,
-  });
-
-  const paths = data.users.map(user => ({
-    params: { id: user.id },
-  }));
-
-  return {
-    paths: paths || [],
-    fallback: false,
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const client = initializeApollo({});
-  const userId = params?.id as string;
+  const userId = query?.id as string;
 
   const result = await client.query<UserQuery, UserQueryVariables>({
     query: UserDocument,
