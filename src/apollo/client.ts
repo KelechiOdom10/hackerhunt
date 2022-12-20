@@ -23,7 +23,7 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 const urls = {
   test: "http://localhost:3000",
   development: "http://localhost:3000",
-  production: `http://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
+  production: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
 };
 
 // Log server errors.
