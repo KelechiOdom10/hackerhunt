@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 import {
   Box,
@@ -21,6 +20,7 @@ import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useRouter } from "next/router";
 import { useSignupMutation, SignupInput } from "~/apollo/generated/graphql";
 import CustomLink from "../utils/CustomLink";
+import { formatError } from "~/utils/errorUtils";
 
 export default function SignupForm() {
   const [signup] = useSignupMutation();
@@ -46,8 +46,9 @@ export default function SignupForm() {
         router.replace("/signin");
       }
     } catch (error: any) {
+      const formattedError = formatError(error);
       toast({
-        description: error.message,
+        description: formattedError.message,
         status: "error",
         position: "top-right",
         isClosable: true,
