@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { ApolloServer } from "apollo-server-micro";
 import prisma from "server/db";
 import { NextApiRequest, NextApiResponse } from "next";
-import { schema } from "server/schema";
+import { schema } from "~/apollo/schema";
 
 export interface GraphQLContext {
   req: NextApiRequest;
@@ -13,7 +13,7 @@ export interface GraphQLContext {
 }
 
 const apolloServer = new ApolloServer({
-  schema: await schema(),
+  schema: schema,
   context: ({ req, res }: { req: NextApiRequest; res: NextApiResponse }) => ({
     req,
     res,
@@ -33,15 +33,15 @@ const cors = Cors({
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 204,
-  // allowedHeaders: [
-  //   "X-Requested-With",
-  //   "Access-Control-Allow-Origin",
-  //   "X-HTTP-Method-Override",
-  //   "Content-Type",
-  //   "Authorization",
-  //   "Accept",
-  // ],
-  // exposedHeaders: ["Content-Length"],
+  allowedHeaders: [
+    "X-Requested-With",
+    "Access-Control-Allow-Origin",
+    "X-HTTP-Method-Override",
+    "Content-Type",
+    "Authorization",
+    "Accept",
+  ],
+  exposedHeaders: ["Content-Length"],
 });
 
 // Helper method to wait for a middleware to execute before continuing
