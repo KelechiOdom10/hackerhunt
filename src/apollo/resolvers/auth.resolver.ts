@@ -1,11 +1,11 @@
 import { gql } from "@apollo/client";
-import { UserInputError } from "apollo-server-micro";
+import { ApolloServerErrorCode } from "@apollo/server/errors";
 import { compare, genSalt, hash } from "bcryptjs";
 import { GraphQLError } from "graphql";
 import { jwtGenerator } from "server/utils/jwtGenerator";
 import { GraphQLContext } from "~/pages/api/graphql";
-import { SignupInput, LoginInput } from "../generated/graphql";
-import { isEmail } from "class-validator";
+import { SignupInput, LoginInput } from "server/dtos";
+import { customValidate } from "server/utils/errorHandler";
 
 export const authTypeDef = gql`
   type AuthPayload {
@@ -37,12 +37,7 @@ export const authResolver = {
       { input }: { input: SignupInput },
       ctx: GraphQLContext
     ) => {
-      if (!input.email || !input.username || !input.password)
-        throw new UserInputError("All fields are required");
-
-      if (input.email && !isEmail(input.email)) {
-        throw new UserInputError("Email is not in valid format");
-      }
+      await customValidate(SignupInput, input);
 
       const { email, password, username } = input;
       const userWithEmailPromise = ctx.prisma.user.findUnique({
@@ -79,7 +74,6 @@ export const authResolver = {
       const salt = await genSalt(10);
       const hashedPassword = await hash(password, salt);
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password: _, ...user } = await ctx.prisma.user.create({
         data: {
           email,
@@ -101,16 +95,9 @@ export const authResolver = {
       { input }: { input: LoginInput },
       ctx: GraphQLContext
     ) => {
-      console.log(input);
-      if (!input.email || !input.password)
-        throw new UserInputError("Both fields are required");
-
-      if (input.email && !isEmail(input.email)) {
-        throw new UserInputError("Email is not in valid format");
-      }
+      await customValidate(LoginInput, input);
 
       const { email, password } = input;
-
       const existingUser = await ctx.prisma.user.findUnique({
         where: {
           email,
@@ -125,10 +112,14 @@ export const authResolver = {
       const { password: existingPassword, ...user } = existingUser;
 
       const validPassword = await compare(password, existingPassword);
-      if (!validPassword)
+      if (!validPassword) {
         throw new GraphQLError("Invalid password", {
-          extensions: { code: "BAD_USER_INPUT", http: { status: 401 } },
+          extensions: {
+            code: ApolloServerErrorCode.BAD_USER_INPUT,
+            http: { status: 401 },
+          },
         });
+      }
 
       const token = jwtGenerator(user.id);
 
