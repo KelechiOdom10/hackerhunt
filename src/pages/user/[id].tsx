@@ -51,12 +51,17 @@ export const getServerSideProps: GetServerSideProps = async ({
     },
   });
 
+  if (!result.data) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
       userId,
       username: result.data.user.username,
     },
-    revalidate: 60 * 60 * 2,
   };
 };

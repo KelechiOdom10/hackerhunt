@@ -52,9 +52,9 @@ export default function CreatePostForm() {
           items.map(item => item.label.toLowerCase())
         );
       }
-      if (selectedItems.length > 0) errors.tags = undefined;
+      if (selectedItems.length > 0) errors.tags = null;
     },
-    [form]
+    [errors, form, selectedItems.length]
   );
 
   return (
@@ -148,7 +148,6 @@ export default function CreatePostForm() {
               onSelectedItemsChange={changes =>
                 handleSelectedItemsChange(changes.selectedItems)
               }
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               refs={{
                 ...register("tags", {

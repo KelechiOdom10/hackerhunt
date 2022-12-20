@@ -48,7 +48,6 @@ export const userResolver = {
           extensions: { code: "NOT_FOUND", http: { status: 404 } },
         });
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password: _, ...user } = existingUser;
 
       return user;

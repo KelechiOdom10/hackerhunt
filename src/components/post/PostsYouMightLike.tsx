@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import {
   LinkDetailsFragment,
-  useTopLinksQuery,
+  useRandomLinksQuery,
 } from "~/apollo/generated/graphql";
 import { ChakraNextImage } from "../utils/CustomImage";
 import CustomLink from "../utils/CustomLink";
@@ -18,7 +18,7 @@ type Props = {
   link: LinkDetailsFragment;
 };
 
-const LastWeekPost = ({ link }: Props) => {
+const PostYouMightLike = ({ link }: Props) => {
   return (
     <Flex align="center" justify="space-between" rounded="md" w="full">
       <HStack spacing={4}>
@@ -43,6 +43,7 @@ const LastWeekPost = ({ link }: Props) => {
             isExternal
             fontSize={{ md: "sm", lg: "md" }}
             fontWeight="bold"
+            noOfLines={1}
             href={link.url}
           >
             {link.title}
@@ -62,8 +63,8 @@ const LastWeekPost = ({ link }: Props) => {
   );
 };
 
-export default function PostsLastWeek() {
-  const { data } = useTopLinksQuery();
+export default function PostsYouMightLike() {
+  const { data } = useRandomLinksQuery();
   const bgColor = useColorModeValue("white", "gray.800");
   return (
     <Box mb={12}>
@@ -73,13 +74,13 @@ export default function PostsLastWeek() {
         py={4}
         textAlign="start"
       >
-        Best Stories from last week
+        Stories you might like
       </Text>
       <Box bg={bgColor} rounded="md" p={4}>
         <SimpleGrid columns={{ sm: 1, md: 2 }} spacing={4}>
           {data &&
-            data.topLinks.map(link => (
-              <LastWeekPost key={link.id} link={link} />
+            data.randomLinks.map(link => (
+              <PostYouMightLike key={link.id} link={link} />
             ))}
         </SimpleGrid>
       </Box>

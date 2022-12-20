@@ -53,6 +53,7 @@ const JobDetail = ({ job }: Props) => {
         alt={job.company.name}
         width={100}
         height={100}
+        placeholder="empty"
         chakraProps={{
           borderRadius: "sm",
           display: "flex",

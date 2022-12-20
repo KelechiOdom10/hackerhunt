@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo } from "react";
 import {
   ApolloClient,
@@ -68,7 +67,22 @@ function createApolloClient(
       mutate: { errorPolicy: "all" },
       query: { errorPolicy: "all" },
     },
-    cache: new InMemoryCache().restore(initialState || {}),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Link: {
+          fields: {
+            votes: {
+              merge(existing = [], incoming: any[]) {
+                if (incoming.length > existing.length) {
+                  return [...existing, ...incoming];
+                }
+                if (incoming.length < 0) return [...incoming];
+              },
+            },
+          },
+        },
+      },
+    }).restore(initialState || {}),
   });
 }
 

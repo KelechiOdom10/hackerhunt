@@ -5,7 +5,7 @@ import {
   FeedQuery,
   FeedDocument,
 } from "~/apollo/generated/graphql";
-import { maskApolloError } from "~/utils/errorUtils";
+import { formatError, maskApolloError } from "~/utils/errorUtils";
 
 export const useCreateLink = () => {
   const toast = useToast();
@@ -39,9 +39,11 @@ export const useCreateLink = () => {
         });
     },
     onError: e => {
+      const formattedError = formatError(e);
+
       toast({
         description: maskApolloError(
-          e.message,
+          formattedError.message,
           "Failed to add Link. Please try again. "
         ),
         status: "error",

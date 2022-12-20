@@ -1,13 +1,14 @@
 import { FeedArgs, Link } from "~/apollo/generated/graphql";
-import { AuthenticationError, UserInputError, gql } from "apollo-server-micro";
-import { CreateLinkInput } from "../generated/graphql";
+import { gql } from "apollo-server-micro";
 import { GraphQLContext } from "~/pages/api/graphql";
-import { getUser } from "server/utils/auth";
-import { isValidUrl } from "~/utils/isValidUrl";
+import { getUserId } from "server/utils/auth";
 import { HTMLResponse } from "server/models";
+import { cache } from "server/services/jobs.service";
 import { getLinkPreview } from "link-preview-js";
 import { Prisma } from "@prisma/client";
 import { GraphQLError } from "graphql";
+import { CreateLinkInput } from "server/dtos";
+import { customValidate } from "server/utils/errorHandler";
 
 export const linkTypeDef = gql`
   type Feed {
@@ -50,6 +51,7 @@ export const linkTypeDef = gql`
     link(id: ID!): Link!
     popularTags: [String!]!
     topLinks: [Link!]!
+    randomLinks: [Link!]!
     totalLinks: Float!
   }
 
@@ -65,13 +67,18 @@ export const linkResolver = {
       { input }: { input: CreateLinkInput },
       ctx: GraphQLContext
     ) => {
-      const user = await getUser(ctx.req);
-      if (!user) throw new AuthenticationError("Not Authenticated");
+      const userId = getUserId(ctx.req);
+      if (!userId)
+        throw new GraphQLError("Not authenticated", {
+          extensions: {
+            extensions: {
+              code: "UNAUTHORIZED",
+              http: { status: 401 },
+            },
+          },
+        });
 
-      if (!input.title || !input.url || !input.tags)
-        throw new UserInputError("All fields are required");
-
-      if (!isValidUrl(input.url)) throw new UserInputError("URL is invalid");
+      await customValidate(CreateLinkInput, input);
 
       const { title, url, tags } = input;
       const urlData = (await getLinkPreview(url)) as HTMLResponse;
@@ -85,7 +92,7 @@ export const linkResolver = {
             ? urlData?.images[0]
             : urlData?.favicons[0] || "",
           url,
-          user: { connect: { id: user.id } },
+          user: { connect: { id: userId } },
         },
       });
 
@@ -173,6 +180,19 @@ export const linkResolver = {
         take: 4,
       });
 
+      return links;
+    },
+    randomLinks: async (_parent, _args, ctx: GraphQLContext) => {
+      const cachedData = cache.get("randomLinks");
+      if (cachedData) {
+        return cachedData;
+      }
+
+      const links = await ctx.prisma.$queryRawUnsafe(
+        // DO NOT pass in or accept user input here
+        `SELECT * FROM "links" ORDER BY RANDOM() LIMIT 4;`
+      );
+      cache.set("randomLinks", links);
       return links;
     },
     link: async (_parent, { id }: { id: string }, ctx: GraphQLContext) => {

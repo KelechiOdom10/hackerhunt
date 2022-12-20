@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 import {
   Box,
@@ -29,6 +28,7 @@ import {
 } from "~/apollo/generated/graphql";
 import { setTokenCookie } from "server/utils/auth-cookies";
 import CustomLink from "../utils/CustomLink";
+import { formatError } from "~/utils/errorUtils";
 
 export default function LoginForm() {
   const client = useApolloClient();
@@ -59,11 +59,12 @@ export default function LoginForm() {
           isClosable: true,
           duration: 4000,
         });
-        router.replace("/");
+        router.push("/");
       }
-    } catch (error: any) {
+    } catch (error) {
+      const formattedError = formatError(error);
       toast({
-        description: error.message,
+        description: formattedError.message,
         status: "error",
         position: "top-right",
         isClosable: true,

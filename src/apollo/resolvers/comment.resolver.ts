@@ -1,8 +1,10 @@
 import { gql } from "@apollo/client";
-import { AuthenticationError } from "apollo-server-micro";
-import { getUser } from "server/utils/auth";
+import { getUserId } from "server/utils/auth";
 import { GraphQLContext } from "~/pages/api/graphql";
-import { Comment, CreateCommentInput } from "../generated/graphql";
+import { Comment } from "../generated/graphql";
+import { CreateCommentInput } from "server/dtos";
+import { customValidate } from "server/utils/errorHandler";
+import { GraphQLError } from "graphql";
 
 export const commentTypeDef = gql`
   type Comment {
@@ -44,13 +46,23 @@ export const commentResolver = {
       { input }: { input: CreateCommentInput },
       ctx: GraphQLContext
     ) => {
-      const user = await getUser(ctx.req);
-      if (!user) throw new AuthenticationError("Not authenticated");
+      await customValidate(CreateCommentInput, input);
+
+      const userId = getUserId(ctx.req);
+      if (!userId)
+        throw new GraphQLError("Not authenticated", {
+          extensions: {
+            extensions: {
+              code: "UNAUTHORIZED",
+              http: { status: 401 },
+            },
+          },
+        });
 
       const { linkId, text } = input;
       const comment = await ctx.prisma.comment.create({
         data: {
-          user: { connect: { id: user.id } },
+          user: { connect: { id: userId } },
           link: { connect: { id: linkId } },
           text,
         },

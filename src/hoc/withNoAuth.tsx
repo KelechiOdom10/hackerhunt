@@ -15,7 +15,7 @@ export default function withoutAuth(
     useEffect(() => {
       if (loading || !me) return;
       router.replace(location || "/");
-    }, [loading, me, router, location]);
+    }, [loading, me, router]);
 
     if (loading || me) {
       return <LoadingScreen />;

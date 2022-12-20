@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
-import { AuthenticationError } from "apollo-server-micro";
-import { getUser } from "server/utils/auth";
+import { getUserId } from "server/utils/auth";
 import { GraphQLContext } from "~/pages/api/graphql";
 import { Vote } from "../generated/graphql";
+import { GraphQLError } from "graphql";
 
 export const voteTypeDef = gql`
   type Vote {
@@ -24,15 +24,23 @@ export const voteResolver = {
       { linkId }: { linkId: string },
       ctx: GraphQLContext
     ) => {
-      const user = await getUser(ctx.req);
-      if (!user) throw new AuthenticationError("Not authenticated");
+      const userId = getUserId(ctx.req);
+      if (!userId)
+        throw new GraphQLError("Not authenticated", {
+          extensions: {
+            extensions: {
+              code: "UNAUTHORIZED",
+              http: { status: 401 },
+            },
+          },
+        });
 
       const link = await ctx.prisma.link.findFirst({ where: { id: linkId } });
 
       // check if the like already exists, if exists remove it
       const vote = await ctx.prisma.vote.findFirst({
         where: {
-          AND: [{ linkId }, { userId: user.id }],
+          AND: [{ linkId }, { userId }],
         },
       });
 
@@ -45,7 +53,7 @@ export const voteResolver = {
         await ctx.prisma.vote.create({
           data: {
             linkId,
-            userId: user.id,
+            userId,
           },
         });
 

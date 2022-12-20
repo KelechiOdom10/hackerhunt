@@ -9,12 +9,12 @@ import {
   JobsQuery,
   JobsQueryVariables,
   PopularTagsDocument,
-  TopLinksDocument,
+  RandomLinksDocument,
 } from "~/apollo/generated/graphql";
 import Layout from "~/components/layout/Layout";
 import Meta from "~/components/layout/Meta";
 import PostListContainer from "~/components/post/PostListContainer";
-import PostsLastWeek from "~/components/post/PostsLastWeek";
+import PostsLastWeek from "~/components/post/PostsYouMightLike";
 import HiringNow from "~/components/sidebar/HiringNow";
 import Tags from "~/components/sidebar/Tags";
 import { PAGE_SIZE } from "~/config";
@@ -59,7 +59,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       variables,
     }),
     client.query({
-      query: TopLinksDocument,
+      query: RandomLinksDocument,
     }),
     client.query({
       query: PopularTagsDocument,

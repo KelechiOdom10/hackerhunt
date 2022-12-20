@@ -8,19 +8,25 @@ export interface Decoded {
   exp: number;
 }
 
-export const getUser = async (req: NextApiRequest) => {
+export const getUserId = (req: NextApiRequest): string | null => {
   try {
     const authHeader = req.headers.authorization;
-    const token = authHeader?.replace("Bearer ", "");
+    const token = authHeader.replace("Bearer ", "");
+    const { id } = verifyToken(token) as Decoded;
+    return id;
+  } catch (error) {
+    return null;
+  }
+};
 
-    if (!token) throw new AuthenticationError("No access token found");
+export const getUser = async (req: NextApiRequest) => {
+  try {
+    const id = getUserId(req);
 
-    const decoded = verifyToken(token) as unknown as Decoded;
-
-    if (!decoded) throw new AuthenticationError("Invalid access token");
+    if (!id) throw new AuthenticationError("Invalid access token");
 
     const user = await prisma.user.findUnique({
-      where: { id: decoded.id },
+      where: { id },
     });
 
     if (!user) {
