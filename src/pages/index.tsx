@@ -23,10 +23,10 @@ const client = initializeApollo({});
 
 export default function Home() {
   return (
-    <div>
+    <>
       <Meta />
       <Layout>
-        <Grid h="200px" templateColumns="repeat(6, 1fr)" gap={6} mt={6}>
+        <Grid templateColumns="repeat(6, 1fr)" gap={6} mt={6}>
           <GridItem colSpan={{ base: 6, md: 4 }}>
             <PostsLastWeek />
             <PostListContainer />
@@ -37,7 +37,7 @@ export default function Home() {
           </GridItem>
         </Grid>
       </Layout>
-    </div>
+    </>
   );
 }
 
