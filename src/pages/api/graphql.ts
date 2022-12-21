@@ -37,6 +37,7 @@ const cors = Cors({
   origin: [
     "https://studio.apollographql.com",
     "http://localhost:3000/",
+    /.*hacker-hunt.*/,
     `${process.env.NEXT_PUBLIC_VERCEL_URL}`,
   ],
   credentials: true,
