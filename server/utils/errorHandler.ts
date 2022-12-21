@@ -6,7 +6,7 @@ export const customValidate = async <T extends ClassConstructor<any>>(
   dto: T,
   obj: unknown
 ) => {
-  // tranform the literal object to class object
+  // transform the literal object to class object
   const objInstance = plainToClass(dto, obj);
   // validating and check the errors, throw the errors if exist
   const errors = await validate(objInstance);
