@@ -71,23 +71,6 @@ function runMiddleware(
   });
 }
 
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// };
-
-// const startServer = apolloServer.start();
-
-// export default async function handler(
-//   req: NextApiRequest,
-//   res: NextApiResponse
-// ) {
-//   await runMiddleware(req, res, cors);
-//   await startServer;
-//   await apolloServer.createHandler({ path: "/api/graphql" })(req, res);
-// }
-
 export default startServerAndCreateNextHandler(apolloServer, {
   context: async (req, res) => {
     runMiddleware(req, res, cors);
@@ -98,53 +81,3 @@ export default startServerAndCreateNextHandler(apolloServer, {
     };
   },
 });
-
-// import { ApolloServer } from "apollo-server-micro";
-// import Cors from "micro-cors";
-// import { IncomingMessage, ServerResponse } from "http";
-// import { schema } from "~/apollo/schema";
-// import { PrismaClient } from "@prisma/client";
-// import { NextApiRequest, NextApiResponse } from "next";
-// import prisma from "server/db";
-
-// export interface GraphQLContext {
-//   prisma: PrismaClient;
-//   req: NextApiRequest;
-//   res: NextApiResponse;
-// }
-
-// export function createContext(req: NextApiRequest, res: NextApiResponse) {
-//   return {
-//     req,
-//     res,
-//     prisma,
-//   };
-// }
-
-// const apolloServer = new ApolloServer({
-//   schema: schema,
-//   context: createContext,
-// });
-// const cors = Cors();
-
-// const startServer = apolloServer.start();
-
-// export default cors(async function handler(
-//   req: IncomingMessage,
-//   res: ServerResponse
-// ) {
-//   if (req.method === "OPTIONS") {
-//     res.end();
-//     return false;
-//   }
-
-//   await startServer;
-
-//   await apolloServer.createHandler({ path: "/api/graphql" })(req, res);
-// });
-
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// };
