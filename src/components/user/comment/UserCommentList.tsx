@@ -1,4 +1,3 @@
-import React from "react";
 import { CommentDetailsFragment } from "~/apollo/generated/graphql";
 import UserComment from "./UserComment";
 import {

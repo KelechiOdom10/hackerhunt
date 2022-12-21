@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
 import { MetaSeo } from "~/types";
 
 const Meta = ({ meta: pageMeta }: { meta?: Partial<MetaSeo> }) => {

@@ -4,7 +4,6 @@ import {
   useColorModeValue,
   Heading,
 } from "@chakra-ui/react";
-import React from "react";
 import { useJobsQuery } from "~/apollo/generated/graphql";
 import JobDetail from "./detail/JobDetail";
 

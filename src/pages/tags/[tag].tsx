@@ -1,6 +1,5 @@
 import { Grid, GridItem } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
-import React from "react";
 import { initializeApollo } from "~/apollo/client";
 import {
   FeedQueryVariables,

@@ -4,7 +4,6 @@ import {
   useColorModeValue,
   Heading,
 } from "@chakra-ui/react";
-import React from "react";
 import PostSkeletonPreview from "../skeletons/PostPreviewSkeleton";
 import PostPreview from "./preview/PostPreview";
 import { LinkDetailsFragment } from "~/apollo/generated/graphql";
