@@ -69,6 +69,7 @@ const JobModal = ({ isOpen, onClose, job }: Props) => {
               placeholder="empty"
               chakraProps={{
                 maxW: { base: "70px", md: "90px" },
+                minW: { base: "70px", md: "90px" },
                 minH: { base: "70px", md: "90px" },
                 display: "flex",
                 bg: "white",
