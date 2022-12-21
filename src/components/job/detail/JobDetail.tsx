@@ -58,6 +58,7 @@ const JobDetail = ({ job }: Props) => {
           display: "flex",
           bg: "white",
           maxW: { base: "70px", md: "100px" },
+          minW: { base: "70px", md: "100px" },
           minH: { base: "70px", md: "100px" },
         }}
         style={{ objectFit: "contain", padding: "8px" }}
