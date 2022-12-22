@@ -16,6 +16,7 @@ import PostList from "../post/PostList";
 import UserTab from "./UserTab";
 import { useRouter } from "next/router";
 import UserCommentList from "./comment/UserCommentList";
+import { AnimateSharedLayout } from "framer-motion";
 
 type Props = {
   userId: string;
@@ -66,11 +67,19 @@ const UserProfile = ({ userId }: Props) => {
             size="md"
             mt={4}
           >
-            <TabList>
-              <UserTab name="posts">Posts</UserTab>
-              <UserTab name="comments">Comments</UserTab>
-              <UserTab name="votes">Votes</UserTab>
-            </TabList>
+            <AnimateSharedLayout>
+              <TabList>
+                {tabs.map(tab => (
+                  <UserTab
+                    name={tab}
+                    active={tab === (query?.tab || "posts")}
+                    key={tab}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </UserTab>
+                ))}
+              </TabList>
+            </AnimateSharedLayout>
 
             <TabPanels>
               <TabPanel>
