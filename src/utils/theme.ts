@@ -6,8 +6,8 @@ import {
 import { darken, mode } from "@chakra-ui/theme-tools";
 
 const config: ThemeConfig = {
-  initialColorMode: "light",
-  useSystemColorMode: true,
+  initialColorMode: "system",
+  useSystemColorMode: false,
 };
 
 const theme = extendTheme({
