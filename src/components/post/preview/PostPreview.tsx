@@ -14,6 +14,7 @@ import CustomLink from "~/components/utils/CustomLink";
 import { useMe } from "~/hooks/useMe";
 import { timeDifferenceForDate } from "~/utils/timeDifference";
 import UpVoteButtonPreview from "./UpVoteButtonPreview";
+import { motion } from "framer-motion";
 
 type Props = {
   link: LinkDetailsFragment;
@@ -21,9 +22,20 @@ type Props = {
 
 export default function PostPreview({ link }: Props) {
   const { me } = useMe();
+  const MotionFlex = motion(Flex);
 
   return (
-    <Flex align="center" justify="space-between" py={1} rounded="md" w="full">
+    <MotionFlex
+      layout
+      animate
+      align="center"
+      justify="space-between"
+      py={1}
+      rounded="md"
+      w="full"
+      transitionDuration="3"
+      transitionTimingFunction="ease-in-out"
+    >
       <HStack spacing={4}>
         <ChakraNextImage
           src={link.image as string}
@@ -114,6 +126,6 @@ export default function PostPreview({ link }: Props) {
         id={link.id}
         h="auto"
       />
-    </Flex>
+    </MotionFlex>
   );
 }

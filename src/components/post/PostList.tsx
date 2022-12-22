@@ -7,6 +7,7 @@ import {
 import PostSkeletonPreview from "../skeletons/PostPreviewSkeleton";
 import PostPreview from "./preview/PostPreview";
 import { LinkDetailsFragment } from "~/apollo/generated/graphql";
+import { AnimatePresence } from "framer-motion";
 
 type Props = {
   loading: boolean;
@@ -15,30 +16,33 @@ type Props = {
 
 const PostList = ({ links, loading }: Props) => {
   const bgColor = useColorModeValue("white", "gray.800");
+
   return (
-    <VStack
-      spacing={3}
-      bg={bgColor}
-      w="full"
-      rounded="md"
-      p={4}
-      divider={<StackDivider />}
-      borderWidth={useColorModeValue(1, 0)}
-    >
-      {loading &&
-        [...Array(5).keys()].map(key => <PostSkeletonPreview key={key} />)}
-      {links.length === 0 ? (
-        <Heading
-          fontSize={{ base: "xs", md: "sm", lg: "md" }}
-          fontFamily="Lato"
-          alignSelf="start"
-        >
-          No posts
-        </Heading>
-      ) : (
-        links && links.map(link => <PostPreview link={link} key={link.id} />)
-      )}
-    </VStack>
+    <AnimatePresence>
+      <VStack
+        spacing={3}
+        bg={bgColor}
+        w="full"
+        rounded="md"
+        p={4}
+        divider={<StackDivider />}
+        borderWidth={useColorModeValue(1, 0)}
+      >
+        {loading &&
+          [...Array(5).keys()].map(key => <PostSkeletonPreview key={key} />)}
+        {links.length === 0 ? (
+          <Heading
+            fontSize={{ base: "xs", md: "sm", lg: "md" }}
+            fontFamily="Lato"
+            alignSelf="start"
+          >
+            No posts
+          </Heading>
+        ) : (
+          links && links.map(link => <PostPreview link={link} key={link.id} />)
+        )}
+      </VStack>
+    </AnimatePresence>
   );
 };
 
