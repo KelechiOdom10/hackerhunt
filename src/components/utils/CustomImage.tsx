@@ -46,7 +46,7 @@ export const ChakraNextImage = ({ chakraProps, ...props }: Props) => {
 
         @keyframes onblur {
           from {
-            filter: blur(4px);
+            filter: blur(0.6px);
           }
           to {
             filter: blur(0);
