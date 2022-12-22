@@ -11,8 +11,7 @@ import UserProfile from "~/components/user/UserProfile";
 
 type Props = {
   userId: string;
-  username;
-  string;
+  username: string;
 };
 
 const UserDetail: NextPage = ({ userId, username }: Props) => {

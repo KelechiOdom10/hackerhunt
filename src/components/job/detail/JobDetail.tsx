@@ -22,7 +22,7 @@ const JobDetail = ({ job }: Props) => {
 
   const onModalClose = () => {
     router.query?.id &&
-      router.replace(router.pathname, undefined, { shallow: true });
+      router.push(router.pathname, undefined, { shallow: true });
   };
 
   return (

@@ -31,6 +31,7 @@ import CustomButton from "../utils/CustomButton";
 import CustomLink from "../utils/CustomLink";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function NavBar() {
   const { isOpen, onToggle } = useDisclosure();
@@ -82,13 +83,29 @@ export default function NavBar() {
           direction="row"
           spacing={{ base: 4, md: 6 }}
         >
-          <ColorModeSwitcher mr={-2} />
+          <ColorModeSwitcher />
           {loading ? (
-            <NavSkeleton />
+            <motion.div
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 0.2 }}
+              transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+              exit={{ opacity: 0.01 }}
+            >
+              <NavSkeleton />
+            </motion.div>
           ) : (
             <>
               {me ? (
-                <>
+                <Stack
+                  as={motion.div}
+                  initial={{ opacity: 0.05 }}
+                  animate={{ opacity: 1 }}
+                  transition="1s ease-in"
+                  justify="space-around"
+                  align="center"
+                  direction="row"
+                  spacing={{ base: 4, md: 6 }}
+                >
                   <CustomLink href="/new">
                     <CustomButton variant="primary">Add New Story</CustomButton>
                   </CustomLink>
@@ -96,7 +113,7 @@ export default function NavBar() {
                     <CustomAvatar as={MenuButton} name={me?.username} />
                     <MenuList>
                       <MenuGroup title="Profile">
-                        <CustomLink href="/profile">
+                        <CustomLink href={`/user/${me.id}`}>
                           <MenuItem
                             as={HStack}
                             fontSize={{ base: "sm", md: "md" }}
@@ -128,9 +145,18 @@ export default function NavBar() {
                       </MenuItem>
                     </MenuList>
                   </Menu>
-                </>
+                </Stack>
               ) : (
-                <>
+                <Stack
+                  as={motion.div}
+                  initial={{ opacity: 0.2 }}
+                  animate={{ opacity: 1 }}
+                  transition="0.5s ease-in-out 0.1s"
+                  justify="space-around"
+                  align="center"
+                  direction="row"
+                  spacing={{ base: 4, md: 6 }}
+                >
                   <CustomLink
                     href="/signin"
                     display={{ base: "none", md: "inline-flex" }}
@@ -141,7 +167,7 @@ export default function NavBar() {
                   <CustomLink href="/signup">
                     <CustomButton variant="primary">Sign Up</CustomButton>
                   </CustomLink>
-                </>
+                </Stack>
               )}
             </>
           )}
@@ -171,7 +197,13 @@ const DesktopNav = () => {
           </CustomLink>
         </Box>
       ))}
-      <NavMenuInput />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2, delay: 0.1, ease: "easeIn" }}
+      >
+        <NavMenuInput />
+      </motion.div>
     </Stack>
   );
 };

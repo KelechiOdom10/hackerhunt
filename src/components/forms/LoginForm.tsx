@@ -59,7 +59,6 @@ export default function LoginForm() {
           isClosable: true,
           duration: 4000,
         });
-        router.push("/");
       }
     } catch (error) {
       const formattedError = formatError(error);

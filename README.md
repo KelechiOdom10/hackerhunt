@@ -73,7 +73,7 @@ npm run dev
 - [x] Add tags features (Find posts with tags selected)
 - [x] Add Meta tags to pages for SEO purposes
 - [x] Deploy app to prod
-- [ ] Add animations (Learn Framer Motion)
+- [x] Add animations (Learn Framer Motion)
 - [ ] Add proper error handling
 - [ ] Add ability to comment on a comment
 
