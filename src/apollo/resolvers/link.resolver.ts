@@ -118,14 +118,15 @@ export const linkResolver = {
           }
         : {};
 
-      const orderBy: Prisma.Enumerable<Prisma.LinkOrderByWithRelationInput> = {
-        [args?.orderBy as string]:
-          args?.orderBy === "votes"
-            ? {
-                _count: "desc",
-              }
-            : "desc",
-      };
+      const orderBy: Prisma.Enumerable<Prisma.LinkOrderByWithAggregationInput> =
+        {
+          [args?.orderBy as string]:
+            args?.orderBy === "votes"
+              ? {
+                  _count: "desc",
+                }
+              : "desc",
+        };
 
       const links = await ctx.prisma.link.findMany({
         where,
