@@ -7,7 +7,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useFeedQuery, FeedArgs } from "~/apollo/generated/graphql";
+import { useFeedQuery, FeedQueryVariables } from "~/apollo/generated/graphql";
 import { PAGE_SIZE } from "~/config";
 import Pagination from "../utils/Pagination";
 import PostList from "./PostList";
@@ -19,15 +19,16 @@ export default function PostListContainer({
 }) {
   const { query, pathname, push } = useRouter();
   const page = (query?.page as string) || "1";
-  const args: FeedArgs = {
-    filter: (query?.filter as string) ?? "",
-    tag: (query?.tag as string) ?? "",
-    skip: (parseInt(page) - 1) * PAGE_SIZE,
-    take: PAGE_SIZE,
-    orderBy: (query?.orderBy as string) ?? "votes",
+  const variables: FeedQueryVariables = {
+    args: {
+      filter: (query?.filter as string) ?? "",
+      skip: (parseInt(page) - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      orderBy: (query?.orderBy as string) ?? "votes",
+    },
   };
   const { data, loading } = useFeedQuery({
-    variables: { args },
+    variables,
   });
 
   return (

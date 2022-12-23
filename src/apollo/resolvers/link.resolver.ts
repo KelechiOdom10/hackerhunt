@@ -1,5 +1,5 @@
 import { FeedArgs, Link } from "~/apollo/generated/graphql";
-import { gql } from "apollo-server-micro";
+import { gql } from "@apollo/client";
 import { GraphQLContext } from "~/pages/api/graphql";
 import { getUserId } from "server/utils/auth";
 import { HTMLResponse } from "server/models";
@@ -21,7 +21,6 @@ export const linkTypeDef = gql`
     filter: String
     orderBy: String = "votes"
     skip: Int = 0
-    tag: String
     take: Int = 10
   }
 
@@ -38,7 +37,7 @@ export const linkTypeDef = gql`
     description: String
     id: ID!
     image: String
-    tags: [String!]!
+    tags: [Tag!]!
     title: String!
     url: String!
     user: User!
@@ -49,7 +48,6 @@ export const linkTypeDef = gql`
   type Query {
     feed(args: FeedArgs): Feed!
     link(id: ID!): Link!
-    popularTags: [String!]!
     topLinks: [Link!]!
     randomLinks: [Link!]!
     totalLinks: Float!
@@ -80,14 +78,13 @@ export const linkResolver = {
 
       await customValidate(CreateLinkInput, input);
 
-      const { title, url, tags } = input;
+      const { title, url } = input;
       const urlData = (await getLinkPreview(url)) as HTMLResponse;
 
       const link = await ctx.prisma.link.create({
         data: {
           title,
           description: urlData?.description,
-          tags,
           image: urlData?.images
             ? urlData?.images[0]
             : urlData?.favicons[0] || "",
@@ -113,17 +110,11 @@ export const linkResolver = {
         ? {
             OR: [
               {
-                description: { contains: args.filter, mode: "insensitive" },
+                description: { contains: args.filter },
               },
-              { title: { contains: args.filter, mode: "insensitive" } },
-              { url: { contains: args.filter, mode: "insensitive" } },
+              { title: { contains: args.filter } },
+              { url: { contains: args.filter } },
             ],
-          }
-        : args?.tag
-        ? {
-            tags: {
-              has: args.tag,
-            },
           }
         : {};
 
@@ -187,10 +178,9 @@ export const linkResolver = {
       if (cachedData) {
         return cachedData;
       } else {
-        const links = await ctx.prisma.$queryRawUnsafe(
-          // DO NOT pass in or accept user input here
-          `SELECT * FROM "links" ORDER BY RANDOM() LIMIT 4;`
-        );
+        const links = await ctx.prisma
+          .$queryRaw`SELECT * FROM links ORDER BY RAND() LIMIT 4`;
+
         cache.set("randomLinks", links);
         return links;
       }
@@ -208,30 +198,6 @@ export const linkResolver = {
 
       return link;
     },
-    popularTags: async (_parent, _args, ctx: GraphQLContext) => {
-      const links = await ctx.prisma.link.findMany();
-      const tags = links.map(link => link.tags).flat();
-
-      // Use a Map object to count the number of occurrences of each word in the array of tags
-      const wordCounts = new Map();
-      for (const word of tags) {
-        const count = wordCounts.get(word) || 0;
-        wordCounts.set(word, count + 1);
-      }
-
-      // Use Array.from() to convert the Map object to an array of [key, value] pairs
-      const wordCountPairs = Array.from(wordCounts);
-
-      // Use Array.sort() to sort the array of [key, value] pairs by the number of occurrences in descending order
-      // Use Array.map() to get an array of the keys (words) from the sorted array of [key, value] pairs
-      const sortedWords = wordCountPairs
-        .sort((a, b) => b[1] - a[1])
-        .map(pair => pair[0]);
-
-      const popularTags = sortedWords.slice(0, 5);
-
-      return popularTags;
-    },
   },
   Link: {
     user: async (parent: Link, _args, ctx: GraphQLContext) => {
@@ -246,6 +212,11 @@ export const linkResolver = {
       return ctx.prisma.link
         .findFirst({ where: { id: parent.id }, orderBy: { createdAt: "desc" } })
         .votes();
+    },
+    tags: async (parent: Link, _args, ctx: GraphQLContext) => {
+      return ctx.prisma.link
+        .findFirst({ where: { id: parent.id }, orderBy: { createdAt: "desc" } })
+        .tags();
     },
     commentCount: async (parent: Link, _args, ctx: GraphQLContext) => {
       return (

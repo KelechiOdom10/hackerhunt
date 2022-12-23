@@ -11,6 +11,7 @@ import {
   commentTypeDef as Comment,
   commentResolver,
 } from "./resolvers/comment.resolver";
+import { tagTypeDef as Tag, tagResolver } from "./resolvers/tag.resolver";
 import { gql } from "apollo-server-micro";
 import { merge } from "lodash";
 
@@ -19,13 +20,14 @@ const Query = gql`
 `;
 
 export const schema = makeExecutableSchema({
-  typeDefs: [Query, AuthPayload, User, Job, Link, Comment, Vote],
+  typeDefs: [Query, AuthPayload, User, Job, Link, Comment, Vote, Tag],
   resolvers: merge(
     authResolver,
     userResolver,
     jobResolver,
     linkResolver,
     voteResolver,
-    commentResolver
+    commentResolver,
+    tagResolver
   ),
 });

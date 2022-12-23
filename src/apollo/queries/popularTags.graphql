@@ -1,3 +1,5 @@
 query PopularTags {
-  popularTags
+  popularTags {
+    ...TagPreview
+  }
 }

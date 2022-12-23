@@ -41,11 +41,10 @@ export default function Home() {
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const client = initializeApollo({});
-  const page = (query?.page as string) ?? "1";
+  const page = (query?.page as string) || "1";
   const variables: FeedQueryVariables = {
     args: {
-      filter: (query?.filter as string) ?? "",
-      tag: (query?.tag as string) ?? "",
+      filter: (query?.filter as string) || "",
       skip: (parseInt(page) - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
       orderBy: (query?.orderBy as string) ?? "votes",
@@ -72,6 +71,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       }),
     ]);
   } catch (error) {
+    console.log("Is it here");
+
     console.log(error);
   }
 
