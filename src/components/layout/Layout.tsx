@@ -12,7 +12,7 @@ export default function Layout({ children }: Props) {
   return (
     <Flex flexDir="column" minH="100vh">
       <NavBar />
-      <Box bg={useColorModeValue("white", "gray.900")}>
+      <Box bg={useColorModeValue("brand.50", "gray.900")}>
         <Box
           as={motion.main}
           initial={{ opacity: 0 }}
