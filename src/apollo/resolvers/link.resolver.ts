@@ -136,7 +136,7 @@ export const linkResolver = {
             : "desc",
       };
 
-      const links = ctx.prisma.link.findMany({
+      const links = await ctx.prisma.link.findMany({
         where,
         skip: args?.skip,
         take: args?.take,
@@ -186,14 +186,14 @@ export const linkResolver = {
       const cachedData = cache.get("randomLinks");
       if (cachedData) {
         return cachedData;
+      } else {
+        const links = await ctx.prisma.$queryRawUnsafe(
+          // DO NOT pass in or accept user input here
+          `SELECT * FROM "links" ORDER BY RANDOM() LIMIT 4;`
+        );
+        cache.set("randomLinks", links);
+        return links;
       }
-
-      const links = await ctx.prisma.$queryRawUnsafe(
-        // DO NOT pass in or accept user input here
-        `SELECT * FROM "links" ORDER BY RANDOM() LIMIT 4;`
-      );
-      cache.set("randomLinks", links);
-      return links;
     },
     link: async (_parent, { id }: { id: string }, ctx: GraphQLContext) => {
       const link = await ctx.prisma.link.findFirst({
