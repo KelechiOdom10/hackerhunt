@@ -6,10 +6,13 @@ import {
   Skeleton,
 } from "@chakra-ui/react";
 import { darken } from "@chakra-ui/theme-tools";
-import { usePopularTagsQuery } from "~/apollo/generated/graphql";
+import {
+  TagPreviewFragment,
+  usePopularTagsQuery,
+} from "~/apollo/generated/graphql";
 import CustomLink from "../utils/CustomLink";
 
-export const TagLink = ({ tag }: { tag: string }) => {
+export const TagLink = ({ tag }: { tag: TagPreviewFragment }) => {
   return (
     <Box
       _hover={{
@@ -20,8 +23,8 @@ export const TagLink = ({ tag }: { tag: string }) => {
       rounded="md"
       w="full"
     >
-      <CustomLink href={`/tags/${tag}`} fontWeight="semibold">
-        <Text w="full">#{tag}</Text>
+      <CustomLink href={`/tags/${tag.name}`} fontWeight="semibold">
+        <Text w="full">#{tag.name}</Text>
       </CustomLink>
     </Box>
   );
@@ -56,7 +59,7 @@ export default function Tags() {
             <Skeleton key={key} w="full" h={10} rounded="md" />
           ))}
         {tags.map(tag => (
-          <TagLink key={tag} tag={tag} />
+          <TagLink key={tag.id} tag={tag} />
         ))}
       </VStack>
     </Box>

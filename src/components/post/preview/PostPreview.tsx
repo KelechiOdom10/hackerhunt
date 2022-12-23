@@ -105,14 +105,17 @@ export default function PostPreview({ link }: Props) {
               display={{ base: "none", md: "flex" }}
             >
               {link.tags.map(tag => (
-                <CustomLink href={`/tags/${tag.toLowerCase()}`} key={tag}>
+                <CustomLink
+                  href={`/tags/${tag.name.toLowerCase()}`}
+                  key={tag.id}
+                >
                   <Badge
                     fontSize="0.7rem"
                     size="sm"
                     p={1}
                     textTransform="lowercase"
                   >
-                    {`#${tag}`}
+                    {`#${tag.name}`}
                   </Badge>
                 </CustomLink>
               ))}

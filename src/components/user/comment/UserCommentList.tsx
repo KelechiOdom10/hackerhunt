@@ -25,11 +25,7 @@ const UserCommentList = ({ comments }: Props) => {
       borderWidth={useColorModeValue(1, 0)}
     >
       {comments.length === 0 ? (
-        <Heading
-          fontSize={{ base: "xs", md: "sm", lg: "md" }}
-          fontFamily="Lato"
-          alignSelf="start"
-        >
+        <Heading fontSize="md" fontFamily="Lato" alignSelf="start">
           No comments yet
         </Heading>
       ) : (

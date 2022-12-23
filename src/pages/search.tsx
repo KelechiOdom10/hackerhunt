@@ -87,7 +87,6 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const variables: FeedQueryVariables = {
     args: {
       filter,
-      tag: (query?.tag as string) ?? "",
       skip: (parseInt(page) - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
       orderBy: (query?.orderBy as string) ?? "votes",
