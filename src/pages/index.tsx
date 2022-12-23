@@ -32,7 +32,7 @@ export default function Home() {
             <PostListContainer />
           </GridItem>
           <GridItem colSpan={2} display={{ base: "none", md: "block" }}>
-            {/* <HiringNow /> */}
+            <HiringNow />
             <Tags />
           </GridItem>
         </Grid>
@@ -53,24 +53,28 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     },
   };
 
-  await Promise.all([
-    client.query<FeedQuery, FeedQueryVariables>({
-      query: FeedDocument,
-      variables,
-    }),
-    client.query({
-      query: RandomLinksDocument,
-    }),
-    client.query({
-      query: PopularTagsDocument,
-    }),
-    // client.query<JobsQuery, JobsQueryVariables>({
-    //   query: JobsDocument,
-    //   variables: {
-    //     limit: 4,
-    //   },
-    // }),
-  ]);
+  try {
+    await Promise.all([
+      client.query<FeedQuery, FeedQueryVariables>({
+        query: FeedDocument,
+        variables,
+      }),
+      client.query({
+        query: RandomLinksDocument,
+      }),
+      client.query({
+        query: PopularTagsDocument,
+      }),
+      client.query<JobsQuery, JobsQueryVariables>({
+        query: JobsDocument,
+        variables: {
+          limit: 4,
+        },
+      }),
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
 
   return {
     props: {
