@@ -22,7 +22,7 @@ export default function Story({
         meta={{
           title: `${link.title} | Hacker Hunt`,
           image: `${link.image}`,
-          keywords: link.tags,
+          keywords: link ? link.tags.map(tag => tag.name) : [],
         }}
       />
       <Layout>
