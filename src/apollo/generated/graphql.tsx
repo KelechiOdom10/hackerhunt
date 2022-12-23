@@ -67,7 +67,6 @@ export type FeedArgs = {
   filter?: InputMaybe<Scalars['String']>;
   orderBy?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
-  tag?: InputMaybe<Scalars['String']>;
   take?: InputMaybe<Scalars['Int']>;
 };
 
@@ -93,7 +92,7 @@ export type Link = {
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   image?: Maybe<Scalars['String']>;
-  tags: Array<Scalars['String']>;
+  tags: Array<Tag>;
   title: Scalars['String'];
   url: Scalars['String'];
   user: User;
@@ -147,8 +146,9 @@ export type Query = {
   jobs: Array<Job>;
   link: Link;
   me?: Maybe<User>;
-  popularTags: Array<Scalars['String']>;
+  popularTags: Array<Tag>;
   randomLinks: Array<Link>;
+  tag: Tag;
   topLinks: Array<Link>;
   totalLinks: Scalars['Float'];
   user?: Maybe<User>;
@@ -176,6 +176,11 @@ export type QueryLinkArgs = {
 };
 
 
+export type QueryTagArgs = {
+  name: Scalars['String'];
+};
+
+
 export type QueryUserArgs = {
   id: Scalars['ID'];
 };
@@ -184,6 +189,13 @@ export type SignupInput = {
   email: Scalars['String'];
   password: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  id: Scalars['ID'];
+  links: Array<Link>;
+  name: Scalars['String'];
 };
 
 export type User = {
@@ -212,7 +224,9 @@ export type CompanyDetailsFragment = { __typename?: 'Company', id: string, image
 
 export type JobDetailsFragment = { __typename?: 'Job', id: string, name: string, location: string, description: string, categories: Array<string>, level: string, landingPage: string, publicationDate: string, company: { __typename?: 'Company', id: string, image: string, name: string, location: string, description: string } };
 
-export type LinkDetailsFragment = { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> };
+export type LinkDetailsFragment = { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> };
+
+export type TagPreviewFragment = { __typename?: 'Tag', id: string, name: string };
 
 export type RegularUserFragment = { __typename?: 'User', id: string, username: string, createdAt: any };
 
@@ -230,7 +244,7 @@ export type CreateLinkMutationVariables = Exact<{
 }>;
 
 
-export type CreateLinkMutation = { __typename?: 'Mutation', createLink: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string, createdAt: any }, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> } };
+export type CreateLinkMutation = { __typename?: 'Mutation', createLink: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string, createdAt: any }, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -251,7 +265,7 @@ export type ToggleVoteMutationVariables = Exact<{
 }>;
 
 
-export type ToggleVoteMutation = { __typename?: 'Mutation', toggleVote?: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> } | null };
+export type ToggleVoteMutation = { __typename?: 'Mutation', toggleVote?: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> } | null };
 
 export type CommentsQueryVariables = Exact<{
   linkId: Scalars['String'];
@@ -265,7 +279,7 @@ export type FeedQueryVariables = Exact<{
 }>;
 
 
-export type FeedQuery = { __typename?: 'Query', feed: { __typename?: 'Feed', id: string, count: number, links: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string, createdAt: any }, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> }> } };
+export type FeedQuery = { __typename?: 'Query', feed: { __typename?: 'Feed', id: string, count: number, links: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string, createdAt: any }, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> }> } };
 
 export type JobsQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']>;
@@ -279,7 +293,7 @@ export type LinkQueryVariables = Exact<{
 }>;
 
 
-export type LinkQuery = { __typename?: 'Query', link: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> } };
+export type LinkQuery = { __typename?: 'Query', link: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -289,17 +303,24 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: st
 export type PopularTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PopularTagsQuery = { __typename?: 'Query', popularTags: Array<string> };
+export type PopularTagsQuery = { __typename?: 'Query', popularTags: Array<{ __typename?: 'Tag', id: string, name: string }> };
 
 export type RandomLinksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RandomLinksQuery = { __typename?: 'Query', randomLinks: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> }> };
+export type RandomLinksQuery = { __typename?: 'Query', randomLinks: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> }> };
+
+export type TagQueryVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type TagQuery = { __typename?: 'Query', tag: { __typename?: 'Tag', id: string, name: string, links: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> }> } };
 
 export type TopLinksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type TopLinksQuery = { __typename?: 'Query', topLinks: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> }> };
+export type TopLinksQuery = { __typename?: 'Query', topLinks: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> }> };
 
 export type TotalLinksQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -311,7 +332,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, username: string, createdAt: any, links: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> } | null>, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, tags: Array<string>, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string, createdAt: any }, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> } } | null>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } } | null> } | null };
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, username: string, createdAt: any, links: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> } | null>, votes: Array<{ __typename?: 'Vote', link: { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, user: { __typename?: 'User', id: string, username: string, createdAt: any }, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> } } | null>, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } } | null> } | null };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -342,6 +363,12 @@ export const JobDetailsFragmentDoc = gql`
   }
 }
     ${CompanyDetailsFragmentDoc}`;
+export const TagPreviewFragmentDoc = gql`
+    fragment TagPreview on Tag {
+  id
+  name
+}
+    `;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
@@ -381,7 +408,9 @@ export const LinkDetailsFragmentDoc = gql`
   description
   image
   url
-  tags
+  tags {
+    ...TagPreview
+  }
   commentCount
   voteCount
   votes {
@@ -395,7 +424,8 @@ export const LinkDetailsFragmentDoc = gql`
   }
   createdAt
 }
-    ${VoteResponseFragmentDoc}
+    ${TagPreviewFragmentDoc}
+${VoteResponseFragmentDoc}
 ${RegularUserFragmentDoc}
 ${CommentDetailsFragmentDoc}`;
 export const CreateCommentDocument = gql`
@@ -752,9 +782,11 @@ export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const PopularTagsDocument = gql`
     query PopularTags {
-  popularTags
+  popularTags {
+    ...TagPreview
+  }
 }
-    `;
+    ${TagPreviewFragmentDoc}`;
 
 /**
  * __usePopularTagsQuery__
@@ -816,6 +848,45 @@ export function useRandomLinksLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type RandomLinksQueryHookResult = ReturnType<typeof useRandomLinksQuery>;
 export type RandomLinksLazyQueryHookResult = ReturnType<typeof useRandomLinksLazyQuery>;
 export type RandomLinksQueryResult = Apollo.QueryResult<RandomLinksQuery, RandomLinksQueryVariables>;
+export const TagDocument = gql`
+    query Tag($name: String!) {
+  tag(name: $name) {
+    ...TagPreview
+    links {
+      ...LinkDetails
+    }
+  }
+}
+    ${TagPreviewFragmentDoc}
+${LinkDetailsFragmentDoc}`;
+
+/**
+ * __useTagQuery__
+ *
+ * To run a query within a React component, call `useTagQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTagQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTagQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useTagQuery(baseOptions: Apollo.QueryHookOptions<TagQuery, TagQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TagQuery, TagQueryVariables>(TagDocument, options);
+      }
+export function useTagLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TagQuery, TagQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TagQuery, TagQueryVariables>(TagDocument, options);
+        }
+export type TagQueryHookResult = ReturnType<typeof useTagQuery>;
+export type TagLazyQueryHookResult = ReturnType<typeof useTagLazyQuery>;
+export type TagQueryResult = Apollo.QueryResult<TagQuery, TagQueryVariables>;
 export const TopLinksDocument = gql`
     query TopLinks {
   topLinks {

@@ -4,7 +4,9 @@ fragment LinkDetails on Link {
   description
   image
   url
-  tags
+  tags {
+    ...TagPreview
+  }
   commentCount
   voteCount
   votes {

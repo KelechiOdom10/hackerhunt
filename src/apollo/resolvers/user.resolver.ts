@@ -1,8 +1,8 @@
-import { gql } from "apollo-server-micro";
 import { GraphQLError } from "graphql";
 import { getUser } from "server/utils/auth";
 import { GraphQLContext } from "~/pages/api/graphql";
 import { User } from "../generated/graphql";
+import { gql } from "@apollo/client";
 
 export const userTypeDef = gql`
   type User {

@@ -1,0 +1,8 @@
+query Tag($name: String!) {
+  tag(name: $name) {
+    ...TagPreview
+    links {
+      ...LinkDetails
+    }
+  }
+}
