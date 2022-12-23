@@ -28,8 +28,6 @@ const PostList = ({ links, loading }: Props) => {
         divider={<StackDivider />}
         borderWidth={useColorModeValue(1, 0)}
       >
-        {loading &&
-          [...Array(5).keys()].map(key => <PostSkeletonPreview key={key} />)}
         {links.length === 0 ? (
           <Heading
             fontSize={{ base: "xs", md: "sm", lg: "md" }}
