@@ -52,28 +52,22 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     },
   };
 
-  try {
-    await Promise.all([
-      client.query<FeedQuery, FeedQueryVariables>({
-        query: FeedDocument,
-        variables,
-      }),
-      client.query({
-        query: RandomLinksDocument,
-      }),
-      client.query({
-        query: PopularTagsDocument,
-      }),
-      client.query<JobsQuery, JobsQueryVariables>({
-        query: JobsDocument,
-        variables: {
-          limit: 4,
-        },
-      }),
-    ]);
-  } catch (error) {
-    console.log(error);
-  }
+  await client.query<FeedQuery, FeedQueryVariables>({
+    query: FeedDocument,
+    variables,
+  });
+  await client.query({
+    query: RandomLinksDocument,
+  });
+  await client.query({
+    query: PopularTagsDocument,
+  });
+  await client.query<JobsQuery, JobsQueryVariables>({
+    query: JobsDocument,
+    variables: {
+      limit: 4,
+    },
+  });
 
   return {
     props: {
