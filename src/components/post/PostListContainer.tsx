@@ -21,14 +21,15 @@ export default function PostListContainer({
   const page = (query?.page as string) || "1";
   const variables: FeedQueryVariables = {
     args: {
-      filter: (query?.filter as string) ?? "",
+      filter: (query?.filter as string) || "",
       skip: (parseInt(page) - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
-      orderBy: (query?.orderBy as string) ?? "votes",
+      orderBy: (query?.orderBy as string) || "votes",
     },
   };
   const { data, loading } = useFeedQuery({
     variables,
+    initialFetchPolicy: "cache-first",
   });
 
   return (
