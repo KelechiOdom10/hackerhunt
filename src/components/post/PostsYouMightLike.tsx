@@ -6,6 +6,7 @@ import {
   SimpleGrid,
   Text,
   Box,
+  Heading,
 } from "@chakra-ui/react";
 import {
   LinkDetailsFragment,
@@ -78,10 +79,16 @@ export default function PostsYouMightLike() {
       </Text>
       <Box bg={bgColor} rounded="md" p={4}>
         <SimpleGrid columns={{ sm: 1, md: 2 }} spacing={4}>
-          {data &&
+          {data && data.randomLinks.length === 0 ? (
+            <Heading fontSize="md" fontFamily="Lato" alignSelf="start">
+              No stories yet
+            </Heading>
+          ) : (
+            data &&
             data.randomLinks.map(link => (
               <PostYouMightLike key={link.id} link={link} />
-            ))}
+            ))
+          )}
         </SimpleGrid>
       </Box>
     </Box>

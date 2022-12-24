@@ -29,12 +29,8 @@ const PostList = ({ links, loading }: Props) => {
         borderWidth={useColorModeValue(1, 0)}
       >
         {links.length === 0 ? (
-          <Heading
-            fontSize={{ base: "xs", md: "sm", lg: "md" }}
-            fontFamily="Lato"
-            alignSelf="start"
-          >
-            No posts
+          <Heading fontSize="md" fontFamily="Lato" alignSelf="start">
+            No stories yet. Add new story to get started
           </Heading>
         ) : (
           links && links.map(link => <PostPreview link={link} key={link.id} />)
