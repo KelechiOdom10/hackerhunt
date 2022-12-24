@@ -29,6 +29,7 @@ export const tagResolver = {
     tag: async (_parent, { name }: { name: string }) => {
       const tag = await prisma.tag.findFirst({
         where: { name },
+        distinct: ["name"],
       });
 
       if (!tag) {
