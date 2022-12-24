@@ -41,32 +41,38 @@ export default function Home() {
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const client = initializeApollo({});
-  const page = query?.page || "1";
+  const page = (query?.page as string) || "1";
   const variables: FeedQueryVariables = {
     args: {
       filter: (query?.filter as string) || "",
-      skip: (parseInt(page as string) - 1) * PAGE_SIZE,
+      skip: (parseInt(page) - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
-      orderBy: (query?.orderBy as string) || "votes",
+      orderBy: (query?.orderBy as string) ?? "votes",
     },
   };
 
-  await client.query({
-    query: RandomLinksDocument,
-  });
-  await client.query({
-    query: PopularTagsDocument,
-  });
-  await client.query<JobsQuery, JobsQueryVariables>({
-    query: JobsDocument,
-    variables: {
-      limit: 4,
-    },
-  });
-  await client.query<FeedQuery, FeedQueryVariables>({
-    query: FeedDocument,
-    variables,
-  });
+  try {
+    await Promise.allSettled([
+      client.query<FeedQuery, FeedQueryVariables>({
+        query: FeedDocument,
+        variables,
+      }),
+      client.query({
+        query: RandomLinksDocument,
+      }),
+      client.query({
+        query: PopularTagsDocument,
+      }),
+      client.query<JobsQuery, JobsQueryVariables>({
+        query: JobsDocument,
+        variables: {
+          limit: 4,
+        },
+      }),
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
 
   return {
     props: {
