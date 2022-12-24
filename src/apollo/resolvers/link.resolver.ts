@@ -2,13 +2,13 @@ import { FeedArgs, Link } from "~/apollo/generated/graphql";
 import { gql } from "@apollo/client";
 import { GraphQLContext } from "~/pages/api/graphql";
 import { getUserId } from "server/utils/auth";
-import { HTMLResponse } from "server/models";
-import { cache } from "server/services/jobs.service";
 import { getLinkPreview } from "link-preview-js";
 import { Prisma } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { CreateLinkInput } from "server/dtos";
 import { customValidate } from "server/utils/errorHandler";
+import prisma from "server/db";
+import { getRandomLinks } from "server/services/link.service";
 
 export const linkTypeDef = gql`
   type Feed {
@@ -78,10 +78,10 @@ export const linkResolver = {
 
       await customValidate(CreateLinkInput, input);
 
-      const { title, url } = input;
+      const { title, url, tags } = input;
       const urlData = (await getLinkPreview(url)) as HTMLResponse;
 
-      const link = await ctx.prisma.link.create({
+      const link = await prisma.link.create({
         data: {
           title,
           description: urlData?.description,
@@ -90,6 +90,14 @@ export const linkResolver = {
             : urlData?.favicons[0] || "",
           url,
           user: { connect: { id: userId } },
+          tags: {
+            connectOrCreate: tags.map(tag => {
+              return {
+                where: { name: tag },
+                create: { name: tag },
+              };
+            }),
+          },
         },
       });
 
@@ -97,15 +105,11 @@ export const linkResolver = {
     },
   },
   Query: {
-    totalLinks: async (_parent, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.link.count();
+    totalLinks: async () => {
+      return prisma.link.count();
     },
 
-    feed: async (
-      _parent,
-      { args }: { args?: FeedArgs },
-      ctx: GraphQLContext
-    ) => {
+    feed: async (_parent, { args }: { args?: FeedArgs }) => {
       const where: Prisma.LinkWhereInput = args?.filter
         ? {
             OR: [
@@ -128,14 +132,14 @@ export const linkResolver = {
               : "desc",
         };
 
-      const links = await ctx.prisma.link.findMany({
+      const links = await prisma.link.findMany({
         where,
         skip: args?.skip,
         take: args?.take,
         orderBy: args?.orderBy ? orderBy : {},
       });
 
-      const count = await ctx.prisma.link.count({ where });
+      const count = await prisma.link.count({ where });
       const id = `main-feed:${JSON.stringify(args)}`;
 
       return {
@@ -144,13 +148,13 @@ export const linkResolver = {
         id,
       };
     },
-    topLinks: async (_parent, _args, ctx: GraphQLContext) => {
+    topLinks: async () => {
       const currentDate = new Date();
       const oneWeekAgo = new Date(
         currentDate.getTime() - 7 * 24 * 60 * 60 * 1000
       );
 
-      const links = await ctx.prisma.link.findMany({
+      const links = await prisma.link.findMany({
         where: {
           createdAt: {
             gte: oneWeekAgo,
@@ -174,20 +178,11 @@ export const linkResolver = {
 
       return links;
     },
-    randomLinks: async (_parent, _args, ctx: GraphQLContext) => {
-      const cachedData = cache.get("randomLinks");
-      if (cachedData) {
-        return cachedData;
-      } else {
-        const links = await ctx.prisma
-          .$queryRaw`SELECT * FROM links ORDER BY RAND() LIMIT 4`;
-
-        cache.set("randomLinks", links);
-        return links;
-      }
+    randomLinks: async () => {
+      return getRandomLinks();
     },
-    link: async (_parent, { id }: { id: string }, ctx: GraphQLContext) => {
-      const link = await ctx.prisma.link.findFirst({
+    link: async (_parent, { id }: { id: string }) => {
+      const link = await prisma.link.findFirst({
         where: { id },
       });
 
@@ -201,38 +196,46 @@ export const linkResolver = {
     },
   },
   Link: {
-    user: async (parent: Link, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.link.findFirst({ where: { id: parent.id } }).user();
+    user: async (parent: Link) => {
+      return prisma.link.findFirst({ where: { id: parent.id } }).user();
     },
-    comments: async (parent: Link, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.link
-        .findFirst({ where: { id: parent.id }, orderBy: { createdAt: "desc" } })
-        .comments();
+    comments: async (parent: Link) => {
+      return prisma.link.findFirst({ where: { id: parent.id } }).comments();
     },
-    votes: async (parent: Link, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.link
-        .findFirst({ where: { id: parent.id }, orderBy: { createdAt: "desc" } })
-        .votes();
+    votes: async (parent: Link) => {
+      return prisma.link.findFirst({ where: { id: parent.id } }).votes();
     },
-    tags: async (parent: Link, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.link
-        .findFirst({ where: { id: parent.id }, orderBy: { createdAt: "desc" } })
-        .tags();
+    tags: async (parent: Link) => {
+      return prisma.link.findFirst({ where: { id: parent.id } }).tags();
     },
-    commentCount: async (parent: Link, _args, ctx: GraphQLContext) => {
+    commentCount: async (parent: Link) => {
       return (
-        (
-          await ctx.prisma.link
-            .findFirst({ where: { id: parent.id } })
-            .comments()
-        )?.length || 0
+        (await prisma.link.findFirst({ where: { id: parent.id } }).comments())
+          ?.length || 0
       );
     },
-    voteCount: async (parent: Link, _args, ctx: GraphQLContext) => {
+    voteCount: async (parent: Link) => {
       return (
-        (await ctx.prisma.link.findFirst({ where: { id: parent.id } }).votes())
+        (await prisma.link.findFirst({ where: { id: parent.id } }).votes())
           ?.length || 0
       );
     },
   },
 };
+
+interface BaseType {
+  mediaType: string;
+  contentType: string;
+  favicons: string[];
+  url: string;
+  error: unknown;
+}
+
+export interface HTMLResponse extends BaseType {
+  title: string;
+  siteName: string;
+  description: string;
+  images: string[];
+  videos: string[];
+  contentType: `text/html${string}`;
+}

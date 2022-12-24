@@ -40,17 +40,21 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const client = initializeApollo({});
   const tag = query?.tag as string;
 
-  await Promise.all([
-    client.query<TagQuery, TagQueryVariables>({
-      query: FeedDocument,
-      variables: {
-        name: tag,
-      },
-    }),
-    client.query({
-      query: PopularTagsDocument,
-    }),
-  ]);
+  try {
+    await Promise.allSettled([
+      client.query<TagQuery, TagQueryVariables>({
+        query: FeedDocument,
+        variables: {
+          name: tag,
+        },
+      }),
+      client.query({
+        query: PopularTagsDocument,
+      }),
+    ]);
+  } catch (error) {
+    console.log({ error });
+  }
 
   return {
     props: {

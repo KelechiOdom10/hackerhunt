@@ -1,9 +1,11 @@
 import { useMemo } from "react";
 import {
   ApolloClient,
+  HttpLink,
   InMemoryCache,
   NormalizedCacheObject,
   createHttpLink,
+  from,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
@@ -33,6 +35,11 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
+const httpLink = new HttpLink({
+  uri: API_URL, // Server URL (must be absolute)
+  credentials: "same-origin", // Additional fetch() options like `credentials` or `headers`
+});
+
 function createApolloClient(
   initialState: null | Record<string, any>,
   options?: Options
@@ -58,15 +65,10 @@ function createApolloClient(
   }
 
   return new ApolloClient({
-    ssrMode: typeof window === "undefined",
-    ssrForceFetchDelay: 100,
+    ssrMode: !isBrowser,
     link: options
-      ? authLink.concat(errorLink.concat(link))
-      : errorLink.concat(link),
-    defaultOptions: {
-      mutate: { errorPolicy: "all" },
-      query: { errorPolicy: "all" },
-    },
+      ? authLink.concat(from([errorLink, httpLink]))
+      : from([errorLink, httpLink]),
     cache: new InMemoryCache({
       typePolicies: {
         Link: {
@@ -87,14 +89,13 @@ function createApolloClient(
 }
 
 export function initializeApollo(
-  initialState: null | Record<string, any> = null,
+  initialState: null | NormalizedCacheObject = null,
   options?: Options
 ) {
   const _apolloClient =
     apolloClient ?? createApolloClient(initialState, options);
 
-  // If your page has Next.js data fetching methods that use Apollo Client, the initial state
-  // gets hydrated here
+  // If your page has Next.js data fetching methods that use Apollo Client, the initial state gets hydrated here
   if (initialState) {
     const existingCache = _apolloClient.extract();
     const data = mergeDeep(initialState, existingCache);

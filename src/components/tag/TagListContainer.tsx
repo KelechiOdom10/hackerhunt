@@ -2,7 +2,7 @@ import { VStack, HStack, Text, Heading } from "@chakra-ui/react";
 import PostList from "../post/PostList";
 import { useTagQuery } from "~/apollo/generated/graphql";
 
-export default function TagListContainer({ name }: { name?: string }) {
+export default function TagListContainer({ name }: { name: string }) {
   const { loading, data } = useTagQuery({
     variables: {
       name,

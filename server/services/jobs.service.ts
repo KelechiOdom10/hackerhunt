@@ -1,10 +1,8 @@
 import axios from "axios";
-import NodeCache from "node-cache";
+import { cache } from "server/utils/cache";
 import { CompanyApiResult, JobsApiResult } from "~/types";
 
-const stdCacheTTL = 86400;
 const JOBS_API_URL = "https://www.themuse.com/api/public";
-export const cache = new NodeCache({ stdTTL: stdCacheTTL, checkperiod: 600 });
 
 async function getAllJobs(endpoint: string) {
   const cachedData = cache.get(endpoint) as JobsApiResult;

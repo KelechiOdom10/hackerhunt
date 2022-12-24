@@ -3,6 +3,7 @@ import { getUser } from "server/utils/auth";
 import { GraphQLContext } from "~/pages/api/graphql";
 import { User } from "../generated/graphql";
 import { gql } from "@apollo/client";
+import prisma from "server/db";
 
 export const userTypeDef = gql`
   type User {
@@ -34,12 +35,12 @@ export const userResolver = {
       }
     },
 
-    users: async (__parent, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.user.findMany();
+    users: async () => {
+      return prisma.user.findMany();
     },
 
-    user: async (_parent, { id }: { id: string }, ctx: GraphQLContext) => {
-      const existingUser = await ctx.prisma.user.findFirst({
+    user: async (_parent, { id }: { id: string }) => {
+      const existingUser = await prisma.user.findFirst({
         where: { id },
       });
 
@@ -55,18 +56,16 @@ export const userResolver = {
   },
 
   User: {
-    links: async (parent: User, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.user.findFirst({ where: { id: parent?.id } }).links();
+    links: async (parent: User) => {
+      return prisma.user.findFirst({ where: { id: parent?.id } }).links();
     },
 
-    comments: async (parent: User, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.user
-        .findFirst({ where: { id: parent?.id } })
-        .comments();
+    comments: async (parent: User) => {
+      return prisma.user.findFirst({ where: { id: parent?.id } }).comments();
     },
 
-    votes: async (parent: User, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.user.findFirst({ where: { id: parent?.id } }).votes();
+    votes: async (parent: User) => {
+      return prisma.user.findFirst({ where: { id: parent?.id } }).votes();
     },
   },
 };
