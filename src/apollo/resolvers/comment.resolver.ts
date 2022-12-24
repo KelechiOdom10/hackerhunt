@@ -5,6 +5,7 @@ import { Comment } from "../generated/graphql";
 import { CreateCommentInput } from "server/dtos";
 import { customValidate } from "server/utils/errorHandler";
 import { GraphQLError } from "graphql";
+import prisma from "server/db";
 
 export const commentTypeDef = gql`
   type Comment {
@@ -32,12 +33,8 @@ export const commentTypeDef = gql`
 
 export const commentResolver = {
   Query: {
-    comments: async (
-      _parent,
-      { linkId }: { linkId: string },
-      ctx: GraphQLContext
-    ) => {
-      return ctx.prisma.comment.findMany({ where: { linkId } });
+    comments: async (_parent, { linkId }: { linkId: string }) => {
+      return prisma.comment.findMany({ where: { linkId } });
     },
   },
   Mutation: {
@@ -60,7 +57,7 @@ export const commentResolver = {
         });
 
       const { linkId, text } = input;
-      const comment = await ctx.prisma.comment.create({
+      const comment = await prisma.comment.create({
         data: {
           user: { connect: { id: userId } },
           link: { connect: { id: linkId } },
@@ -72,11 +69,11 @@ export const commentResolver = {
     },
   },
   Comment: {
-    link: async (parent: Comment, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.comment.findFirst({ where: { id: parent?.id } }).link();
+    link: async (parent: Comment) => {
+      return prisma.comment.findFirst({ where: { id: parent?.id } }).link();
     },
-    user: async (parent: Comment, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.comment.findFirst({ where: { id: parent?.id } }).user();
+    user: async (parent: Comment) => {
+      return prisma.comment.findFirst({ where: { id: parent?.id } }).user();
     },
   },
 };

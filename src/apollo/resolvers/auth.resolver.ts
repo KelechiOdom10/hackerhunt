@@ -3,9 +3,9 @@ import { ApolloServerErrorCode } from "@apollo/server/errors";
 import { compare, genSalt, hash } from "bcryptjs";
 import { GraphQLError } from "graphql";
 import { jwtGenerator } from "server/utils/jwtGenerator";
-import { GraphQLContext } from "~/pages/api/graphql";
 import { SignupInput, LoginInput } from "server/dtos";
 import { customValidate } from "server/utils/errorHandler";
+import prisma from "server/db";
 
 export const authTypeDef = gql`
   type AuthPayload {
@@ -32,19 +32,15 @@ export const authTypeDef = gql`
 
 export const authResolver = {
   Mutation: {
-    signup: async (
-      _parent,
-      { input }: { input: SignupInput },
-      ctx: GraphQLContext
-    ) => {
+    signup: async (_parent, { input }: { input: SignupInput }) => {
       await customValidate(SignupInput, input);
 
       const { email, password, username } = input;
-      const userWithEmailPromise = ctx.prisma.user.findUnique({
+      const userWithEmailPromise = prisma.user.findUnique({
         where: { email },
       });
 
-      const userWithUsernamePromise = ctx.prisma.user.findUnique({
+      const userWithUsernamePromise = prisma.user.findUnique({
         where: { username },
       });
 
@@ -74,7 +70,7 @@ export const authResolver = {
       const salt = await genSalt(10);
       const hashedPassword = await hash(password, salt);
 
-      const { password: _, ...user } = await ctx.prisma.user.create({
+      const { password: _, ...user } = await prisma.user.create({
         data: {
           email,
           username,
@@ -90,15 +86,11 @@ export const authResolver = {
       };
     },
 
-    login: async (
-      _parent,
-      { input }: { input: LoginInput },
-      ctx: GraphQLContext
-    ) => {
+    login: async (_parent, { input }: { input: LoginInput }) => {
       await customValidate(LoginInput, input);
 
       const { email, password } = input;
-      const existingUser = await ctx.prisma.user.findUnique({
+      const existingUser = await prisma.user.findUnique({
         where: {
           email,
         },

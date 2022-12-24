@@ -3,6 +3,7 @@ import { getUserId } from "server/utils/auth";
 import { GraphQLContext } from "~/pages/api/graphql";
 import { Vote } from "../generated/graphql";
 import { GraphQLError } from "graphql";
+import prisma from "server/db";
 
 export const voteTypeDef = gql`
   type Vote {
@@ -35,22 +36,22 @@ export const voteResolver = {
           },
         });
 
-      const link = await ctx.prisma.link.findFirst({ where: { id: linkId } });
+      const link = await prisma.link.findFirst({ where: { id: linkId } });
 
       // check if the like already exists, if exists remove it
-      const vote = await ctx.prisma.vote.findFirst({
+      const vote = await prisma.vote.findFirst({
         where: {
           AND: [{ linkId }, { userId }],
         },
       });
 
       if (vote) {
-        await ctx.prisma.vote.delete({ where: { id: vote.id } });
+        await prisma.vote.delete({ where: { id: vote.id } });
         return link;
       }
 
       if (!vote) {
-        await ctx.prisma.vote.create({
+        await prisma.vote.create({
           data: {
             linkId,
             userId,
@@ -64,11 +65,11 @@ export const voteResolver = {
     },
   },
   Vote: {
-    link: async (parent: Vote, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.vote.findFirst({ where: { id: parent?.id } }).link();
+    link: async (parent: Vote) => {
+      return prisma.vote.findFirst({ where: { id: parent?.id } }).link();
     },
-    user: async (parent: Vote, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.vote.findFirst({ where: { id: parent?.id } }).user();
+    user: async (parent: Vote) => {
+      return prisma.vote.findFirst({ where: { id: parent?.id } }).user();
     },
   },
 };

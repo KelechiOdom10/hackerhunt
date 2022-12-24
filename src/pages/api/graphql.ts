@@ -1,20 +1,16 @@
-import "reflect-metadata";
 import Cors from "cors";
-import { PrismaClient } from "@prisma/client";
 import { ApolloServer } from "@apollo/server";
 import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
 } from "@apollo/server/plugin/landingPage/default";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
-import prisma from "server/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { schema } from "~/apollo/schema";
 
 export interface GraphQLContext {
   req: NextApiRequest;
   res: NextApiResponse;
-  prisma: PrismaClient;
 }
 
 const apolloServer = new ApolloServer({
@@ -73,13 +69,14 @@ function runMiddleware(
   });
 }
 
+export async function createContext(req, res): Promise<GraphQLContext> {
+  runMiddleware(req, res, cors);
+  return {
+    req,
+    res,
+  };
+}
+
 export default startServerAndCreateNextHandler(apolloServer, {
-  context: async (req, res) => {
-    runMiddleware(req, res, cors);
-    return {
-      req,
-      res,
-      prisma,
-    };
-  },
+  context: createContext,
 });

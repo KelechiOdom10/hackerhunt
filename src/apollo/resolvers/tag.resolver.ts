@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { Tag } from "@prisma/client";
 import { GraphQLError } from "graphql";
-import { GraphQLContext } from "~/pages/api/graphql";
+import prisma from "server/db";
 
 export const tagTypeDef = gql`
   type Tag {
@@ -18,17 +18,16 @@ export const tagTypeDef = gql`
 
 export const tagResolver = {
   Query: {
-    popularTags: async (_parent, _args, ctx: GraphQLContext) => {
-      const tags = await ctx.prisma.tag.findMany({
+    popularTags: async () => {
+      const tags = await prisma.tag.findMany({
         orderBy: { links: { _count: "desc" } },
+        take: 5,
       });
 
-      const popularTags = tags.slice(0, 5);
-
-      return popularTags;
+      return tags;
     },
-    tag: async (_parent, { name }: { name: string }, ctx: GraphQLContext) => {
-      const tag = await ctx.prisma.tag.findFirst({
+    tag: async (_parent, { name }: { name: string }) => {
+      const tag = await prisma.tag.findFirst({
         where: { name },
       });
 
@@ -42,8 +41,8 @@ export const tagResolver = {
     },
   },
   Tag: {
-    links: async (parent: Tag, _args, ctx: GraphQLContext) => {
-      return ctx.prisma.tag.findFirst({ where: { id: parent.id } }).links();
+    links: async (parent: Tag) => {
+      return prisma.tag.findFirst({ where: { id: parent.id } }).links();
     },
   },
 };
