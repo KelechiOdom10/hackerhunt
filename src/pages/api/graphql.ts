@@ -7,6 +7,7 @@ import {
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { NextApiRequest, NextApiResponse } from "next";
 import { schema } from "~/apollo/schema";
+import { API_URL } from "~/config";
 
 export interface GraphQLContext {
   req: NextApiRequest;
@@ -34,7 +35,7 @@ const cors = Cors({
     "https://studio.apollographql.com",
     "http://localhost:3000/",
     /.*hacker-hunt.*/,
-    `${process.env.NEXT_PUBLIC_VERCEL_URL}`,
+    `${API_URL}`,
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
