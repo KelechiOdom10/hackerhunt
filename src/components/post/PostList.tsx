@@ -28,6 +28,8 @@ const PostList = ({ links, loading }: Props) => {
         divider={<StackDivider />}
         borderWidth={useColorModeValue(1, 0)}
       >
+        {loading &&
+          [...Array(3).keys()].map(key => <PostSkeletonPreview key={key} />)}
         {links.length === 0 ? (
           <Heading fontSize="md" fontFamily="Lato" alignSelf="start">
             No stories yet. Add new story to get started

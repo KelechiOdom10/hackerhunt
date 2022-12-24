@@ -40,7 +40,7 @@ export default function CreatePostForm() {
 
   const handleCreateItem = (item: Item) => {
     setPickerItems(curr => [...curr, item]);
-    setSelectedItems(curr => [...curr, item]);
+    handleSelectedItemsChange([...selectedItems, item]);
   };
 
   const handleSelectedItemsChange = useCallback(
@@ -105,7 +105,7 @@ export default function CreatePostForm() {
             </FormErrorMessage>
           </FormControl>
 
-          <FormControl id="tags" isRequired isInvalid={!!errors?.tags?.message}>
+          <FormControl id="tags">
             <CUIAutoComplete
               label="Tags"
               placeholder="Choose or create at least one tag"
@@ -151,10 +151,6 @@ export default function CreatePostForm() {
               // @ts-ignore
               refs={{
                 ...register("tags", {
-                  required: {
-                    value: selectedItems.length <= 0,
-                    message: "Please select or create at least 1 tag",
-                  },
                   value: selectedItemsFlat,
                 }),
               }}

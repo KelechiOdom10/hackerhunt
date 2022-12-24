@@ -16,12 +16,16 @@ export default function PostSkeletonPreview() {
           height={{ base: "65px", md: "85px" }}
           borderRadius="md"
         />
-        <VStack align="flex-start" spacing={1}>
-          <Skeleton height="15px" />
+        <VStack align="flex-start" spacing={4}>
+          <Skeleton height="15px" w="120px" />
           <Skeleton height="10px" w="60%" />
           <HStack spacing={4} align="start">
-            <Skeleton height="10px" />
-            <Skeleton height="10px" />
+            <Skeleton height="15px" w="15px" />
+            <HStack>
+              <Skeleton height="15px" w="30px" />
+              <Skeleton height="15px" w="30px" />
+              <Skeleton height="15px" w="30px" />
+            </HStack>
           </HStack>
         </VStack>
       </HStack>
