@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "graphql-tag";
 import { ApolloServerErrorCode } from "@apollo/server/errors";
 import { compare, genSalt, hash } from "bcryptjs";
 import { GraphQLError } from "graphql";

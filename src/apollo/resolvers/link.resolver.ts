@@ -1,5 +1,5 @@
-import { FeedArgs, Link } from "~/apollo/generated/graphql";
-import { gql } from "@apollo/client";
+import { FeedArgs, Link } from "~/apollo/generated";
+import { gql } from "graphql-tag";
 import { GraphQLContext } from "~/pages/api/graphql";
 import { getUserId } from "server/utils/auth";
 import { getLinkPreview } from "link-preview-js";
@@ -9,6 +9,7 @@ import { CreateLinkInput } from "server/dtos";
 import { customValidate } from "server/utils/errorHandler";
 import prisma from "server/db";
 import { getRandomLinks } from "server/services/link.service";
+import { isValidUrl } from "~/utils/isValidUrl";
 
 export const linkTypeDef = gql`
   type Feed {
@@ -69,14 +70,21 @@ export const linkResolver = {
       if (!userId)
         throw new GraphQLError("Not authenticated", {
           extensions: {
-            extensions: {
-              code: "UNAUTHORIZED",
-              http: { status: 401 },
-            },
+            code: "UNAUTHORIZED",
+            http: { status: 401 },
           },
         });
 
       await customValidate(CreateLinkInput, input);
+
+      if (!isValidUrl(input.url)) {
+        throw new GraphQLError("Please enter a valid Website URL", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            http: { status: 400 },
+          },
+        });
+      }
 
       const { title, url, tags } = input;
       const urlData = (await getLinkPreview(url)) as HTMLResponse;
@@ -200,7 +208,12 @@ export const linkResolver = {
       return prisma.link.findFirst({ where: { id: parent.id } }).user();
     },
     comments: async (parent: Link) => {
-      return prisma.link.findFirst({ where: { id: parent.id } }).comments();
+      return (
+        await prisma.link.findFirst({ where: { id: parent.id } }).comments()
+      ).sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
     },
     votes: async (parent: Link) => {
       return prisma.link.findFirst({ where: { id: parent.id } }).votes();

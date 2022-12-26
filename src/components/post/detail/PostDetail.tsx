@@ -7,7 +7,7 @@ import {
   AspectRatio,
   StackDivider,
 } from "@chakra-ui/react";
-import { useLinkQuery } from "~/apollo/generated/graphql";
+import { useLinkQuery } from "~/apollo/generated";
 import { ChakraNextImage } from "~/components/utils/CustomImage";
 import CustomLink from "~/components/utils/CustomLink";
 import { useMe } from "~/hooks/useMe";
@@ -17,7 +17,7 @@ import UpVoteButtonDetail from "./UpVoteButtonDetail";
 
 export default function PostDetail({ id }: { id: string }) {
   const { me } = useMe();
-  const { data } = useLinkQuery({ variables: { linkId: id } });
+  const { data } = useLinkQuery({ linkId: id });
   const subTextColor = useColorModeValue("gray.600", "whiteAlpha.700");
   return (
     <Box maxW="xl" mx="auto" my={4}>
@@ -82,7 +82,7 @@ export default function PostDetail({ id }: { id: string }) {
               <Text alignSelf="flex-start">{data.link.description}</Text>
             </>
           )}
-          <CommentForm linkId={id} />
+          <CommentForm link={data.link} />
           <VStack spacing={8} align="stretch" w="full">
             {data.link.comments.length === 0 ? (
               <Text alignSelf="flex-start" fontWeight="bold">

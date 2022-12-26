@@ -2,35 +2,39 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { MetaSeo } from "~/types";
 
+export const metaDefaults = {
+  title: "Hacker Hunt",
+  description:
+    "Hackernews inspired social news webapp with a modern design reminiscent of hacker culture.",
+  image: `${URL}/assets/hacker-hunt.jpeg`,
+  feed: `${URL}/search`,
+  keywords: [
+    "technology",
+    "social",
+    "social media",
+    "news",
+    "hackernews",
+    "software",
+    "web",
+    "development",
+    "product",
+    "product hunt",
+    "startup",
+  ],
+  author: {
+    name: "Kelechi Odom",
+  },
+  social: {
+    twitter: "Kelechi_odom",
+    github: "KelechiOdom10",
+  },
+};
+
 const Meta = ({ meta: pageMeta }: { meta?: Partial<MetaSeo> }) => {
   const router = useRouter();
   const URL = "https://hacker-hunt.vercel.app";
   const meta = {
-    title: "Hacker Hunt",
-    description:
-      "Hackernews inspired social news webapp with a modern design reminiscent of hacker culture.",
-    image: `${URL}/assets/hacker-hunt.jpeg`,
-    feed: `${URL}/search`,
-    keywords: [
-      "technology",
-      "social",
-      "social media",
-      "news",
-      "hackernews",
-      "software",
-      "web",
-      "development",
-      "product",
-      "product hunt",
-      "startup",
-    ],
-    author: {
-      name: "Kelechi Odom",
-    },
-    social: {
-      twitter: "Kelechi_odom",
-      github: "KelechiOdom10",
-    },
+    ...metaDefaults,
     ...pageMeta,
   };
 

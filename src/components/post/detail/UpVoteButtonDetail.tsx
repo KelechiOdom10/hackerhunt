@@ -20,21 +20,12 @@ export default function UpVoteButtonDetail({
   count: number;
 }) {
   const toast = useToast();
-  const toggleVote = useToggleVoteDetail(id);
+  const toggleVote = useToggleVoteDetail();
 
   const onToggleVote = async () => {
-    try {
-      await toggleVote({ variables: { linkId: id } });
-    } catch (error: any) {
-      toast({
-        description: error.message,
-        status: "error",
-        position: "top-right",
-        isClosable: true,
-        duration: 4000,
-      });
-    }
+    toggleVote({ linkId: id });
   };
+
   return (
     <Button
       variant="unstyled"

@@ -15,7 +15,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { HiExternalLink } from "react-icons/hi";
-import { JobDetailsFragment } from "~/apollo/generated/graphql";
+import { JobDetailsFragment } from "~/apollo/generated";
 import { timeDifferenceForDate } from "~/utils/timeDifference";
 import { ChakraNextImage } from "../utils/CustomImage";
 import CustomLink from "../utils/CustomLink";

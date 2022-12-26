@@ -1,10 +1,10 @@
 import { NextPage } from "next";
 import withAuthRedirect from "./withAuthRedirect";
 
-export default function withAuth<P = {}, IP = P>(
+export default function withoutAuth<P = {}, IP = P>(
   WrappedComponent: NextPage<P, IP>,
-  redirectPath = "/signin",
-  expectedAuth = true
+  redirectPath = "/",
+  expectedAuth = false
 ): NextPage<P, IP> {
   return withAuthRedirect({
     WrappedComponent,

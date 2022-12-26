@@ -20,7 +20,7 @@ import {
   MenuDivider,
 } from "@chakra-ui/react";
 import { HiMenuAlt2, HiX, HiSearch } from "react-icons/hi";
-import { RegularUserFragment } from "~/apollo/generated/graphql";
+import { RegularUserFragment } from "~/apollo/generated";
 import { useLogout } from "~/hooks/useLogout";
 import { useMe } from "~/hooks/useMe";
 import Logo from "../Logo";
@@ -210,7 +210,7 @@ const DesktopNav = () => {
 
 type Props = {
   me: RegularUserFragment;
-  logout: () => Promise<void>;
+  logout: () => void;
 };
 
 const MobileNav = ({ me, logout }: Props) => {

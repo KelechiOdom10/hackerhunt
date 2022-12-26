@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
-import { JobDetailsFragment } from "~/apollo/generated/graphql";
+import { JobDetailsFragment } from "~/apollo/generated";
 import { ChakraNextImage } from "../utils/CustomImage";
 import CustomLink from "../utils/CustomLink";
 

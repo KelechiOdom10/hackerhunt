@@ -1,6 +1,6 @@
-import { GetServerSideProps } from "next";
-import { initializeApollo } from "~/apollo/client";
-import { JobsDocument } from "~/apollo/generated/graphql";
+import { QueryClient, dehydrate } from "@tanstack/react-query";
+import { GetStaticProps } from "next";
+import { useJobsQuery } from "~/apollo/generated";
 import JobList from "~/components/job/JobList";
 import Layout from "~/components/layout/Layout";
 import Meta from "~/components/layout/Meta";
@@ -18,20 +18,16 @@ function Jobs() {
 
 export default Jobs;
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=31536000, stale-while-revalidate"
-  );
-
-  const client = initializeApollo({});
-  await client.query({
-    query: JobsDocument,
+export const getStaticProps: GetStaticProps = async () => {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: useJobsQuery.getKey(),
+    queryFn: useJobsQuery.fetcher(),
   });
 
   return {
     props: {
-      initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };

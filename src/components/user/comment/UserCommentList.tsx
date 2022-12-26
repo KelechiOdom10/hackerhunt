@@ -1,4 +1,4 @@
-import { CommentDetailsFragment } from "~/apollo/generated/graphql";
+import { CommentDetailsFragment } from "~/apollo/generated";
 import UserComment from "./UserComment";
 import {
   Heading,

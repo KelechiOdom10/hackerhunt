@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
+import { gql } from "graphql-tag";
 import { getUserId } from "server/utils/auth";
 import { GraphQLContext } from "~/pages/api/graphql";
-import { Vote } from "../generated/graphql";
+import { Vote } from "../generated";
 import { GraphQLError } from "graphql";
 import prisma from "server/db";
 
@@ -29,10 +29,8 @@ export const voteResolver = {
       if (!userId)
         throw new GraphQLError("Not authenticated", {
           extensions: {
-            extensions: {
-              code: "UNAUTHORIZED",
-              http: { status: 401 },
-            },
+            code: "UNAUTHORIZED",
+            http: { status: 401 },
           },
         });
 

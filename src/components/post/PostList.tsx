@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react";
 import PostSkeletonPreview from "../skeletons/PostPreviewSkeleton";
 import PostPreview from "./preview/PostPreview";
-import { LinkDetailsFragment } from "~/apollo/generated/graphql";
+import { LinkDetailsFragment } from "~/apollo/generated";
 import { AnimatePresence } from "framer-motion";
 
 type Props = {

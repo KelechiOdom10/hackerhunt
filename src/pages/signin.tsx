@@ -2,8 +2,8 @@ import { useColorModeValue, Flex, Box, Image } from "@chakra-ui/react";
 import LoginForm from "~/components/forms/LoginForm";
 import Logo from "~/components/Logo";
 import Meta from "~/components/layout/Meta";
-import withoutAuth from "~/hoc/withNoAuth";
 import { ChakraNextImage } from "~/components/utils/CustomImage";
+import withoutAuth from "~/hoc/withoutAuth";
 
 export default withoutAuth(function SignIn() {
   const textColor = useColorModeValue("white", "brand.800");

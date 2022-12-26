@@ -1,5 +1,5 @@
-import { gql } from "@apollo/client";
-import { Company, Job } from "../generated/graphql";
+import { gql } from "graphql-tag";
+import { Company, Job } from "../generated";
 import sanitize from "sanitize-html";
 import { getAllJobs, getCompanyById } from "server/services/jobs.service";
 

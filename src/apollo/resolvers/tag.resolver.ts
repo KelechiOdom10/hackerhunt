@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "graphql-tag";
 import { Tag } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import prisma from "server/db";

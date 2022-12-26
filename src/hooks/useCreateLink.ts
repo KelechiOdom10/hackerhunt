@@ -3,15 +3,37 @@ import { useToast } from "@chakra-ui/react";
 import {
   useCreateLinkMutation,
   FeedQuery,
-  FeedDocument,
-} from "~/apollo/generated/graphql";
+  useFeedQuery,
+} from "~/apollo/generated";
 import { formatError, maskApolloError } from "~/utils/errorUtils";
+import { useQueryClient } from "@tanstack/react-query";
+import { PAGE_SIZE } from "~/config";
 
 export const useCreateLink = () => {
   const toast = useToast();
   const router = useRouter();
-  const [createLink] = useCreateLinkMutation({
-    onCompleted: () => {
+  const queryClient = useQueryClient();
+  const mutationInfo = useCreateLinkMutation({
+    onSuccess({ createLink }) {
+      const defaultNewVariables = {
+        args: {
+          filter: "",
+          orderBy: "createdAt",
+          skip: 0,
+          take: PAGE_SIZE,
+        },
+      };
+      const queryKey = useFeedQuery.getKey(defaultNewVariables);
+      const queryResult = queryClient.getQueryData<FeedQuery>(queryKey);
+      queryResult &&
+        queryClient.setQueryData<FeedQuery>(queryKey, oldData => ({
+          ...oldData,
+          feed: {
+            ...oldData.feed,
+            count: oldData.feed.count + 1,
+            links: [createLink, ...oldData.feed.links],
+          },
+        }));
       toast({
         status: "success",
         description: "New story created",
@@ -19,24 +41,8 @@ export const useCreateLink = () => {
         isClosable: true,
         duration: 4000,
       });
-      router.push("/");
-    },
-    update(cache, { data: { createLink } }) {
-      const queryResult = cache.readQuery<FeedQuery>({
-        query: FeedDocument,
-      });
 
-      queryResult &&
-        cache.writeQuery<FeedQuery>({
-          query: FeedDocument,
-          data: {
-            feed: {
-              ...queryResult.feed,
-              count: queryResult.feed.count + 1,
-              links: [createLink, ...queryResult.feed.links],
-            },
-          },
-        });
+      router.push({ pathname: "/", query: { orderBy: "createdAt" } });
     },
     onError: e => {
       const formattedError = formatError(e);
@@ -54,5 +60,5 @@ export const useCreateLink = () => {
     },
   });
 
-  return createLink;
+  return mutationInfo;
 };

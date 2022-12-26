@@ -5,17 +5,13 @@ import {
   Box,
   StackDivider,
 } from "@chakra-ui/react";
-import { useJobsQuery } from "~/apollo/generated/graphql";
 import JobPreview from "../job/JobPreview";
 import CustomButton from "../utils/CustomButton";
 import CustomLink from "../utils/CustomLink";
+import { useJobsQuery } from "~/apollo/generated";
 
 export default function HiringNow() {
-  const { data } = useJobsQuery({
-    variables: {
-      limit: 4,
-    },
-  });
+  const { data } = useJobsQuery({ limit: 4 });
   const bgColor = useColorModeValue("white", "gray.800");
   const borderWidth = useColorModeValue(1, 0);
 

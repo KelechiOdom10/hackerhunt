@@ -7,7 +7,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { JobDetailsFragment } from "~/apollo/generated/graphql";
+import { JobDetailsFragment } from "~/apollo/generated";
 import { ChakraNextImage } from "~/components/utils/CustomImage";
 import JobModal from "../JobModal";
 import Meta from "~/components/layout/Meta";
