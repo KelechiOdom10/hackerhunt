@@ -1,4 +1,4 @@
-import { AuthenticationError, ForbiddenError } from "apollo-server-micro";
+import { GraphQLError } from "graphql";
 import { NextApiRequest } from "next";
 import prisma from "server/db";
 import { verifyToken } from "server/utils/jwtGenerator";
@@ -23,15 +23,31 @@ export const getUser = async (req: NextApiRequest) => {
   try {
     const id = getUserId(req);
 
-    if (!id) throw new AuthenticationError("Invalid access token");
+    if (!id)
+      throw new GraphQLError("Invalid access token", {
+        extensions: {
+          extensions: {
+            code: "UNAUTHORIZED",
+            http: { status: 401 },
+          },
+        },
+      });
 
     const user = await prisma.user.findUnique({
       where: { id },
     });
 
     if (!user) {
-      throw new ForbiddenError(
-        "The user belonging to this token no logger exist"
+      throw new GraphQLError(
+        "The user belonging to this token no logger exist",
+        {
+          extensions: {
+            extensions: {
+              code: "FORBIDDEN",
+              http: { status: 403 },
+            },
+          },
+        }
       );
     }
 
@@ -40,20 +56,3 @@ export const getUser = async (req: NextApiRequest) => {
     throw new Error("Server Error");
   }
 };
-
-// export async function getUser(request: NextApiRequest) {
-//   const userId = getUserId(request);
-//   if (typeof userId !== "string") {
-//     return null;
-//   }
-
-//   try {
-//     const user = await prisma.user.findUnique({
-//       where: { id: userId },
-//     });
-//     delete user.password;
-//     return user;
-//   } catch {
-//     return null;
-//   }
-// }
