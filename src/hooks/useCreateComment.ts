@@ -1,15 +1,28 @@
 import { useToast } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useCreateCommentMutation,
   LinkQuery,
-  LinkDocument,
-} from "~/apollo/generated/graphql";
+  useLinkQuery,
+} from "~/apollo/generated";
 import { formatError, maskApolloError } from "~/utils/errorUtils";
 
 export const useCreateComment = () => {
   const toast = useToast();
-  const [createComment] = useCreateCommentMutation({
-    onCompleted: () => {
+  const queryClient = useQueryClient();
+  const { mutate: createComment } = useCreateCommentMutation({
+    onSuccess: ({ createComment }, { input }) => {
+      const queryKey = useLinkQuery.getKey({ linkId: input.linkId });
+      const queryResult = queryClient.getQueryData(queryKey);
+      queryResult &&
+        queryClient.setQueryData<LinkQuery>(queryKey, oldData => ({
+          ...oldData,
+          link: {
+            ...oldData.link,
+            comments: [createComment, ...oldData.link.comments],
+            commentCount: oldData.link.commentCount + 1,
+          },
+        }));
       toast({
         status: "success",
         description: "New comment added",
@@ -17,23 +30,6 @@ export const useCreateComment = () => {
         isClosable: true,
         duration: 4000,
       });
-    },
-    update(cache, { data: { createComment } }) {
-      const queryResult = cache.readQuery<LinkQuery>({
-        query: LinkDocument,
-        variables: { linkId: createComment.link.id },
-      });
-      queryResult &&
-        cache.writeQuery<LinkQuery>({
-          query: LinkDocument,
-          data: {
-            link: {
-              ...queryResult.link,
-              comments: [createComment, ...queryResult.link.comments],
-              commentCount: queryResult.link.commentCount + 1,
-            },
-          },
-        });
     },
     onError: e => {
       const formattedError = formatError(e);

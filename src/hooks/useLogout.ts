@@ -1,17 +1,17 @@
-import { useApolloClient } from "@apollo/client";
 import { useToast } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import { useQueryClient } from "@tanstack/react-query";
 import { removeTokenCookie } from "server/utils/auth-cookies";
+import { MeQuery, useMeQuery } from "~/apollo/generated";
 
-export const useLogout = (redirectPath?: string) => {
-  const client = useApolloClient();
-  const router = useRouter();
+export const useLogout = () => {
+  const queryClient = useQueryClient();
   const toast = useToast();
-  const handleLogout = async (lazyPath?: string) => {
+  const handleLogout = () => {
     removeTokenCookie();
-    if (lazyPath || redirectPath)
-      await router.replace(lazyPath || redirectPath || "/");
-    client.resetStore();
+    queryClient.setQueryData<MeQuery>(useMeQuery.getKey(), oldData => ({
+      ...oldData,
+      me: null,
+    }));
     toast({
       status: "success",
       description: "Successfully logged out!",
