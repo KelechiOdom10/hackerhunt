@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
+import { gql } from "graphql-tag";
 import { getUserId } from "server/utils/auth";
 import { GraphQLContext } from "~/pages/api/graphql";
-import { Comment } from "../generated/graphql";
+import { Comment } from "../generated";
 import { CreateCommentInput } from "server/dtos";
 import { customValidate } from "server/utils/errorHandler";
 import { GraphQLError } from "graphql";
@@ -49,10 +49,8 @@ export const commentResolver = {
       if (!userId)
         throw new GraphQLError("Not authenticated", {
           extensions: {
-            extensions: {
-              code: "UNAUTHORIZED",
-              http: { status: 401 },
-            },
+            code: "UNAUTHORIZED",
+            http: { status: 401 },
           },
         });
 

@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql";
 import { getUser } from "server/utils/auth";
 import { GraphQLContext } from "~/pages/api/graphql";
-import { User } from "../generated/graphql";
-import { gql } from "@apollo/client";
+import { User } from "../generated";
+import { gql } from "graphql-tag";
 import prisma from "server/db";
 
 export const userTypeDef = gql`

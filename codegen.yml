@@ -2,15 +2,16 @@ overwrite: true
 schema: "http://localhost:3000/api/graphql"
 documents: "src/apollo/**/*.graphql" # parse graphql operations in matching files
 generates:
-  ./src/apollo/generated/graphql.tsx: # location for generated types, hooks and components
+  ./src/apollo/generated/index.ts: # location for generated types, hooks and components
     plugins:
       - "typescript"
       - "typescript-operations"
-      # - "typescript-resolvers"
-      - "typescript-react-apollo"
+      - "typescript-react-query"
     config:
-      withComponent: false
-      withHOC: false
-      withMutationFn: false
-      withRefetchFn: false
-      withHooks: true
+      pureMagicComment: true
+      exposeQueryKeys: true
+      exposeDocument: true
+      exposeFetcher: true
+      dedupeFragments: true
+      fetcher:
+        func: "../../utils/fetcher#customFetcher"
