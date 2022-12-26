@@ -2,6 +2,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { MetaSeo } from "~/types";
 
+const URL = "https://hacker-hunt.vercel.app";
+
 export const metaDefaults = {
   title: "Hacker Hunt",
   description:
@@ -32,7 +34,6 @@ export const metaDefaults = {
 
 const Meta = ({ meta: pageMeta }: { meta?: Partial<MetaSeo> }) => {
   const router = useRouter();
-  const URL = "https://hacker-hunt.vercel.app";
   const meta = {
     ...metaDefaults,
     ...pageMeta,
