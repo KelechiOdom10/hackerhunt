@@ -12,7 +12,7 @@ import {
   commentResolver,
 } from "./resolvers/comment.resolver";
 import { tagTypeDef as Tag, tagResolver } from "./resolvers/tag.resolver";
-import { gql } from "apollo-server-micro";
+import { gql } from "graphql-tag";
 import { merge } from "lodash";
 
 const Query = gql`
