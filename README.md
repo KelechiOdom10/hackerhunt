@@ -74,6 +74,8 @@ npm run dev
 - [x] Add Meta tags to pages for SEO purposes
 - [x] Deploy app to prod
 - [x] Add animations (Learn Framer Motion)
+- [x] Switch from Postgres to mySQL
+- [x] Switch to React Query to fix Server Side problems
 - [ ] Add proper error handling
 - [ ] Add ability to comment on a comment
 
