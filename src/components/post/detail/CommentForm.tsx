@@ -1,19 +1,18 @@
 import { VStack, Textarea, Button } from "@chakra-ui/react";
 import { useState } from "react";
+import { LinkDetailsFragment } from "~/apollo/generated";
 import AddCommentSkeleton from "~/components/skeletons/AddCommentSkeleton";
 import CustomLink from "~/components/utils/CustomLink";
 import { useCreateComment } from "~/hooks/useCreateComment";
 import { useMe } from "~/hooks/useMe";
 
-const CommentForm = ({ linkId }: { linkId: string }) => {
+const CommentForm = ({ link }: { link: LinkDetailsFragment }) => {
   const { me, loading } = useMe();
   const [text, setText] = useState("");
   const createComment = useCreateComment();
 
   const handleSubmit = () => {
-    createComment({
-      variables: { input: { linkId, text } },
-    });
+    createComment({ input: { linkId: link.id, text } });
     setText("");
   };
 
@@ -25,7 +24,7 @@ const CommentForm = ({ linkId }: { linkId: string }) => {
             variant="primary"
             resize="none"
             height="100px"
-            placeholder={`Say something nice to ${me?.username}...`}
+            placeholder={`Say something nice to ${link.user.username}...`}
             value={text}
             onChange={e => setText(e.currentTarget.value)}
           />
