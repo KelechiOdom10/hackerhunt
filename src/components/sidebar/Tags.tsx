@@ -6,11 +6,8 @@ import {
   Skeleton,
 } from "@chakra-ui/react";
 import { darken } from "@chakra-ui/theme-tools";
-import {
-  TagPreviewFragment,
-  usePopularTagsQuery,
-} from "~/apollo/generated/graphql";
 import CustomLink from "../utils/CustomLink";
+import { TagPreviewFragment, usePopularTagsQuery } from "~/apollo/generated";
 
 export const TagLink = ({ tag }: { tag: TagPreviewFragment }) => {
   return (
@@ -31,7 +28,7 @@ export const TagLink = ({ tag }: { tag: TagPreviewFragment }) => {
 };
 
 export default function Tags() {
-  const { data, loading } = usePopularTagsQuery();
+  const { data, isLoading } = usePopularTagsQuery();
   const tags = data?.popularTags || [];
 
   const bgColor = useColorModeValue("white", "gray.800");
@@ -54,7 +51,7 @@ export default function Tags() {
         align="start"
         borderWidth={useColorModeValue(1, 0)}
       >
-        {loading &&
+        {isLoading &&
           [...Array(5).keys()].map(key => (
             <Skeleton key={key} w="full" h={10} rounded="md" />
           ))}

@@ -18,12 +18,12 @@ import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useRouter } from "next/router";
-import { useSignupMutation, SignupInput } from "~/apollo/generated/graphql";
+import { useSignupMutation, SignupInput } from "~/apollo/generated";
 import CustomLink from "../utils/CustomLink";
 import { formatError } from "~/utils/errorUtils";
 
 export default function SignupForm() {
-  const [signup] = useSignupMutation();
+  const { mutateAsync: signup } = useSignupMutation();
   const router = useRouter();
   const toast = useToast();
 
@@ -34,7 +34,7 @@ export default function SignupForm() {
   } = useForm<SignupInput>();
   const onSubmit = async (input: SignupInput) => {
     try {
-      const { data } = await signup({ variables: { input } });
+      const data = await signup({ input });
       if (data?.signup.token) {
         toast({
           status: "success",

@@ -8,10 +8,7 @@ import {
   Box,
   Heading,
 } from "@chakra-ui/react";
-import {
-  LinkDetailsFragment,
-  useRandomLinksQuery,
-} from "~/apollo/generated/graphql";
+import { LinkDetailsFragment, useRandomLinksQuery } from "~/apollo/generated";
 import { ChakraNextImage } from "../utils/CustomImage";
 import CustomLink from "../utils/CustomLink";
 

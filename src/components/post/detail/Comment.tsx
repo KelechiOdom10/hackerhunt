@@ -5,7 +5,7 @@ import {
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
-import { CommentDetailsFragment } from "~/apollo/generated/graphql";
+import { CommentDetailsFragment } from "~/apollo/generated";
 import { timeDifferenceForDate } from "~/utils/timeDifference";
 
 type Props = {

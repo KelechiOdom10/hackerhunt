@@ -1,12 +1,11 @@
 import { VStack, HStack, Text, Heading } from "@chakra-ui/react";
 import PostList from "../post/PostList";
-import { useTagQuery } from "~/apollo/generated/graphql";
+import { useTagQuery } from "~/apollo/generated";
+import PostSkeletonPreview from "../skeletons/PostPreviewSkeleton";
 
 export default function TagListContainer({ name }: { name: string }) {
-  const { loading, data } = useTagQuery({
-    variables: {
-      name,
-    },
+  const { isLoading, data } = useTagQuery({
+    name,
   });
 
   return (
@@ -21,6 +20,8 @@ export default function TagListContainer({ name }: { name: string }) {
           {`Results for "#${name}"`}
         </Text>
       </HStack>
+      {isLoading &&
+        [...Array(3).keys()].map(key => <PostSkeletonPreview key={key} />)}
       {!data && (
         <Heading fontSize="md" fontFamily="Lato" alignSelf="start">
           No posts with tag {`"#${name}"`}
@@ -28,7 +29,7 @@ export default function TagListContainer({ name }: { name: string }) {
       )}
       {data && data.tag && (
         <>
-          <PostList loading={loading} links={data.tag?.links} />
+          <PostList loading={isLoading} links={data.tag?.links} />
         </>
       )}
     </VStack>

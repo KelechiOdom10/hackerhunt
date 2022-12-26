@@ -18,22 +18,20 @@ import {
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
-import { useApolloClient } from "@apollo/client";
-import { useRouter } from "next/router";
 import {
   useLoginMutation,
   LoginInput,
   MeQuery,
-  MeDocument,
-} from "~/apollo/generated/graphql";
+  useMeQuery,
+} from "~/apollo/generated";
 import { setTokenCookie } from "server/utils/auth-cookies";
 import CustomLink from "../utils/CustomLink";
 import { formatError } from "~/utils/errorUtils";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function LoginForm() {
-  const client = useApolloClient();
-  const [login] = useLoginMutation();
-  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { mutateAsync: login, isLoading } = useLoginMutation();
   const toast = useToast();
 
   const {
@@ -44,14 +42,13 @@ export default function LoginForm() {
 
   const onSubmit = async (input: LoginInput) => {
     try {
-      await client.resetStore();
-      const { data } = await login({ variables: { input } });
+      const data = await login({ input });
       if (data?.login.token) {
         setTokenCookie(data.login.token);
-        client.writeQuery<MeQuery>({
-          query: MeDocument,
-          data: { me: data.login.user },
-        });
+        queryClient.setQueryData<MeQuery>(useMeQuery.getKey(), oldData => ({
+          ...oldData,
+          me: data.login.user,
+        }));
         toast({
           status: "success",
           description: "Successfully logged in!",
@@ -143,7 +140,7 @@ export default function LoginForm() {
           variant="primary"
           type="submit"
           w="full"
-          isLoading={isSubmitting}
+          isLoading={isSubmitting || isLoading}
           isDisabled={!!errors.email || !!errors.password}
         >
           Sign In

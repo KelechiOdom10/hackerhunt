@@ -10,7 +10,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { ChakraNextImage } from "../utils/CustomImage";
-import { useUserQuery } from "~/apollo/generated/graphql";
+import { useUserQuery } from "~/apollo/generated";
 import { timeDifferenceForDate } from "~/utils/timeDifference";
 import PostList from "../post/PostList";
 import UserTab from "./UserTab";
@@ -26,11 +26,7 @@ const tabs = ["posts", "comments", "votes"];
 
 const UserProfile = ({ userId }: Props) => {
   const { query } = useRouter();
-  const { data, loading } = useUserQuery({
-    variables: {
-      userId,
-    },
-  });
+  const { data, isLoading } = useUserQuery({ userId });
   const textColor = useColorModeValue("brand.500", "white");
   const subTextColor = useColorModeValue("gray.600", "whiteAlpha.800");
 
@@ -83,14 +79,14 @@ const UserProfile = ({ userId }: Props) => {
 
             <TabPanels>
               <TabPanel>
-                <PostList loading={loading} links={data.user?.links || []} />
+                <PostList loading={isLoading} links={data.user?.links || []} />
               </TabPanel>
               <TabPanel>
                 <UserCommentList comments={data.user?.comments || []} />
               </TabPanel>
               <TabPanel>
                 <PostList
-                  loading={loading}
+                  loading={isLoading}
                   links={data.user?.votes.map(vote => vote.link)}
                 />
               </TabPanel>

@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
 import { useForm } from "react-hook-form";
-import { CreateLinkInput } from "~/apollo/generated/graphql";
+import { CreateLinkInput } from "~/apollo/generated";
 import { useCreateLink } from "~/hooks/useCreateLink";
 import { tags } from "~/lib/selectOptions";
 
@@ -32,10 +32,10 @@ export default function CreatePostForm() {
     formState: { errors, isSubmitting },
   } = form;
 
-  const createLink = useCreateLink();
+  const { mutate: createLink, isLoading } = useCreateLink();
 
   const onSubmit = async (input: CreateLinkInput) => {
-    await createLink({ variables: { input } });
+    createLink({ input });
   };
 
   const handleCreateItem = (item: Item) => {
@@ -168,7 +168,7 @@ export default function CreatePostForm() {
             variant="primary"
             type="submit"
             w="full"
-            isLoading={isSubmitting}
+            isLoading={isSubmitting || isLoading}
             loadingText="Creating"
             isDisabled={!!errors.title || !!errors.url}
           >

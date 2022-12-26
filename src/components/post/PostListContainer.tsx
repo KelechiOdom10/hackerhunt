@@ -7,7 +7,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useFeedQuery, FeedQueryVariables } from "~/apollo/generated/graphql";
+import { useFeedQuery, FeedQueryVariables } from "~/apollo/generated";
 import { PAGE_SIZE } from "~/config";
 import Pagination from "../utils/Pagination";
 import PostList from "./PostList";
@@ -27,10 +27,7 @@ export default function PostListContainer({
       orderBy: (query?.orderBy as string) || "votes",
     },
   };
-  const { data, loading } = useFeedQuery({
-    variables,
-    initialFetchPolicy: "cache-first",
-  });
+  const { data, isLoading } = useFeedQuery(variables);
 
   return (
     <VStack spacing={4} align="start" w="full" mb={8}>
@@ -93,7 +90,7 @@ export default function PostListContainer({
       </HStack>
       {data && (
         <>
-          <PostList loading={loading} links={data.feed?.links} />
+          <PostList loading={isLoading} links={data.feed?.links} />
           <Pagination
             currentPage={parseInt(page)}
             totalPosts={data.feed.count}

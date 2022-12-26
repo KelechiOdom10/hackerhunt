@@ -8,7 +8,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { IoMdChatboxes } from "react-icons/io";
-import { LinkDetailsFragment } from "~/apollo/generated/graphql";
+import { LinkDetailsFragment } from "~/apollo/generated";
 import { ChakraNextImage } from "~/components/utils/CustomImage";
 import CustomLink from "~/components/utils/CustomLink";
 import { useMe } from "~/hooks/useMe";

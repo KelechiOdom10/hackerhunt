@@ -3,7 +3,6 @@ import {
   Button,
   VStack,
   useColorModeValue,
-  useToast,
   ButtonProps,
 } from "@chakra-ui/react";
 import { BiUpArrow } from "react-icons/bi";
@@ -20,22 +19,12 @@ export default function UpVoteButton({
   upvoted: boolean;
   count: number;
 } & ButtonProps) {
-  const toast = useToast();
   const toggleVote = useToggleVotePreview(id);
 
   const onToggleVote = async () => {
-    try {
-      await toggleVote({ variables: { linkId: id } });
-    } catch (error) {
-      toast({
-        description: error.message,
-        status: "error",
-        position: "top-right",
-        isClosable: true,
-        duration: 4000,
-      });
-    }
+    toggleVote({ linkId: id });
   };
+
   return (
     <Button
       variant="unstyled"

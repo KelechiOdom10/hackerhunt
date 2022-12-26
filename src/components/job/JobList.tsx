@@ -4,7 +4,7 @@ import {
   useColorModeValue,
   Heading,
 } from "@chakra-ui/react";
-import { useJobsQuery } from "~/apollo/generated/graphql";
+import { useJobsQuery } from "~/apollo/generated";
 import JobDetail from "./detail/JobDetail";
 
 const JobList = () => {
@@ -26,8 +26,6 @@ const JobList = () => {
         divider={<StackDivider />}
         borderWidth={useColorModeValue(1, 0)}
       >
-        {/* {loading &&
-          [...Array(5).keys()].map(key => <PostSkeletonPreview key={key} />)} */}
         {data && data.jobs.length === 0 ? (
           <Heading
             fontSize={{ base: "xs", md: "sm", lg: "md" }}

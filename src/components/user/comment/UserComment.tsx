@@ -1,5 +1,5 @@
 import { Text, VStack, useColorModeValue } from "@chakra-ui/react";
-import { CommentDetailsFragment } from "~/apollo/generated/graphql";
+import { CommentDetailsFragment } from "~/apollo/generated";
 import CustomLink from "~/components/utils/CustomLink";
 import { timeDifferenceForDate } from "~/utils/timeDifference";
 
