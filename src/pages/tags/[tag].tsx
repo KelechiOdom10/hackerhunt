@@ -1,12 +1,7 @@
 import { Grid, GridItem } from "@chakra-ui/react";
+import { QueryClient, dehydrate } from "@tanstack/react-query";
 import { GetServerSideProps } from "next";
-import { initializeApollo } from "~/apollo/client";
-import {
-  FeedDocument,
-  PopularTagsDocument,
-  TagQuery,
-  TagQueryVariables,
-} from "~/apollo/generated/graphql";
+import { usePopularTagsQuery, useTagQuery } from "~/apollo/generated";
 import Layout from "~/components/layout/Layout";
 import Meta from "~/components/layout/Meta";
 import Tags from "~/components/sidebar/Tags";
@@ -37,19 +32,18 @@ const TagPage = ({ tag }: { tag: string }) => {
 export default TagPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const client = initializeApollo({});
-  const tag = query?.tag as string;
+  const queryClient = new QueryClient();
+  const name = query?.tag as string;
 
   try {
     await Promise.allSettled([
-      client.query<TagQuery, TagQueryVariables>({
-        query: FeedDocument,
-        variables: {
-          name: tag,
-        },
+      queryClient.prefetchQuery({
+        queryKey: useTagQuery.getKey({ name }),
+        queryFn: useTagQuery.fetcher({ name }),
       }),
-      client.query({
-        query: PopularTagsDocument,
+      queryClient.prefetchQuery({
+        queryKey: usePopularTagsQuery.getKey(),
+        queryFn: usePopularTagsQuery.fetcher(),
       }),
     ]);
   } catch (error) {
@@ -58,8 +52,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   return {
     props: {
-      initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
-      tag,
+      dehydratedState: dehydrate(queryClient),
+      tag: name,
     },
   };
 };

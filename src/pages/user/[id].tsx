@@ -1,10 +1,6 @@
+import { QueryClient, dehydrate } from "@tanstack/react-query";
 import { GetServerSideProps, NextPage } from "next";
-import { initializeApollo } from "~/apollo/client";
-import {
-  UserDocument,
-  UserQuery,
-  UserQueryVariables,
-} from "~/apollo/generated/graphql";
+import { useUserQuery, UserQuery } from "~/apollo/generated";
 import Layout from "~/components/layout/Layout";
 import Meta from "~/components/layout/Meta";
 import UserProfile from "~/components/user/UserProfile";
@@ -38,29 +34,26 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   res.setHeader(
     "Cache-Control",
-    "public, s-maxage=60, stale-while-revalidate=59"
+    "public, s-maxage=120, stale-while-revalidate=59"
   );
-  const client = initializeApollo({});
+
+  const queryClient = new QueryClient();
   const userId = query?.id as string;
 
-  const result = await client.query<UserQuery, UserQueryVariables>({
-    query: UserDocument,
-    variables: {
-      userId,
-    },
+  await queryClient.prefetchQuery({
+    queryKey: useUserQuery.getKey({ userId }),
+    queryFn: useUserQuery.fetcher({ userId }),
   });
 
-  if (!result.data) {
-    return {
-      notFound: true,
-    };
-  }
+  const data = queryClient.getQueryData<UserQuery>(
+    useUserQuery.getKey({ userId })
+  );
 
   return {
     props: {
-      initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
+      dehydratedState: dehydrate(queryClient),
       userId,
-      username: result.data.user.username,
+      username: data.user.username,
     },
   };
 };

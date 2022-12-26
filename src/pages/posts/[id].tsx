@@ -1,15 +1,15 @@
+import { QueryClient, dehydrate } from "@tanstack/react-query";
 import { GetServerSideProps } from "next";
-import { initializeApollo } from "~/apollo/client";
 import {
+  useLinkQuery,
   LinkQuery,
-  LinkDocument,
   LinkDetailsFragment,
-} from "~/apollo/generated/graphql";
+} from "~/apollo/generated";
 import Layout from "~/components/layout/Layout";
-import Meta from "~/components/layout/Meta";
+import Meta, { metaDefaults } from "~/components/layout/Meta";
 import PostDetail from "~/components/post/detail/PostDetail";
 
-export default function Story({
+export default function Post({
   id,
   link,
 }: {
@@ -22,7 +22,10 @@ export default function Story({
         meta={{
           title: `${link.title} | Hacker Hunt`,
           image: `${link.image}`,
-          keywords: link ? link.tags.map(tag => tag.name) : [],
+          keywords:
+            link && link.tags.length > 0
+              ? link.tags.map(tag => tag.name)
+              : metaDefaults.keywords,
         }}
       />
       <Layout>
@@ -40,24 +43,23 @@ export const getServerSideProps: GetServerSideProps = async ({
     "Cache-Control",
     "public, s-maxage=180, stale-while-revalidate=59"
   );
-  const client = initializeApollo({});
+  const queryClient = new QueryClient();
+  const linkId = query?.id as string;
 
-  const result = await client.query<LinkQuery>({
-    query: LinkDocument,
-    variables: { linkId: query?.id },
+  await queryClient.prefetchQuery({
+    queryKey: useLinkQuery.getKey({ linkId }),
+    queryFn: useLinkQuery.fetcher({ linkId }),
   });
 
-  if (!result.data) {
-    return {
-      notFound: true,
-    };
-  }
+  const data = queryClient.getQueryData<LinkQuery>(
+    useLinkQuery.getKey({ linkId })
+  );
 
   return {
     props: {
-      initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
+      dehydratedState: dehydrate(queryClient),
       id: query?.id,
-      link: result.data.link,
+      link: data?.link,
     },
   };
 };

@@ -5,15 +5,11 @@ import {
   Input,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import { QueryClient, dehydrate } from "@tanstack/react-query";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { initializeApollo } from "~/apollo/client";
-import {
-  FeedDocument,
-  FeedQuery,
-  FeedQueryVariables,
-} from "~/apollo/generated/graphql";
+import { FeedQueryVariables, useFeedQuery } from "~/apollo/generated";
 import Layout from "~/components/layout/Layout";
 import Meta from "~/components/layout/Meta";
 import PostListContainer from "~/components/post/PostListContainer";
@@ -80,9 +76,9 @@ const Search = ({ filter }: { filter: string }) => {
 export default Search;
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const client = initializeApollo({});
-  const page = (query?.page as string) ?? "1";
-  const filter = (query?.filter as string) ?? "";
+  const queryClient = new QueryClient();
+  const page = (query?.page as string) || "1";
+  const filter = (query?.filter as string) || "";
 
   const variables: FeedQueryVariables = {
     args: {
@@ -93,14 +89,14 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     },
   };
 
-  await client.query<FeedQuery, FeedQueryVariables>({
-    query: FeedDocument,
-    variables,
+  await queryClient.prefetchQuery({
+    queryKey: useFeedQuery.getKey(variables),
+    queryFn: useFeedQuery.fetcher(variables),
   });
 
   return {
     props: {
-      initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
+      dehydratedState: dehydrate(queryClient),
       filter,
     },
   };

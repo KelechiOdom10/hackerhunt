@@ -1,16 +1,13 @@
 import { Grid, GridItem } from "@chakra-ui/react";
+import { QueryClient, dehydrate } from "@tanstack/react-query";
 import { GetServerSideProps } from "next";
-import { initializeApollo } from "~/apollo/client";
 import {
-  FeedDocument,
-  FeedQuery,
   FeedQueryVariables,
-  JobsDocument,
-  JobsQuery,
-  JobsQueryVariables,
-  PopularTagsDocument,
-  RandomLinksDocument,
-} from "~/apollo/generated/graphql";
+  useFeedQuery,
+  useJobsQuery,
+  usePopularTagsQuery,
+  useRandomLinksQuery,
+} from "~/apollo/generated";
 import Layout from "~/components/layout/Layout";
 import Meta from "~/components/layout/Meta";
 import PostListContainer from "~/components/post/PostListContainer";
@@ -40,7 +37,7 @@ export default function Home() {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const client = initializeApollo({});
+  const queryClient = new QueryClient();
   const page = (query?.page as string) || "1";
   const variables: FeedQueryVariables = {
     args: {
@@ -52,22 +49,22 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   };
 
   try {
-    await Promise.allSettled([
-      client.query<FeedQuery, FeedQueryVariables>({
-        query: FeedDocument,
-        variables,
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: useFeedQuery.getKey(variables),
+        queryFn: useFeedQuery.fetcher(variables),
       }),
-      client.query({
-        query: RandomLinksDocument,
+      queryClient.prefetchQuery({
+        queryKey: useRandomLinksQuery.getKey(),
+        queryFn: useRandomLinksQuery.fetcher(),
       }),
-      client.query({
-        query: PopularTagsDocument,
+      queryClient.prefetchQuery({
+        queryKey: usePopularTagsQuery.getKey(),
+        queryFn: usePopularTagsQuery.fetcher(),
       }),
-      client.query<JobsQuery, JobsQueryVariables>({
-        query: JobsDocument,
-        variables: {
-          limit: 4,
-        },
+      queryClient.prefetchQuery({
+        queryKey: useJobsQuery.getKey({ limit: 4 }),
+        queryFn: useJobsQuery.fetcher({ limit: 4 }),
       }),
     ]);
   } catch (error) {
@@ -76,7 +73,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   return {
     props: {
-      initialApolloState: JSON.parse(JSON.stringify(client.cache.extract())),
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };
