@@ -1,4 +1,5 @@
 import { serialize, parse } from "cookie";
+import { isBrowser } from "~/utils/isBrowser";
 
 export const TOKEN_NAME = "token";
 const isProduction = process.env.NODE_ENV === "production";
@@ -23,5 +24,8 @@ export function removeTokenCookie() {
 }
 
 export function parseCookies(req?, options = {}): Record<string, string> {
-  return parse(req ? req.headers.cookie || "" : document.cookie, options);
+  return parse(
+    req ? req.headers.cookie : isBrowser ? document.cookie : "",
+    options
+  );
 }
