@@ -17,7 +17,6 @@
     "production:build": "npx prisma generate && npx prisma db push && next build"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.1",
     "@apollo/server": "^4.3.0",
     "@as-integrations/next": "^1.2.0",
     "@chakra-ui/react": "^2.4.1",
@@ -28,7 +27,8 @@
     "@emotion/styled": "^11.10.5",
     "@graphql-tools/schema": "^9.0.10",
     "@prisma/client": "^4.8.0",
-    "apollo-server-micro": "^3.11.1",
+    "@tanstack/react-query": "^4.20.4",
+    "@tanstack/react-query-devtools": "^4.20.4",
     "axios": "^1.2.1",
     "bcryptjs": "^2.4.3",
     "chakra-ui-autocomplete": "^1.4.5",
@@ -39,6 +39,7 @@
     "framer-motion": "^6.5.1",
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.20.1",
+    "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^8.5.1",
     "link-preview-js": "^3.0.4",
     "lodash": "^4.17.21",
@@ -60,6 +61,7 @@
     "@graphql-codegen/typescript": "^2.8.2",
     "@graphql-codegen/typescript-operations": "^2.5.7",
     "@graphql-codegen/typescript-react-apollo": "^3.3.6",
+    "@graphql-codegen/typescript-react-query": "^4.0.6",
     "@graphql-codegen/typescript-resolvers": "^2.7.7",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie": "^0.5.1",
