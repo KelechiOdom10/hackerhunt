@@ -26,8 +26,6 @@ export function customFetcher<TData, TVariables>(
     const json = await res.json();
 
     if (json.errors) {
-      console.log({ e: json.errors[0] });
-
       const { message } = json.errors[0];
 
       throw new Error(message);
