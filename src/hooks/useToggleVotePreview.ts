@@ -6,14 +6,17 @@ import {
   FeedQueryVariables,
   useFeedQuery,
   FeedQuery,
+  useUserQuery,
+  UserQuery,
 } from "~/apollo/generated";
 import { PAGE_SIZE } from "~/config";
 import { formatError } from "~/utils/errorUtils";
 
-export const useToggleVotePreview = (id: string) => {
-  const { query } = useRouter();
+export const useToggleVotePreview = () => {
+  const { pathname, query } = useRouter();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const userId = query?.id as string;
   const page = (query?.page as string) || "1";
   const variables: FeedQueryVariables = {
     args: {
@@ -26,6 +29,26 @@ export const useToggleVotePreview = (id: string) => {
 
   const { mutate: toggleVote } = useToggleVoteMutation({
     onSuccess({ toggleVote }, { linkId }) {
+      if (pathname === "/user/[id]") {
+        const queryKey = useUserQuery.getKey({ userId });
+        const queryResult = queryClient.getQueryData(queryKey);
+
+        queryResult &&
+          queryClient.setQueryData<UserQuery>(queryKey, oldData => ({
+            ...oldData,
+            user: {
+              ...oldData.user,
+              links: oldData.user.links.map(link =>
+                link.id === linkId ? toggleVote : link
+              ),
+              votes: oldData.user.votes.map(vote => ({
+                ...vote,
+                link: vote.link.id === linkId ? toggleVote : vote.link,
+              })),
+            },
+          }));
+      }
+
       const queryKey = useFeedQuery.getKey(variables);
       const queryResult = queryClient.getQueryData(queryKey);
 
