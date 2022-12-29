@@ -19,7 +19,7 @@ export default function UpVoteButton({
   upvoted: boolean;
   count: number;
 } & ButtonProps) {
-  const toggleVote = useToggleVotePreview(id);
+  const toggleVote = useToggleVotePreview();
 
   const onToggleVote = async () => {
     toggleVote({ linkId: id });
