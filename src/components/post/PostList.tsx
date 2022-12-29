@@ -12,9 +12,14 @@ import { AnimatePresence } from "framer-motion";
 type Props = {
   loading: boolean;
   links: LinkDetailsFragment[];
+  fallbackText?: string;
 };
 
-const PostList = ({ links, loading }: Props) => {
+const PostList = ({
+  links,
+  loading,
+  fallbackText = "No stories yet. Add new story to get started",
+}: Props) => {
   const bgColor = useColorModeValue("white", "gray.800");
 
   return (
@@ -32,7 +37,7 @@ const PostList = ({ links, loading }: Props) => {
           [...Array(3).keys()].map(key => <PostSkeletonPreview key={key} />)}
         {links.length === 0 ? (
           <Heading fontSize="md" fontFamily="Lato" alignSelf="start">
-            No stories yet. Add new story to get started
+            {fallbackText}
           </Heading>
         ) : (
           links && links.map(link => <PostPreview link={link} key={link.id} />)

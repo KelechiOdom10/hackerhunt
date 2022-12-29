@@ -79,7 +79,11 @@ const UserProfile = ({ userId }: Props) => {
 
             <TabPanels>
               <TabPanel>
-                <PostList loading={isLoading} links={data.user?.links || []} />
+                <PostList
+                  loading={isLoading}
+                  links={data.user?.links || []}
+                  fallbackText={`${data.user.username} hasn't created any stories`}
+                />
               </TabPanel>
               <TabPanel>
                 <UserCommentList comments={data.user?.comments || []} />
@@ -88,6 +92,7 @@ const UserProfile = ({ userId }: Props) => {
                 <PostList
                   loading={isLoading}
                   links={data.user?.votes.map(vote => vote.link)}
+                  fallbackText={`${data.user.username} hasn't upvoted any stories`}
                 />
               </TabPanel>
             </TabPanels>
