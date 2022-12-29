@@ -49,7 +49,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   };
 
   try {
-    await Promise.all([
+    await Promise.allSettled([
       queryClient.prefetchQuery({
         queryKey: useFeedQuery.getKey(variables),
         queryFn: useFeedQuery.fetcher(variables),

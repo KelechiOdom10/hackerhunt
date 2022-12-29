@@ -6,6 +6,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { CommentDetailsFragment } from "~/apollo/generated";
+import CustomLink from "~/components/utils/CustomLink";
 import { timeDifferenceForDate } from "~/utils/timeDifference";
 
 type Props = {
@@ -17,9 +18,14 @@ function Comment({ comment }: Props) {
     <VStack align="stretch">
       <HStack spacing={2}>
         <Avatar size="sm" name={comment.user.username} />
-        <Text fontSize={{ base: "sm", md: "md" }} fontWeight="bold">
+        <CustomLink
+          href={`/user/${comment.user.id}`}
+          fontSize={{ base: "sm", md: "md" }}
+          underline
+          fontWeight="bold"
+        >
           {comment.user.username} ∙
-        </Text>
+        </CustomLink>
         <Text
           fontSize={{ base: "0.8rem", md: "sm" }}
           color={useColorModeValue("gray.600", "whiteAlpha.700")}
