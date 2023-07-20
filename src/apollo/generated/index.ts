@@ -72,7 +72,7 @@ export type FeedArgs = {
 export type Job = {
   __typename?: 'Job';
   categories: Array<Scalars['String']>;
-  company: Company;
+  company?: Maybe<Company>;
   companyId: Scalars['Float'];
   description: Scalars['String'];
   id: Scalars['ID'];
@@ -221,7 +221,7 @@ export type CommentDetailsFragment = { __typename?: 'Comment', id: string, text:
 
 export type CompanyDetailsFragment = { __typename?: 'Company', id: string, image: string, name: string, location: string, description: string };
 
-export type JobDetailsFragment = { __typename?: 'Job', id: string, name: string, location: string, description: string, categories: Array<string>, level: string, landingPage: string, publicationDate: string, company: { __typename?: 'Company', id: string, image: string, name: string, location: string, description: string } };
+export type JobDetailsFragment = { __typename?: 'Job', id: string, name: string, location: string, description: string, categories: Array<string>, level: string, landingPage: string, publicationDate: string, company?: { __typename?: 'Company', id: string, image: string, name: string, location: string, description: string } | null };
 
 export type LinkDetailsFragment = { __typename?: 'Link', id: string, title: string, description?: string | null, image?: string | null, url: string, commentCount: number, voteCount: number, createdAt: any, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, votes: Array<{ __typename?: 'Vote', id: string, link: { __typename?: 'Link', id: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }>, user: { __typename?: 'User', id: string, username: string, createdAt: any }, comments: Array<{ __typename?: 'Comment', id: string, text: string, createdAt: any, link: { __typename?: 'Link', id: string, title: string }, user: { __typename?: 'User', id: string, username: string, createdAt: any } }> };
 
@@ -285,7 +285,7 @@ export type JobsQueryVariables = Exact<{
 }>;
 
 
-export type JobsQuery = { __typename?: 'Query', jobs: Array<{ __typename?: 'Job', id: string, name: string, location: string, description: string, categories: Array<string>, level: string, landingPage: string, publicationDate: string, company: { __typename?: 'Company', id: string, image: string, name: string, location: string, description: string } }> };
+export type JobsQuery = { __typename?: 'Query', jobs: Array<{ __typename?: 'Job', id: string, name: string, location: string, description: string, categories: Array<string>, level: string, landingPage: string, publicationDate: string, company?: { __typename?: 'Company', id: string, image: string, name: string, location: string, description: string } | null }> };
 
 export type LinkQueryVariables = Exact<{
   linkId: Scalars['ID'];
