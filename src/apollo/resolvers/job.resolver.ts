@@ -18,7 +18,7 @@ export const jobTypeDef = gql`
 
   type Job {
     categories: [String!]!
-    company: Company!
+    company: Company
     companyId: Float!
     description: String!
     id: ID!
@@ -57,20 +57,23 @@ export const jobResolver = {
   },
   Job: {
     company: async (parent: Job) => {
-      const apiData = await getCompanyById(`/companies/${parent.companyId}`);
-      const data: Company = {
-        id: String(apiData.id),
-        name: apiData.name,
-        description: apiData.description,
-        location: apiData.locations[0].name,
-        image: apiData.refs.logo_image,
-        jobsPage: apiData.refs.jobs_page,
-        landingPage: apiData.refs.landing_page,
-        industries: apiData.industries.map(industry => industry.name),
-        publicationDate: apiData.publication_date,
-      };
-
-      return data;
+      try {
+        const apiData = await getCompanyById(`/companies/${parent.companyId}`);
+        const data: Company = {
+          id: String(apiData.id),
+          name: apiData.name,
+          description: apiData.description,
+          location: apiData.locations[0].name,
+          image: apiData.refs.logo_image,
+          jobsPage: apiData.refs.jobs_page,
+          landingPage: apiData.refs.landing_page,
+          industries: apiData.industries.map(industry => industry.name),
+          publicationDate: apiData.publication_date,
+        };
+        return data;
+      } catch (error) {
+        return null;
+      }
     },
   },
 };
