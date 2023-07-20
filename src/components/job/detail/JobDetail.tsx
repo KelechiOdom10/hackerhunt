@@ -40,16 +40,16 @@ const JobDetail = ({ job }: Props) => {
       <Meta
         meta={{
           title: router.query.id
-            ? `${job.name} - ${job.company.name} | Hacker Hunt`
+            ? `${job.name} - ${job.company?.name || "Company"} | Hacker Hunt`
             : "Job Board | Hacker Hunt",
-          image: router.query.id
-            ? job.company.image
-            : "https://hackerhunt-livid.vercel.app/assets/hacker-hunt.jpeg",
+          image:
+            job.company?.image ||
+            "https://hackerhunt.vercel.app/assets/hacker-hunt.jpeg",
         }}
       />
       <ChakraNextImage
-        src={job.company.image}
-        alt={job.company.name}
+        src={job.company?.image ?? "/assets/fallback.jpeg"}
+        alt={job.company?.name || "Company Image"}
         width={100}
         height={100}
         placeholder="empty"
@@ -70,7 +70,7 @@ const JobDetail = ({ job }: Props) => {
           cursor="pointer"
           fontSize={{ base: "md", md: "lg" }}
         >
-          {job.company.name}
+          {job.company?.name}
         </Heading>
         <Text
           fontSize={{ base: "sm", md: "md" }}

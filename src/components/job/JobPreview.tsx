@@ -37,7 +37,7 @@ const JobPreview = ({ job }: Props) => {
       <VStack align="flex-start" spacing={0}>
         <HStack align="center">
           <Heading fontFamily="body" fontSize={{ base: "sm", md: "md" }}>
-            {job.company.name}
+            {job.company?.name}
           </Heading>
           <Icon
             display={isShown ? "inline-block" : "none"}
@@ -61,7 +61,7 @@ const JobPreview = ({ job }: Props) => {
         </Text>
       </VStack>
       <ChakraNextImage
-        src={job.company.image ?? "/assets/fallback.jpeg"}
+        src={job.company?.image ?? "/assets/fallback.jpeg"}
         alt={`${job.name} Image`}
         fill
         sizes="(max-width: 768px) 100vw,

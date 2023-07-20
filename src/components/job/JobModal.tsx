@@ -31,7 +31,7 @@ const JobModal = ({ isOpen, onClose, job }: Props) => {
     <Modal isOpen={isOpen} onClose={onClose} size="2xl" scrollBehavior="inside">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{job.company.name}</ModalHeader>
+        <ModalHeader>{job.company?.name}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <HStack justify="space-between">
@@ -62,7 +62,7 @@ const JobModal = ({ isOpen, onClose, job }: Props) => {
               </Text>
             </VStack>
             <ChakraNextImage
-              src={job.company.image ?? "/assets/fallback.jpeg"}
+              src={job.company?.image ?? "/assets/fallback.jpeg"}
               alt={`${job.name} Image`}
               width={100}
               height={100}
