@@ -27,11 +27,10 @@ The goal of this project was to create a platform that provided the social aspec
 - Next.js(React)
 - TypeScript
 - GrahQL
-- TypeGraphQL
 - Apollo
 - Prisma
 - Chakra UI
-- SWR
+- React Query
 - React Icons
 - React Hook Form
 
@@ -44,7 +43,7 @@ git clone https://github.com/KelechiOdom10/hackerhunt.git
 Fill your `.env` variables:
 
 ```
-DATABASE_URL="postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@<POSTGRES_HOST>:<POSTGRES_PORT>/<POSTGRES_DB>?schema=public&sslmode=prefer"
+DATABASE_URL="mysql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DB>"
 SECRET=
 ```
 
