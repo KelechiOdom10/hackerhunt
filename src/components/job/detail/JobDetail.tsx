@@ -44,7 +44,7 @@ const JobDetail = ({ job }: Props) => {
             : "Job Board | Hacker Hunt",
           image:
             job.company?.image ||
-            "https://hackerhunt.vercel.app/assets/hacker-hunt.jpeg",
+            "https://hacker-hunt.vercel.app/assets/hacker-hunt.jpeg",
         }}
       />
       <ChakraNextImage
