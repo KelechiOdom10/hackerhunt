@@ -50,7 +50,7 @@ SECRET=
 Install deps:
 
 ```bash
-npm install
+pnpm install
 ```
 
 Generate Prisma Client:
@@ -62,7 +62,7 @@ npx prisma generate
 Run Next dev server:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ## TODO

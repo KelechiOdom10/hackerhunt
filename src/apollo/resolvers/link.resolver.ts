@@ -87,7 +87,7 @@ export const linkResolver = {
       }
 
       const { title, url, tags } = input;
-      const urlData = (await getLinkPreview(url)) as HTMLResponse;
+      const urlData = (await getLinkPreview(url)) as unknown as HTMLResponse;
 
       const link = await prisma.link.create({
         data: {

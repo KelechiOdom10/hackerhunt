@@ -1,5 +1,4 @@
-import { Button } from "@chakra-ui/button";
-import { Skeleton } from "@chakra-ui/skeleton";
+import { Button, Skeleton } from "@chakra-ui/react";
 
 function AddCommentSkeleton() {
   return (
